@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject;
+﻿using AutoMapper;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using GiftGivingGenerator.API.DataTransferObject.Person;
@@ -11,6 +11,13 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class PersonController : ControllerBase
 {
+	private readonly IMapper _mapper;
+	private readonly AppContext _dbContext;
+	public PersonController(IMapper mapper, AppContext dbContext)
+	{
+		_mapper = mapper;
+		_dbContext = dbContext;
+	}
 	[HttpPost]
 	public ActionResult CreatePerson([FromBody] CreateEventDto get)
 	{
@@ -23,10 +30,9 @@ public class PersonController : ControllerBase
 		{
 			Name = get.Name
 		};
-
-		var dbContext = new AppContext();
-		dbContext.Add(person);
-		dbContext.SaveChanges();
+		
+		_dbContext.Add(person);
+		_dbContext.SaveChanges();
 
 		return Created($"{person.Id}", null);
 	}
@@ -35,8 +41,7 @@ public class PersonController : ControllerBase
 	[HttpGet]
 	public ActionResult GetPerson([FromBody] GetId get)
 	{
-		var dbContext = new AppContext();
-		var person = dbContext
+		var person = _dbContext
 			.Persons
 			.Single(x => x.Id == get.Id);
 
@@ -52,14 +57,13 @@ public class PersonController : ControllerBase
 	[HttpPut]
 	public ActionResult EditPerson([FromBody] PersonDto person)
 	{
-		var dbContext = new AppContext();
-		var selectedPerson = dbContext
+		var selectedPerson = _dbContext
 			.Persons
 			.Single(x => x.Id == person.Id);
 
 		selectedPerson.Name = person.Name;
-		dbContext.Update(selectedPerson);
-		dbContext.SaveChanges();
+		_dbContext.Update(selectedPerson);
+		_dbContext.SaveChanges();
 
 		return Ok();
 	}
@@ -68,13 +72,12 @@ public class PersonController : ControllerBase
 	[HttpDelete]
 	public ActionResult DeletePerson([FromBody] GetId get)
 	{
-		var dbContext = new AppContext();
-		var person = dbContext
+		var person = _dbContext
 			.Persons
 			.Single(x => x.Id == get.Id);
 
-		dbContext.Remove(person);
-		dbContext.SaveChanges();
+		_dbContext.Remove(person);
+		_dbContext.SaveChanges();
 
 		return NoContent();
 	}

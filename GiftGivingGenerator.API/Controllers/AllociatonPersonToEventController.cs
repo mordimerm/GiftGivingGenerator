@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject;
+﻿using AutoMapper;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,25 +9,31 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class AllociatonPersonToEventController : ControllerBase
 {
+	private readonly IMapper _mapper;
+	private readonly AppContext _dbContext;
+	public AllociatonPersonToEventController(IMapper mapper, AppContext dbContext)
+	{
+		_mapper = mapper;
+		_dbContext = dbContext;
+	}
 	[HttpPut]
 	public ActionResult AddPersonsToEvent([FromBody] GetOneIdAndListOfIds get)
 	{
-		var dbContext = new AppContext();
-		var even = dbContext.Events
+		var even = _dbContext.Events
 			.Single(x => x.Id == get.Id);
 
 		even.Persons.Clear();
 
 		foreach (var personId in get.Ids)
 		{
-			var person = dbContext.Persons
+			var person = _dbContext.Persons
 				.Single(x => x.Id == personId);
 			
 			even.Persons.Add(person);
 		}
 
-		dbContext.Update(even);
-		dbContext.SaveChanges();
+		_dbContext.Update(even);
+		_dbContext.SaveChanges();
 
 		return Ok();
 	}
@@ -35,8 +41,7 @@ public class AllociatonPersonToEventController : ControllerBase
 	[HttpDelete]
 	public ActionResult RemovePersonsFromEvent([FromBody] GetOneIdAndListOfIds get)
 	{
-		var dbContext = new AppContext();
-		var even = dbContext.Events
+		var even = _dbContext.Events
 			.Include(x=>x.Persons)
 			.Single(x => x.Id == get.Id);
 
@@ -47,7 +52,7 @@ public class AllociatonPersonToEventController : ControllerBase
 			even.Persons.Remove(person);
 		}
 		
-		dbContext.SaveChanges();
+		_dbContext.SaveChanges();
 
 		return NoContent();
 	}

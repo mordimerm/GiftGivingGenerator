@@ -1,4 +1,5 @@
-﻿using GiftGivingGenerator.API.DataTransferObject;
+﻿
+using AutoMapper;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using GiftGivingGenerator.API.DataTransferObject.Person;
@@ -11,6 +12,13 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class EventController : ControllerBase
 {
+	private readonly IMapper _mapper;
+	private readonly AppContext _dbContext;
+	public EventController(IMapper mapper, AppContext dbContext)
+	{
+		_mapper = mapper;
+		_dbContext = dbContext;
+	}
 	[HttpPost]
 	public ActionResult CreateEvent([FromBody] CreateEventDto get)
 	{
@@ -21,9 +29,8 @@ public class EventController : ControllerBase
 			EndDate = get.EndDate,
 		};
 
-		var dbContext = new AppContext();
-		dbContext.Add(even);
-		dbContext.SaveChanges();
+		_dbContext.Add(even);
+		_dbContext.SaveChanges();
 
 		return Created($"{even.Id}", null);
 	}
@@ -31,14 +38,12 @@ public class EventController : ControllerBase
 	[HttpGet]
 	public ActionResult GetOneEvent([FromBody] GetId get)
 	{
-		var dbContext = new AppContext();
-
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
 
-		var even = dbContext.Events
+		var even = _dbContext.Events
 			.Select(x => new EventDto()
 			{
 				Id = x.Id,
@@ -59,8 +64,7 @@ public class EventController : ControllerBase
 	[HttpPut]
 	public ActionResult EditEvent([FromBody] EditEventDto get)
 	{
-		var dbContext = new AppContext();
-		var even = dbContext.Events
+		var even = _dbContext.Events
 			.Single(x => x.Id == get.Id);
 
 		if (get.Name != "")
@@ -74,8 +78,8 @@ public class EventController : ControllerBase
 			even.EndDate = get.EndDate;
 		}
 
-		dbContext.Update(even);
-		dbContext.SaveChanges();
+		_dbContext.Update(even);
+		_dbContext.SaveChanges();
 
 		return Ok();
 	}
@@ -83,12 +87,11 @@ public class EventController : ControllerBase
 	[HttpDelete]
 	public ActionResult DeleteEvent([FromBody] GetId get)
 	{
-		var dbContext = new AppContext();
-		var even = dbContext.Events
+		var even = _dbContext.Events
 			.Single(x => x.Id == get.Id);
 
-		dbContext.Remove(even);
-		dbContext.SaveChanges();
+		_dbContext.Remove(even);
+		_dbContext.SaveChanges();
 
 		return NoContent();
 	}
