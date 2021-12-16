@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GiftGivingGenerator.API.Models;
+namespace GiftGivingGenerator.API.ModelsDataTransferObject;
 
 public class GetName
 {

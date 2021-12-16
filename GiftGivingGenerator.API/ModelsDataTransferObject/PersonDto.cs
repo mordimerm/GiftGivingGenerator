@@ -1,4 +1,4 @@
-﻿namespace GiftGivingGenerator.API.Models;
+﻿namespace GiftGivingGenerator.API.ModelsDataTransferObject;
 
 public class PersonDto //Data transfer object
 {

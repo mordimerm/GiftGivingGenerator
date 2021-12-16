@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.Models;
+﻿using GiftGivingGenerator.API.ModelsDataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -21,6 +21,6 @@ public class PersonsController : ControllerBase
 			.ToList();
 		//TODO: may i do mapping with NuGet package AutoMapper.Extensions.Microsoft.DependencyInjection
 
-		return persons;
+		return Ok(persons);
 	}
 }

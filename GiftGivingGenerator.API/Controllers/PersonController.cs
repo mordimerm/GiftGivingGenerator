@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.Models;
+﻿using GiftGivingGenerator.API.ModelsDataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -8,7 +8,7 @@ namespace GiftGivingGenerator.API.Controllers;
 public class PersonController : ControllerBase
 {
 	[HttpPost]
-	public ActionResult CreatePerson([FromBody] GetName get)
+	public ActionResult CreatePerson([FromBody] CreateEventDto get)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -60,7 +60,7 @@ public class PersonController : ControllerBase
 		return Ok();
 	}
 	
-	//TODO: what will happen with allocations?
+	//TODO: what should happen with active/no active allocations, when person is removed?
 	[HttpDelete]
 	public ActionResult DeletePerson([FromBody] GetId get)
 	{
@@ -70,6 +70,7 @@ public class PersonController : ControllerBase
 			.Single(x => x.Id == get.Id);
 
 		dbContext.Remove(person);
+		dbContext.SaveChanges();
 
 		return NoContent();
 	}
