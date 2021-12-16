@@ -44,7 +44,7 @@ namespace GiftGivingGenerator.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("EventId")
+                    b.Property<Guid?>("Id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -53,7 +53,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("Id");
 
                     b.ToTable("Persons");
                 });
@@ -62,7 +62,7 @@ namespace GiftGivingGenerator.API.Migrations
                 {
                     b.HasOne("GiftGivingGenerator.API.Event", null)
                         .WithMany("Persons")
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("Id");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Event", b =>

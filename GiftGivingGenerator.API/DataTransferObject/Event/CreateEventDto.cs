@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GiftGivingGenerator.API.ModelsDataTransferObject;
+namespace GiftGivingGenerator.API.DataTransferObject.Event;
 
 public class CreateEventDto
 {

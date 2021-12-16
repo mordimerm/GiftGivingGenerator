@@ -1,4 +1,5 @@
-﻿using GiftGivingGenerator.API.ModelsDataTransferObject;
+﻿using GiftGivingGenerator.API.DataTransferObject;
+using GiftGivingGenerator.API.DataTransferObject.Get;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,15 +10,15 @@ namespace GiftGivingGenerator.API.Controllers;
 public class AllociatonPersonToEventController : ControllerBase
 {
 	[HttpPut]
-	public ActionResult AddPersonsToEvent([FromBody] GetEventIdAndListIdOfPersons get)
+	public ActionResult AddPersonsToEvent([FromBody] GetOneIdAndListOfIds get)
 	{
 		var dbContext = new AppContext();
 		var even = dbContext.Events
-			.Single(x => x.Id == get.EventId);
+			.Single(x => x.Id == get.Id);
 
 		even.Persons.Clear();
 
-		foreach (var personId in get.PersonsId)
+		foreach (var personId in get.Ids)
 		{
 			var person = dbContext.Persons
 				.Single(x => x.Id == personId);
@@ -32,14 +33,14 @@ public class AllociatonPersonToEventController : ControllerBase
 	}
 
 	[HttpDelete]
-	public ActionResult RemovePersonsFromEvent([FromBody] GetEventIdAndListIdOfPersons get)
+	public ActionResult RemovePersonsFromEvent([FromBody] GetOneIdAndListOfIds get)
 	{
 		var dbContext = new AppContext();
 		var even = dbContext.Events
 			.Include(x=>x.Persons)
-			.Single(x => x.Id == get.EventId);
+			.Single(x => x.Id == get.Id);
 
-		foreach (var personId in get.PersonsId)
+		foreach (var personId in get.Ids)
 		{
 			var person = even.Persons
 				.SingleOrDefault(x => x.Id == personId);

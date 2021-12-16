@@ -42,7 +42,7 @@ namespace GiftGivingGenerator.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Persons_EventId",
                 table: "Persons",
-                column: "EventId");
+                column: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

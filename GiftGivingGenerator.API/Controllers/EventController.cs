@@ -1,5 +1,8 @@
-﻿using GiftGivingGenerator.API.Entities;
-using GiftGivingGenerator.API.ModelsDataTransferObject;
+﻿using GiftGivingGenerator.API.DataTransferObject;
+using GiftGivingGenerator.API.DataTransferObject.Event;
+using GiftGivingGenerator.API.DataTransferObject.Get;
+using GiftGivingGenerator.API.DataTransferObject.Person;
+using GiftGivingGenerator.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -36,6 +39,18 @@ public class EventController : ControllerBase
 		}
 
 		var even = dbContext.Events
+			.Select(x => new EventDto()
+			{
+				Id = x.Id,
+				Name = x.Name,
+				EndDate = x.EndDate,
+				Persons = x.Persons
+					.Select(y => new PersonDto()
+					{
+						Id = y.Id,
+						Name = y.Name
+					})
+			})
 			.Single(x => x.Id == get.Id);
 
 		return Ok(even);
@@ -47,12 +62,13 @@ public class EventController : ControllerBase
 		var dbContext = new AppContext();
 		var even = dbContext.Events
 			.Single(x => x.Id == get.Id);
-		
+
 		if (get.Name != "")
 		{
 			even.Name = get.Name;
 		}
 		
+		//Paulina: ustalić, czy przekaże mi starą datę, czy ja mam to sprawdzać?
 		if (get.EndDate != null)
 		{
 			even.EndDate = get.EndDate;

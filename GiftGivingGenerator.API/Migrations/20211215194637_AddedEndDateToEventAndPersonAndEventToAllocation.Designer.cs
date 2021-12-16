@@ -29,12 +29,12 @@ namespace GiftGivingGenerator.API.Migrations
                     b.Property<Guid>("EventsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PersonsId")
+                    b.Property<Guid>("Ids")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("EventsId", "PersonsId");
+                    b.HasKey("EventsId", "Ids");
 
-                    b.HasIndex("PersonsId");
+                    b.HasIndex("Ids");
 
                     b.ToTable("EventPerson");
                 });
@@ -85,7 +85,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasOne("GiftGivingGenerator.API.Person", null)
                         .WithMany()
-                        .HasForeignKey("PersonsId")
+                        .HasForeignKey("Ids")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

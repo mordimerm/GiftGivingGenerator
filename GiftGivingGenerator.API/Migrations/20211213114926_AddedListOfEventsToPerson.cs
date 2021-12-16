@@ -17,7 +17,7 @@ namespace GiftGivingGenerator.API.Migrations
                 table: "Persons");
 
             migrationBuilder.DropColumn(
-                name: "EventId",
+                name: "Id",
                 table: "Persons");
 
             migrationBuilder.CreateTable(
@@ -47,7 +47,7 @@ namespace GiftGivingGenerator.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_EventPerson_PersonsId",
                 table: "EventPerson",
-                column: "PersonsId");
+                column: "Ids");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -56,7 +56,7 @@ namespace GiftGivingGenerator.API.Migrations
                 name: "EventPerson");
 
             migrationBuilder.AddColumn<Guid>(
-                name: "EventId",
+                name: "Id",
                 table: "Persons",
                 type: "uniqueidentifier",
                 nullable: true);
@@ -64,12 +64,12 @@ namespace GiftGivingGenerator.API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Persons_EventId",
                 table: "Persons",
-                column: "EventId");
+                column: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Persons_Events_EventId",
                 table: "Persons",
-                column: "EventId",
+                column: "Id",
                 principalTable: "Events",
                 principalColumn: "Id");
         }

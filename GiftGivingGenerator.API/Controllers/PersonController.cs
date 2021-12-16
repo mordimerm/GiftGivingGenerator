@@ -1,4 +1,8 @@
-﻿using GiftGivingGenerator.API.ModelsDataTransferObject;
+﻿using GiftGivingGenerator.API.DataTransferObject;
+using GiftGivingGenerator.API.DataTransferObject.Event;
+using GiftGivingGenerator.API.DataTransferObject.Get;
+using GiftGivingGenerator.API.DataTransferObject.Person;
+using GiftGivingGenerator.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;

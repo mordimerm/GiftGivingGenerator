@@ -1,6 +1,6 @@
-﻿namespace GiftGivingGenerator.API.ModelsDataTransferObject;
+﻿namespace GiftGivingGenerator.API.DataTransferObject.Event;
 
-public class PrintListOfEventsDto
+public class EditEventDto
 {
 	public Guid Id { get; set; }
 	public string Name { get; set; }

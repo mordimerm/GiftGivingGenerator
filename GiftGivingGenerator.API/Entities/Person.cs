@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GiftGivingGenerator.API.Entities;
-
-namespace GiftGivingGenerator.API;
+﻿namespace GiftGivingGenerator.API.Entities;
 
 public class Person
 {
