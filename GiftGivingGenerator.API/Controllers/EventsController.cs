@@ -14,7 +14,7 @@ public class EventsController : ControllerBase
 	{
 		var dbContext = new AppContext();
 		var events = dbContext.Events
-			.Select(x=>new PrintListOfEventsDto()
+			.Select(x=>new ListOfEventsDto()
 			{
 				Id = x.Id,
 				Name = x.Name,
