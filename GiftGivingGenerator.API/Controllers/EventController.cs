@@ -1,8 +1,6 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.DataTransferObject.Event;
-using GiftGivingGenerator.API.DataTransferObject.Get;
-using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,15 +17,11 @@ public class EventController : ControllerBase
 		_mapper = mapper;
 		_dbContext = dbContext;
 	}
+
 	[HttpPost]
-	public ActionResult CreateEvent([FromBody] CreateEventDto get)
+	public ActionResult CreateEvent([FromBody] EventDto get)
 	{
-		var even = new Event()
-		{
-			Name = get.Name,
-			CreatingDate = DateTime.UtcNow,
-			EndDate = get.EndDate,
-		};
+		var even = _mapper.Map<EventDto, Event>(get);
 
 		_dbContext.Add(even);
 		_dbContext.SaveChanges();
@@ -35,8 +29,8 @@ public class EventController : ControllerBase
 		return Created($"{even.Id}", null);
 	}
 
-	[HttpGet]
-	public ActionResult GetOneEvent([FromBody] GetId get)
+	[HttpGet("{id}")]
+	public ActionResult GetOneEvent([FromRoute] Guid id)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -44,34 +38,34 @@ public class EventController : ControllerBase
 		}
 
 		var even = _dbContext.Events
-			.Select(x => new EventDto()
-			{
-				Id = x.Id,
-				Name = x.Name,
-				EndDate = x.EndDate,
-				Persons = x.Persons
-					.Select(y => new PersonDto()
-					{
-						Id = y.Id,
-						Name = y.Name
-					})
-			})
-			.Single(x => x.Id == get.Id);
-
+			.ProjectTo<EventWithPersonsDto>(_mapper.ConfigurationProvider)
+			.Single(x => x.Id == id);
+		
 		return Ok(even);
 	}
 
-	[HttpPut]
-	public ActionResult EditEvent([FromBody] EditEventDto get)
+	[HttpGet]
+	//TODO? it gets events with list of persons - want we it in this place?
+	public ActionResult<IEnumerable<Event>> GetAllEvents()
+	{
+		var events = _dbContext.Events
+			.ProjectTo<EventWithPersonsDto>(_mapper.ConfigurationProvider)
+			.ToList();
+
+		return Ok(events);
+	}
+
+	[HttpPut("{id}")]
+	public ActionResult EditEvent([FromRoute] Guid id, [FromBody] EventDto get)
 	{
 		var even = _dbContext.Events
-			.Single(x => x.Id == get.Id);
+			.Single(x => x.Id == id);
 
 		if (get.Name != "")
 		{
 			even.Name = get.Name;
 		}
-		
+
 		//Paulina: ustalić, czy przekaże mi starą datę, czy ja mam to sprawdzać?
 		if (get.EndDate != null)
 		{
@@ -84,11 +78,11 @@ public class EventController : ControllerBase
 		return Ok();
 	}
 
-	[HttpDelete]
-	public ActionResult DeleteEvent([FromBody] GetId get)
+	[HttpDelete("{id}")]
+	public ActionResult DeleteEvent([FromRoute] Guid id)
 	{
 		var even = _dbContext.Events
-			.Single(x => x.Id == get.Id);
+			.Single(x => x.Id == id);
 
 		_dbContext.Remove(even);
 		_dbContext.SaveChanges();

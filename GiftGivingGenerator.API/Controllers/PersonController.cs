@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using GiftGivingGenerator.API.DataTransferObject.Event;
+﻿using System.Linq;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
@@ -18,65 +19,82 @@ public class PersonController : ControllerBase
 		_mapper = mapper;
 		_dbContext = dbContext;
 	}
+
 	[HttpPost]
-	public ActionResult CreatePerson([FromBody] CreateEventDto get)
+	public ActionResult CreatePerson([FromBody] GetName get)
+		//TODO: probablly we don't want to create 2 persons with the same name
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
-		
 		var person = new Person()
 		{
 			Name = get.Name
 		};
-		
+
 		_dbContext.Add(person);
 		_dbContext.SaveChanges();
 
 		return Created($"{person.Id}", null);
 	}
-	
-	//TODO: probablly we can't create 2 persons with the same name
-	[HttpGet]
-	public ActionResult GetPerson([FromBody] GetId get)
-	{
-		var person = _dbContext
-			.Persons
-			.Single(x => x.Id == get.Id);
 
-		var personDto = new PersonDto()
-		{
-			Id = person.Id,
-			Name = person.Name,
-		};
+	[HttpGet("{id}")]
+	public ActionResult GetPerson([FromRoute] Guid id)
+	{
+		var personDto = _dbContext
+			.Persons
+			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
+			.Single(x => x.Id == id);
 
 		return Ok(personDto);
 	}
 
-	[HttpPut]
-	public ActionResult EditPerson([FromBody] PersonDto person)
+	[HttpGet]
+	public ActionResult<List<PersonDto>> GetAllPersons()
 	{
-		var selectedPerson = _dbContext
+		var personsDto = _dbContext
 			.Persons
-			.Single(x => x.Id == person.Id);
+			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
+			.ToList();
 
-		selectedPerson.Name = person.Name;
-		_dbContext.Update(selectedPerson);
+		return Ok(personsDto);
+	}
+
+	[HttpPut("{id}")]
+	public ActionResult EditPerson([FromRoute] Guid id, [FromBody] GetName get)
+	{
+		//tu nie działa string name, bo nie można odnieść się przez format json
+		var person = _dbContext
+			.Persons
+			.Single(x => x.Id == id);
+
+		person.Name = get.Name;
+		_dbContext.Update(person);
 		_dbContext.SaveChanges();
 
 		return Ok();
 	}
-	
+
 	//TODO: what should happen with active/no active allocations, when person is removed?
-	[HttpDelete]
-	public ActionResult DeletePerson([FromBody] GetId get)
+	[HttpDelete("{id}")]
+	public ActionResult DeletePerson([FromRoute] Guid id)
 	{
 		var person = _dbContext
 			.Persons
-			.Single(x => x.Id == get.Id);
+			.Single(x => x.Id == id);
 
 		_dbContext.Remove(person);
+		_dbContext.SaveChanges();
+
+		return NoContent();
+	}
+
+	[HttpDelete]
+	public ActionResult DeletePerson([FromBody] GetIds get)
+	{
+		var persons = _dbContext
+			.Persons
+			.Where(x=> get.Ids.Contains(x.Id))
+			.ToList();
+
+		_dbContext.RemoveRange(persons);
 		_dbContext.SaveChanges();
 
 		return NoContent();

@@ -16,6 +16,7 @@ public class AllociatonPersonToEventController : ControllerBase
 		_mapper = mapper;
 		_dbContext = dbContext;
 	}
+	
 	[HttpPut]
 	public ActionResult AddPersonsToEvent([FromBody] GetOneIdAndListOfIds get)
 	{

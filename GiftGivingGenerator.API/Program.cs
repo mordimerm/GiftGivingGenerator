@@ -1,5 +1,6 @@
 using GiftGivingGenerator.API;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using AppContext = GiftGivingGenerator.API.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDbContext<AppContext>(x =>
-{
-	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"));
-});
+	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"))
+);
 var app = builder.Build();
 
 

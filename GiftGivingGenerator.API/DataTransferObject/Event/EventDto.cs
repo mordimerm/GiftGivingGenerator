@@ -1,11 +1,12 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.Person;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GiftGivingGenerator.API.DataTransferObject.Event;
 
 public class EventDto
 {
-	public Guid Id { get; set; }
+	[Required]
+	[MaxLength (50)]
 	public string Name { get; set; }
+	[Required]
 	public DateTime EndDate { get; set; }
-	public IEnumerable<PersonDto> Persons { get; set; }
 }
