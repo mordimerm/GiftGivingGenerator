@@ -9,21 +9,18 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class AllociatonPersonToEventController : ControllerBase
 {
-	private readonly IMapper _mapper;
 	private readonly AppContext _dbContext;
-	public AllociatonPersonToEventController(IMapper mapper, AppContext dbContext)
+	public AllociatonPersonToEventController(AppContext dbContext)
 	{
-		_mapper = mapper;
 		_dbContext = dbContext;
 	}
 	
-	[HttpPut]
-	public ActionResult AddPersonsToEvent([FromBody] GetOneIdAndListOfIds get)
+	[HttpPut ("{id}")]
+	public ActionResult AddPersonsToEvent([FromRoute] Guid id, [FromBody] GetIds get)
 	{
 		var even = _dbContext.Events
-			.Single(x => x.Id == get.Id);
-
-		even.Persons.Clear();
+			.Include(x=>x.Persons)
+			.Single(x => x.Id == id);
 
 		foreach (var personId in get.Ids)
 		{
@@ -37,24 +34,5 @@ public class AllociatonPersonToEventController : ControllerBase
 		_dbContext.SaveChanges();
 
 		return Ok();
-	}
-
-	[HttpDelete]
-	public ActionResult RemovePersonsFromEvent([FromBody] GetOneIdAndListOfIds get)
-	{
-		var even = _dbContext.Events
-			.Include(x=>x.Persons)
-			.Single(x => x.Id == get.Id);
-
-		foreach (var personId in get.Ids)
-		{
-			var person = even.Persons
-				.SingleOrDefault(x => x.Id == personId);
-			even.Persons.Remove(person);
-		}
-		
-		_dbContext.SaveChanges();
-
-		return NoContent();
 	}
 }
