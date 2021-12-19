@@ -11,6 +11,7 @@ public class AppContext : DbContext
 	
 	public DbSet<Event> Events { get; set; }
 	public DbSet<Person> Persons { get; set; }
+	public DbSet<DrawingResult> DrawingResults { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

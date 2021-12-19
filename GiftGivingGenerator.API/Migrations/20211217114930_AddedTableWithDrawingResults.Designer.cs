@@ -4,6 +4,7 @@ using GiftGivingGenerator.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiftGivingGenerator.API.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20211217114930_AddedTableWithDrawingResults")]
+    partial class AddedTableWithDrawingResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,15 +26,15 @@ namespace GiftGivingGenerator.API.Migrations
 
             modelBuilder.Entity("EventPerson", b =>
                 {
-                    b.Property<Guid>("EventId")
+                    b.Property<Guid>("EventsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PersonId")
+                    b.Property<Guid>("PersonsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("EventId", "PersonId");
+                    b.HasKey("EventsId", "PersonsId");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("PersonsId");
 
                     b.ToTable("EventPerson");
                 });
@@ -49,12 +51,17 @@ namespace GiftGivingGenerator.API.Migrations
                     b.Property<Guid>("GiverPersonId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("RecipientPersonId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("PersonId");
 
                     b.ToTable("DrawingResults");
                 });
@@ -99,13 +106,13 @@ namespace GiftGivingGenerator.API.Migrations
                 {
                     b.HasOne("GiftGivingGenerator.API.Entities.Event", null)
                         .WithMany()
-                        .HasForeignKey("EventId")
+                        .HasForeignKey("EventsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GiftGivingGenerator.API.Entities.Person", null)
                         .WithMany()
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("PersonsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -118,7 +125,15 @@ namespace GiftGivingGenerator.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Event");
+
+                    b.Navigation("Person");
                 });
 #pragma warning restore 612, 618
         }
