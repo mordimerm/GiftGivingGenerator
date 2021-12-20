@@ -15,10 +15,12 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 				x => x
 					.HasOne<Person>()
 					.WithMany()
-					.HasForeignKey("PersonId"),
+					.HasForeignKey("PersonId")
+					.OnDelete(DeleteBehavior.Restrict),
 				x => x
 					.HasOne<Event>()
 					.WithMany()
-					.HasForeignKey("EventId"));
+					.HasForeignKey("EventId")
+					.OnDelete(DeleteBehavior.Restrict));
 	}
 }

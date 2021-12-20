@@ -23,10 +23,11 @@ public class EventController : ControllerBase
 		_dbContext = dbContext;
 	}
 
-	[HttpPost]
-	public ActionResult CreateEvent([FromBody] EventDto get)
+	[HttpPost ("{organizerId}")]
+	public ActionResult CreateEvent([FromRoute] Guid organizerId, [FromBody] EventDto get)
 	{
 		var even = _mapper.Map<EventDto, Event>(get);
+		even.OrganizerId = organizerId;
 
 		_dbContext.Add(even);
 		_dbContext.SaveChanges();
@@ -34,6 +35,19 @@ public class EventController : ControllerBase
 		return Created($"{even.Id}", null);
 	}
 
+	[HttpGet ("{organizerId}")]
+	public ActionResult<IEnumerable<Event>> GetAllEvents([FromRoute] Guid organizerId)
+	{
+		var events = _dbContext
+			.Events
+			.Where(x=>x.OrganizerId==organizerId)
+			.ProjectTo<EventDto>(_mapper.ConfigurationProvider)
+			.ToList();
+
+		return Ok(events);
+	}
+
+	
 	[HttpGet("{id}")]
 	public ActionResult GetOneEvent([FromRoute] Guid id)
 	{
@@ -42,28 +56,19 @@ public class EventController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var even = _dbContext.Events
+		var even = _dbContext
+			.Events
 			.ProjectTo<EventWithPersonsDto>(_mapper.ConfigurationProvider)
 			.Single(x => x.Id == id);
 		
 		return Ok(even);
 	}
-
-	[HttpGet]
-	//TODO? it gets events with list of persons - want we it in this place?
-	public ActionResult<IEnumerable<Event>> GetAllEvents()
-	{
-		var events = _dbContext.Events
-			.ProjectTo<EventWithPersonsDto>(_mapper.ConfigurationProvider)
-			.ToList();
-
-		return Ok(events);
-	}
-
+	
 	[HttpPut("{id}")]
 	public ActionResult EditEvent([FromRoute] Guid id, [FromBody] EventDto get)
 	{
-		var even = _dbContext.Events
+		var even = _dbContext
+			.Events
 			.Single(x => x.Id == id);
 
 		if (get.Name != "")
@@ -83,15 +88,18 @@ public class EventController : ControllerBase
 		return Ok();
 	}
 	
+	//it works wrong?!
+	//
 	[HttpPut ("{eventId}/Attendees")]
 	public ActionResult AssignPersonsToEvent([FromRoute] Guid eventId, [FromBody] GetIds get)
 	{
 		var even = _dbContext.Events
 			.Include(x=>x.Persons)
 			.Single(x => x.Id == eventId);
-		
-		//TODO: remove all old attendees and then add new getting from json
 
+		even.Persons.Clear();
+		
+		//Maciek: can I do it by inserting personId without searching object person
 		foreach (var personId in get.Ids)
 		{
 			var person = _dbContext.Persons
@@ -192,7 +200,6 @@ public class EventController : ControllerBase
 
 		var recipientPerson = new PersonDto()
 		{
-			Id = drawingResult.RecipientPersonId,
 			Name = _dbContext
 				.Persons
 				.Single(x=>x.Id==drawingResult.RecipientPersonId)

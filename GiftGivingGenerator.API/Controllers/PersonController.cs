@@ -20,13 +20,14 @@ public class PersonController : ControllerBase
 		_dbContext = dbContext;
 	}
 
-	[HttpPost]
-	public ActionResult CreatePerson([FromBody] GetName get)
+	[HttpPost ("{organizerId}")]
+	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] GetName get) 
 		//TODO: probablly we don't want to create 2 persons with the same name
 	{
 		var person = new Person()
 		{
-			Name = get.Name
+			Name = get.Name,
+			OrganizerId = organizerId,
 		};
 
 		_dbContext.Add(person);
@@ -35,22 +36,12 @@ public class PersonController : ControllerBase
 		return Created($"{person.Id}", null);
 	}
 
-	[HttpGet("{id}")]
-	public ActionResult GetPerson([FromRoute] Guid id)
-	{
-		var personDto = _dbContext
-			.Persons
-			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
-			.Single(x => x.Id == id);
-
-		return Ok(personDto);
-	}
-
-	[HttpGet]
-	public ActionResult<List<PersonDto>> GetAllPersons()
+	[HttpGet ("{organizerId}")]
+	public ActionResult<List<PersonDto>> GetAllPersons([FromRoute] Guid organizerId)
 	{
 		var personsDto = _dbContext
 			.Persons
+			.Where(x=>x.OrganizerId==organizerId)
 			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
 			.ToList();
 
@@ -60,7 +51,6 @@ public class PersonController : ControllerBase
 	[HttpPut("{id}")]
 	public ActionResult EditPerson([FromRoute] Guid id, [FromBody] GetName get)
 	{
-		//tu nie działa string name, bo nie można odnieść się przez format json
 		var person = _dbContext
 			.Persons
 			.Single(x => x.Id == id);
@@ -81,20 +71,6 @@ public class PersonController : ControllerBase
 			.Single(x => x.Id == id);
 
 		_dbContext.Remove(person);
-		_dbContext.SaveChanges();
-
-		return NoContent();
-	}
-
-	[HttpDelete]
-	public ActionResult DeletePerson([FromBody] GetIds get)
-	{
-		var persons = _dbContext
-			.Persons
-			.Where(x=> get.Ids.Contains(x.Id))
-			.ToList();
-
-		_dbContext.RemoveRange(persons);
 		_dbContext.SaveChanges();
 
 		return NoContent();

@@ -14,5 +14,9 @@ public class MappingProfile : Profile
 		CreateMap<Event, EventDto>();
 		CreateMap<EventDto, Event>();
 		CreateMap<Event, EventWithPersonsDto>();
+		CreateMap<OrganizerDto, Organizer>();
+		CreateMap<Organizer, Person>()
+			.ForMember(x => x.Id, x => x.Ignore())
+			.ForMember(x=>x.OrganizerId, y=>y.MapFrom(z=>z.Id));
 	}
 }

@@ -1,8 +1,7 @@
 ﻿namespace GiftGivingGenerator.API.Entities;
 
-public class Person
+public class Person : PersonBase
 {
-	public Guid Id { get; set; }
-	public string Name { get; set; }
-	public List<Event> Events { get; set; }
+	public Guid OrganizerId { get; set; }
+	public Organizer Organizer { get; set; }
 }
