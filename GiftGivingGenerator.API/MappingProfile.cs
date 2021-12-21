@@ -11,8 +11,8 @@ public class MappingProfile : Profile
 	public MappingProfile()
 	{
 		CreateMap<Person, PersonDto>();
-		CreateMap<Event, EventDto>();
-		CreateMap<EventDto, Event>();
+		CreateMap<Event, OutputEventDto>();
+		CreateMap<InputEventDto, Event>();
 		CreateMap<Event, EventWithPersonsDto>();
 		CreateMap<OrganizerDto, Organizer>();
 		CreateMap<Organizer, Person>()

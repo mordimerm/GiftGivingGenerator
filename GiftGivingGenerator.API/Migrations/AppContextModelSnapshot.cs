@@ -56,6 +56,10 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasIndex("EventId");
 
+                    b.HasIndex("GiverPersonId");
+
+                    b.HasIndex("RecipientPersonId");
+
                     b.ToTable("DrawingResults");
                 });
 
@@ -75,9 +79,37 @@ namespace GiftGivingGenerator.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("OrganizerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizerId");
+
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Organizer");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
@@ -90,7 +122,12 @@ namespace GiftGivingGenerator.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("OrganizerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganizerId");
 
                     b.ToTable("Persons");
                 });
@@ -100,25 +137,71 @@ namespace GiftGivingGenerator.API.Migrations
                     b.HasOne("GiftGivingGenerator.API.Entities.Event", null)
                         .WithMany()
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("GiftGivingGenerator.API.Entities.Person", null)
                         .WithMany()
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.DrawingResult", b =>
                 {
                     b.HasOne("GiftGivingGenerator.API.Entities.Event", "Event")
-                        .WithMany()
+                        .WithMany("DrawingResults")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", null)
+                        .WithMany()
+                        .HasForeignKey("GiverPersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", null)
+                        .WithMany()
+                        .HasForeignKey("RecipientPersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
+                {
+                    b.HasOne("GiftGivingGenerator.API.Entities.Organizer", "Organizer")
+                        .WithMany("Events")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
+                {
+                    b.HasOne("GiftGivingGenerator.API.Entities.Organizer", "Organizer")
+                        .WithMany("Persons")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
+                {
+                    b.Navigation("DrawingResults");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
+                {
+                    b.Navigation("Events");
+
+                    b.Navigation("Persons");
                 });
 #pragma warning restore 612, 618
         }

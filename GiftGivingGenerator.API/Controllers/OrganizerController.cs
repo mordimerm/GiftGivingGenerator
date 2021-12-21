@@ -28,6 +28,6 @@ public class OrganizerController : ControllerBase
 		_dbContext.Persons.Add(person);
 		_dbContext.SaveChanges();
 
-		return Created($"{organizer.Id}", null);
+		return CreatedAtAction(nameof (CreateOrganizer), new {id = organizer.Id}, organizer);
 	}
 }

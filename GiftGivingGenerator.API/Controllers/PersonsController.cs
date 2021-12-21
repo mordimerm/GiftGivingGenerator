@@ -10,17 +10,17 @@ namespace GiftGivingGenerator.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PersonController : ControllerBase
+public class PersonsController : ControllerBase
 {
 	private readonly IMapper _mapper;
 	private readonly AppContext _dbContext;
-	public PersonController(IMapper mapper, AppContext dbContext)
+	public PersonsController(IMapper mapper, AppContext dbContext)
 	{
 		_mapper = mapper;
 		_dbContext = dbContext;
 	}
 
-	[HttpPost ("{organizerId}")]
+	[HttpPost ("/{organizerId}/[controller]")]
 	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] GetName get) 
 		//TODO: probablly we don't want to create 2 persons with the same name
 	{
@@ -33,14 +33,13 @@ public class PersonController : ControllerBase
 		_dbContext.Add(person);
 		_dbContext.SaveChanges();
 
-		return Created($"{person.Id}", null);
+		return CreatedAtAction(nameof(CreatePerson), new {id = person.Id}, person);
 	}
 
-	[HttpGet ("{organizerId}")]
+	[HttpGet ("/{organizerId}/[controller]")]
 	public ActionResult<List<PersonDto>> GetAllPersons([FromRoute] Guid organizerId)
 	{
-		var personsDto = _dbContext
-			.Persons
+		var personsDto = _dbContext.Persons
 			.Where(x=>x.OrganizerId==organizerId)
 			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
 			.ToList();
@@ -48,27 +47,29 @@ public class PersonController : ControllerBase
 		return Ok(personsDto);
 	}
 
-	[HttpPut("{id}")]
-	public ActionResult EditPerson([FromRoute] Guid id, [FromBody] GetName get)
+	[HttpPut("{personId}/EditName")]
+	public ActionResult EditPersonName([FromRoute] Guid personId, [FromBody] GetName get)
 	{
 		var person = _dbContext
 			.Persons
-			.Single(x => x.Id == id);
+			.Single(x => x.Id == personId);
 
 		person.Name = get.Name;
 		_dbContext.Update(person);
 		_dbContext.SaveChanges();
 
-		return Ok();
+		return Ok(person);
 	}
 
-	//TODO: what should happen with active/no active allocations, when person is removed?
-	[HttpDelete("{id}")]
-	public ActionResult DeletePerson([FromRoute] Guid id)
+	//TODO: change to two possibilities:
+	//1		delete person if don't have allocations with events and drawing results
+	//2		sign as no active if has any allocations
+	[HttpDelete("{personId}")]
+	public ActionResult DeletePerson([FromRoute] Guid personId)
 	{
 		var person = _dbContext
 			.Persons
-			.Single(x => x.Id == id);
+			.Single(x => x.Id == personId);
 
 		_dbContext.Remove(person);
 		_dbContext.SaveChanges();
