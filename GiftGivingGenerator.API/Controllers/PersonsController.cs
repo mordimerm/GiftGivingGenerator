@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using GiftGivingGenerator.API.DataTransferObject.Person;
@@ -37,10 +36,11 @@ public class PersonsController : ControllerBase
 	}
 
 	[HttpGet ("/{organizerId}/[controller]")]
-	public ActionResult<List<PersonDto>> GetAllPersons([FromRoute] Guid organizerId)
+	public ActionResult<List<PersonDto>> GetActivePersons([FromRoute] Guid organizerId)
 	{
 		var personsDto = _dbContext.Persons
 			.Where(x=>x.OrganizerId==organizerId)
+			.Where(x=>x.IsActive)
 			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
 			.ToList();
 
@@ -61,17 +61,16 @@ public class PersonsController : ControllerBase
 		return Ok(person);
 	}
 
-	//TODO: change to two possibilities:
-	//1		delete person if don't have allocations with events and drawing results
-	//2		sign as no active if has any allocations
 	[HttpDelete("{personId}")]
-	public ActionResult DeletePerson([FromRoute] Guid personId)
+	public ActionResult SignPersonNoActive([FromRoute] Guid personId)
 	{
 		var person = _dbContext
 			.Persons
 			.Single(x => x.Id == personId);
+		
+		person.IsActive = false;
 
-		_dbContext.Remove(person);
+		_dbContext.Update(person);
 		_dbContext.SaveChanges();
 
 		return NoContent();

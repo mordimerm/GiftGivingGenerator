@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
+
 
 namespace GiftGivingGenerator.API.Controllers;
 
@@ -116,8 +115,10 @@ public class EventsController : ControllerBase
 	//it works wrong?!
 	//
 	// [HttpPut ("{eventId}/Attendees")]
-	// public ActionResult AssignPersonsToEvent([FromRoute] Guid eventId, [FromBody] GetIds get)
+	// public ActionResult AssignPersonsToEvent([FromRoute] Guid eventId, [FromBody] ListOfPersonsDto give, [FromBody] GetIds get)
 	// {
+	// 	
+	// 	
 	// 	var @event = _dbContext.Events
 	// 		.Include(x=>x.Persons)
 	// 		.Single(x => x.Id == eventId);
