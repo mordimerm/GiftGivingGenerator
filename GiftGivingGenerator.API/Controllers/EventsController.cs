@@ -43,7 +43,7 @@ public class EventsController : ControllerBase
 		_dbContext.Add(@event);
 		_dbContext.SaveChanges();
 
-		return CreatedAtAction(nameof(GetOneEvent), new {id = @event.Id}, @event);
+		return CreatedAtAction(nameof(GetOneEventWithPersons), new {id = @event.Id}, @event);
 	}
 
 	[HttpGet ("/{organizerId}/[controller]")]
@@ -59,7 +59,7 @@ public class EventsController : ControllerBase
 	}
 	
 	[HttpGet("{eventId}")]
-	public ActionResult GetOneEvent([FromRoute] Guid eventId)
+	public ActionResult GetOneEventWithPersons([FromRoute] Guid eventId)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -112,34 +112,26 @@ public class EventsController : ControllerBase
 		return Ok(@event);
 	}
 	
-	//it works wrong?!
-	//
-	// [HttpPut ("{eventId}/Attendees")]
-	// public ActionResult AssignPersonsToEvent([FromRoute] Guid eventId, [FromBody] ListOfPersonsDto give, [FromBody] GetIds get)
-	// {
-	// 	
-	// 	
-	// 	var @event = _dbContext.Events
-	// 		.Include(x=>x.Persons)
-	// 		.Single(x => x.Id == eventId);
-	//
-	// 	@event.Persons.Clear();
-	// 	
-	// 	//Maciek: can I do it by inserting personId without searching object person
-	// 	foreach (var personId in get.Ids)
-	// 	{
-	// 		var person = _dbContext.Persons
-	// 			.Single(x => x.Id == personId);
-	// 		
-	// 		@event.Persons.Add(person);
-	// 	}
-	//
-	// 	_dbContext.Update(@event);
-	// 	_dbContext.SaveChanges();
-	//
-	// 	return Ok();
-	// }
-	//
+	[HttpPut ("{eventId}/Attendees")]
+	public ActionResult AssignPersonsToEvent([FromRoute] Guid eventId, [FromBody] GetIds get)
+	{
+		var @event = _dbContext.Events
+			.Include(x=>x.Persons)
+			.Single(x => x.Id == eventId);
+		
+		@event.Persons.Clear();
+		
+		var persons = _dbContext.Persons
+			.Where(x=> get.Ids.Contains(x.Id))
+			.ToList();
+		@event.Persons.AddRange(persons);
+	
+		_dbContext.Update(@event);
+		_dbContext.SaveChanges();
+	
+		return Ok(@event);
+	}
+	
 	// [HttpDelete("{id}")]
 	// public ActionResult DeleteEvent([FromRoute] Guid id)
 	// {
@@ -151,7 +143,7 @@ public class EventsController : ControllerBase
 	//
 	// 	return NoContent();
 	// }
-	//
+	
 	// // ----------------------- GENERATOR ----------------------- //
 	//
 	// [HttpPost ("{eventId}/Generate")]
