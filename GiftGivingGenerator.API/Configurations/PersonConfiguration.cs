@@ -19,5 +19,9 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 			.WithOne()
 			.HasForeignKey(x => x.RecipientPersonId)
 			.OnDelete(DeleteBehavior.Restrict);
+
+		builder
+			.Property(x => x.IsActive)
+			.HasDefaultValue(true);
 	}
 }
