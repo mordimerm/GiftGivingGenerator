@@ -22,8 +22,5 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 					.WithMany()
 					.HasForeignKey("EventId")
 					.OnDelete(DeleteBehavior.Restrict));
-		builder
-			.Property(x => x.IsActive)
-			.HasDefaultValue(true);
 	}
 }
