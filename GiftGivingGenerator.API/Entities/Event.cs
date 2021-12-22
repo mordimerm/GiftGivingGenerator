@@ -12,5 +12,5 @@ public class Event
 	public Guid OrganizerId { get; set; }
 	public Organizer Organizer { get; set; }
 	public List<Person> Persons { get; set; } = new List<Person>();
-	public List<DrawingResult> DrawingResults { get; set; }	
+	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
 }

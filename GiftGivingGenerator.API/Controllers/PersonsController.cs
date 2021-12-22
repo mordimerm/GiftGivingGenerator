@@ -62,7 +62,7 @@ public class PersonsController : ControllerBase
 	}
 
 	[HttpDelete("{personId}")]
-	public ActionResult SignPersonNoActive([FromRoute] Guid personId)
+	public ActionResult SignPersonAsNoActive([FromRoute] Guid personId)
 	{
 		var person = _dbContext
 			.Persons

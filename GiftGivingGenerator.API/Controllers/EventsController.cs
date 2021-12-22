@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Get;
 using GiftGivingGenerator.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -132,82 +134,92 @@ public class EventsController : ControllerBase
 		return Ok(@event);
 	}
 
-	// [HttpDelete("{id}")]
-	// public ActionResult DeleteEvent([FromRoute] Guid id)
-	// {
-	// 	var @event = _dbContext.Events
-	// 		.Single(x => x.Id == id);
-	//
-	// 	_dbContext.Remove(@event);
-	// 	_dbContext.SaveChanges();
-	//
-	// 	return NoContent();
-	// }
+	[HttpDelete("{id}")]
+	public ActionResult SignEventAsNoActive([FromRoute] Guid id)
+	{
+		var @event = _dbContext.Events
+			.Single(x => x.Id == id);
 
-	// // ----------------------- GENERATOR ----------------------- //
-	//
-	// [HttpPost ("{eventId}/Generate")]
-	// public ActionResult Generate([FromRoute] Guid eventId)
-	// {
-	// 	var @event = _dbContext.Events
-	// 		.Include(x=>x.Persons)
-	// 		.Single(x => x.Id == eventId);
-	//
-	// 	var personIds = @event.Persons
-	// 		.Select(x=>x.Id)
-	// 		.ToList();
-	//
-	// 	var permutationA = MoreEnumerable.Shuffle(personIds).ToList();
-	// 	var permutationB = new List<Guid>();
-	//
-	// 	var i = 0;
-	// 	do
+		@event.IsActive = false;
+
+		_dbContext.Update(@event);
+		_dbContext.SaveChanges();
+
+		return NoContent();
+	}
+
+	// ----------------------- GENERATOR ----------------------- //
+
+	[HttpPost("{eventId}/Generate")]
+	public ActionResult GenerateDrawingResults([FromRoute] Guid eventId)
+	{
+		var @event = _dbContext.Events
+			.Include(x => x.Persons)
+			.Include(x=>x.DrawingResults)
+			.Single(x => x.Id == eventId);
+
+		if (@event.DrawingResults.Count != 0)
+		{
+			ModelState.AddModelError(nameof(GenerateDrawingResults), "The draw was genereted. Check it with httpget.");
+			return BadRequest(ModelState);
+		}
+
+		var personsIds = @event.Persons
+			.Select(x => x.Id)
+			.ToList();
+
+		var permutationA = MoreEnumerable.Shuffle(personsIds).ToList();
+		var permutationB = new List<Guid>();
+		
+		var i = 0;
+		do
+		{
+			permutationB = MoreEnumerable.Shuffle(personsIds).ToList();
+			for (i = 0; i < permutationA.Count; i++)
+			{
+				if (permutationA[i] == permutationB[i])
+				{
+					break;
+				}
+			}
+		}
+		while (personsIds.Count != i);
+
+		for (int j = 0; j < personsIds.Count; j++)
+		{
+			var drawingResult = new DrawingResult
+			{
+				EventId = eventId,
+				GiverPersonId = permutationA[j],
+				RecipientPersonId = permutationB[j],
+			};
+			
+			_dbContext.DrawingResults.Add(drawingResult);
+		}
+		
+		_dbContext.SaveChanges();
+
+		return Ok();
+	}
+	
+	// [HttpGet("{eventId}/Generate")]
+	// 	public ActionResult GetAllGenerate([FromRoute] Guid eventId)
 	// 	{
-	// 		permutationB = MoreEnumerable.Shuffle(personIds).ToList();
-	// 		for (i = 0; i < permutationA.Count; i++)
-	// 		{
-	// 			Console.WriteLine($"{permutationA[i]} {permutationB[i]}");
-	// 			if (permutationA[i] == permutationB[i])
-	// 			{
-	// 				break;
-	// 			}
-	// 		}
+	// 		var @event = _dbContext.Events
+	// 			.Include(x => x.Persons)
+	// 			.Single(x => x.Id == eventId);
+	//
+	// 		var personsIds = @event.Persons
+	// 			.Select(x => x.Id)
+	// 			.ToList();
+	//
+	// 		//result = _dbContext.DrawingResults.Where(x => x.EventId == eventId).Include(x => x.Giver)
+	// 		_dbContext.SaveChanges();
+	//
+	// 		return Ok(result);
 	// 	}
-	// 	while (permutationA.Count != i);
-	//
-	// 	i = 0;
-	// 	var results = new List<DrawingResultDto>();
-	// 	foreach (var giverId in permutationA)
-	// 	{
-	// 		var drawingResult = new DrawingResult()
-	// 		{
-	// 			EventId = eventId,
-	// 			GiverPersonId = giverId,
-	// 			RecipientPersonId = permutationB[i],
-	// 		};
-	// 		_dbContext.DrawingResults.Add(drawingResult);
-	//
-	// 		var result = new DrawingResultDto()
-	// 		{
-	// 			GiverPersonId = giverId,
-	// 			GiverPersonName = _dbContext
-	// 				.Persons
-	// 				.Single(x=>x.Id== giverId)
-	// 				.Name,
-	// 			RecipientPersonId = permutationB[i],
-	// 			RecipientPersonName = _dbContext
-	// 				.Persons
-	// 				.Single(x=>x.Id== permutationB[i])
-	// 				.Name,
-	// 		};
-	// 		results.Add(result);
-	// 		
-	// 		i++;
-	// 	}
-	// 	_dbContext.SaveChanges();
-	//
-	// 	return Ok(results);
-	// }
+	
+
 	//
 	// [HttpGet ("{eventId}/Generate/{personId}")]
 	// public ActionResult Generate([FromRoute] Guid eventId, [FromRoute] Guid personId)
