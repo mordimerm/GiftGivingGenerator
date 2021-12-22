@@ -2,8 +2,7 @@
 
 public class DrawingResultDto
 {
-	public Guid GiverPersonId { get; set; }
-	public Guid RecipientPersonId { get; set; }
-	public string GiverPersonName { get; set; }
-	public string RecipientPersonName { get; set; }
+	public Guid Id { get; set; }
+	public string GiverName { get; set; }
+	public string RecipientName { get; set; }
 }

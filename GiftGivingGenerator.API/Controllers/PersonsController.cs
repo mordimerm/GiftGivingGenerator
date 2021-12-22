@@ -47,7 +47,7 @@ public class PersonsController : ControllerBase
 		return Ok(personsDto);
 	}
 
-	[HttpPut("{personId}/EditName")]
+	[HttpPut("{personId}/Name")]
 	public ActionResult EditPersonName([FromRoute] Guid personId, [FromBody] GetName get)
 	{
 		var person = _dbContext

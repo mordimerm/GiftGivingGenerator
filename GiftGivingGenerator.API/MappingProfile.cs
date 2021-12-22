@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API;
 
@@ -18,5 +18,8 @@ public class MappingProfile : Profile
 		CreateMap<Organizer, Person>()
 			.ForMember(x => x.Id, x => x.Ignore())
 			.ForMember(x=>x.OrganizerId, y=>y.MapFrom(z=>z.Id));
+		CreateMap<DrawingResult, DrawingResultDto>()
+			.ForMember(x=>x.GiverName, y=>y.MapFrom(z=>z.GiverPerson.Name))
+			.ForMember(x=>x.RecipientName, y=>y.MapFrom(z=>z.RecipientPerson.Name));
 	}
 }

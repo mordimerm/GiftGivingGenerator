@@ -24,8 +24,8 @@ public class OrganizerController : ControllerBase
 		_dbContext.Organizer.Add(organizer);
 		
 		var person = _mapper.Map<Organizer, Person>(organizer);
-
 		_dbContext.Persons.Add(person);
+		
 		_dbContext.SaveChanges();
 
 		return CreatedAtAction(nameof (CreateOrganizer), new {id = organizer.Id}, organizer);

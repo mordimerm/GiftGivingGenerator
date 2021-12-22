@@ -10,13 +10,13 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 	{
 		builder
 			.HasMany<DrawingResult>()
-			.WithOne()
+			.WithOne(x => x.GiverPerson)
 			.HasForeignKey(x => x.GiverPersonId)
 			.OnDelete(DeleteBehavior.Restrict);
-		
+
 		builder
 			.HasMany<DrawingResult>()
-			.WithOne()
+			.WithOne(x=>x.RecipientPerson)
 			.HasForeignKey(x => x.RecipientPersonId)
 			.OnDelete(DeleteBehavior.Restrict);
 	}
