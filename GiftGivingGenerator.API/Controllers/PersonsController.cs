@@ -19,8 +19,8 @@ public class PersonsController : ControllerBase
 		_dbContext = dbContext;
 	}
 
-	[HttpPost ("/{organizerId}/[controller]")]
-	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] GetName get) 
+	[HttpPost("/{organizerId}/[controller]")]
+	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] GetName get)
 		//TODO: probablly we don't want to create 2 persons with the same name
 	{
 		var person = new Person()
@@ -35,12 +35,12 @@ public class PersonsController : ControllerBase
 		return CreatedAtAction(nameof(CreatePerson), new {id = person.Id}, person);
 	}
 
-	[HttpGet ("/{organizerId}/[controller]")]
+	[HttpGet("/{organizerId}/[controller]")]
 	public ActionResult<List<PersonDto>> GetActivePersons([FromRoute] Guid organizerId)
 	{
 		var personsDto = _dbContext.Persons
-			.Where(x=>x.OrganizerId==organizerId)
-			.Where(x=>x.IsActive)
+			.Where(x => x.OrganizerId == organizerId)
+			.Where(x => x.IsActive == true)
 			.ProjectTo<PersonDto>(_mapper.ConfigurationProvider)
 			.ToList();
 
@@ -67,7 +67,7 @@ public class PersonsController : ControllerBase
 		var person = _dbContext
 			.Persons
 			.Single(x => x.Id == personId);
-		
+
 		person.IsActive = false;
 
 		_dbContext.Update(person);

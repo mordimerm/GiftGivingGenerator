@@ -6,6 +6,7 @@ public class Event
 	public string Name { get; set; }
 	public DateTime CreatingDate { get; set; } = DateTime.Now;
 	public DateTime EndDate { get; set; }
+	public bool? IsActive { get; set; }
 
 
 	public Guid OrganizerId { get; set; }

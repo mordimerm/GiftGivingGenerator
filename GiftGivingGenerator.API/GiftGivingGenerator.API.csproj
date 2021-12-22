@@ -26,4 +26,9 @@
       <Folder Include="Migrations" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20211221210746_AddedPropertiesIsActiveToEvent.cs" />
+      <Compile Remove="Migrations\20211221210746_AddedPropertiesIsActiveToEvent.Designer.cs" />
+    </ItemGroup>
+
 </Project>
