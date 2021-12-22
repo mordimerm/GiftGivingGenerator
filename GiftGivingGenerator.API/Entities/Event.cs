@@ -1,6 +1,6 @@
 ﻿namespace GiftGivingGenerator.API.Entities;
 
-public class Event
+public class Event : IEntity
 {
 	public Guid Id { get; set; }
 	public string Name { get; set; }

@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace GiftGivingGenerator.API.Entities;
 
-namespace GiftGivingGenerator.API.Entities;
-
-public class DrawingResult
+public class DrawingResult : IEntity
 {
 	public Guid Id { get; set; }
 	

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
+using GiftGivingGenerator.API.Repositories;
+using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -11,10 +13,12 @@ public class OrganizerController : ControllerBase
 {
 	private readonly IMapper _mapper;
 	private readonly AppContext _dbContext;
-	public OrganizerController(IMapper mapper, AppContext dbContext)
+	private readonly IOrganizerRepository _repository;
+	public OrganizerController(IMapper mapper, AppContext dbContext, IOrganizerRepository repository)
 	{
 		_mapper = mapper;
 		_dbContext = dbContext;
+		_repository = repository;
 	}
 
 	[HttpPost]

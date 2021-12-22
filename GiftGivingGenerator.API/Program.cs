@@ -1,6 +1,8 @@
 using GiftGivingGenerator.API;
+using GiftGivingGenerator.API.Entities;
+using GiftGivingGenerator.API.Repositories;
+using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using AppContext = GiftGivingGenerator.API.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,12 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDbContext<AppContext>(x =>
 	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"))
 );
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
+
+
 var app = builder.Build();
 
 

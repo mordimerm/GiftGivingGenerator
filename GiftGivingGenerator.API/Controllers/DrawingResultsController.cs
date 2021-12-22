@@ -2,6 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.Entities;
+using GiftGivingGenerator.API.Repositories;
+using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
@@ -14,10 +16,12 @@ public class DrawingResultsController : ControllerBase
 {
 	private readonly AppContext _dbContext;
 	private readonly IMapper _mapper;
-	public DrawingResultsController(AppContext dbContext, IMapper mapper)
+	private readonly IDrawingResultRepository _repository;
+	public DrawingResultsController(AppContext dbContext, IMapper mapper, IDrawingResultRepository repository)
 	{
 		_dbContext = dbContext;
 		_mapper = mapper;
+		_repository = repository;
 	}
 	
 	[HttpPost("/{eventId}/[controller]")]
@@ -73,25 +77,14 @@ public class DrawingResultsController : ControllerBase
 	}
 
 	[HttpGet("/{eventId}/[controller]")]
-	public ActionResult GetAllForEvent([FromRoute] Guid eventId)
+	public ActionResult<List<DrawingResultDto>> GetAllForEvent([FromRoute] Guid eventId)
 	{
-		var results = _dbContext.DrawingResults
-			.Where(x => x.EventId == eventId)
-			.ProjectTo<DrawingResultDto>(_mapper.ConfigurationProvider)
-			.ToList();
-
-		return Ok(results);
+		return Ok(_repository.GetDrawingResultsByEventId(eventId));
 	}
 	
 	[HttpGet ("{id}")]
-	public ActionResult Get([FromRoute] Guid id)
+	public ActionResult<DrawingResultDto> Get([FromRoute] Guid id)
 	{
-		var drawingResult = _dbContext
-			.DrawingResults
-			.Single(x => x.Id == id);
-	
-		var drawingResultDto = _mapper.Map<DrawingResult, DrawingResultDto>(drawingResult);
-		
-		return Ok(drawingResultDto);
+		return Ok(_repository.Get<DrawingResultDto>(id));
 	}
 }
