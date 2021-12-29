@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiftGivingGenerator.API.Repositories;
 
@@ -10,8 +13,22 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 	{
 	}
 
-	public List<Event> GetEventsByOrganizerId(Guid organizerId)
+	public List<EventToListDto> GetEventsByOrganizerId(Guid organizerId)
 	{
-		return DbContext.Events.Where(x => x.OrganizerId == organizerId).ToList();
+		var events = DbContext.Events
+			.Where(x => x.OrganizerId == organizerId)
+			.ProjectTo<EventToListDto>(Mapper.ConfigurationProvider)
+			.ToList();
+		
+		return events;
 	}
+
+	public override IQueryable<Event> WriteEntitySet()
+	{
+		return base.WriteEntitySet()
+			.Include(x=>x.Persons);
+	}
+	
+	
+
 }

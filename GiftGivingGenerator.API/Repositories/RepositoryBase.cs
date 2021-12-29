@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiftGivingGenerator.API.Repositories;
 
@@ -15,10 +16,15 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity> where TEnti
 		DbContext = dbContext;
 		Mapper = mapper;
 	}
-	
+
+	public virtual IQueryable<TEntity> WriteEntitySet()
+	{
+		return DbContext.Set<TEntity>();
+	}
+
 	public TEntity Get(Guid id)
 	{
-		return DbContext.Set<TEntity>().Single(x => x.Id == id);
+		return WriteEntitySet().Single(x => x.Id == id);
 	}
 	public TDto Get<TDto>(Guid id)
 	{
@@ -33,5 +39,10 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity> where TEnti
 		DbContext.SaveChanges();
 
 		return entity.Id;
+	}
+	public void Update(TEntity entity)
+	{
+		DbContext.Set<TEntity>().Update(entity);
+		DbContext.SaveChanges();
 	}
 }

@@ -1,8 +1,11 @@
-﻿using GiftGivingGenerator.API.Entities;
+﻿using GiftGivingGenerator.API.DataTransferObject.Event;
+using GiftGivingGenerator.API.Entities;
 
 namespace GiftGivingGenerator.API.Repositories.Abstractions;
 
 public interface IEventRepository : IRepository<Event>
 {
-	List<Event> GetEventsByOrganizerId(Guid organizerId);
+	List<EventToListDto> GetEventsByOrganizerId(Guid organizerId);
+	
+
 }

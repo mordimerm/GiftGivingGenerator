@@ -9,4 +9,6 @@ public interface IRepository<TEntity> where TEntity : IEntity
 	TDto Get<TDto>(Guid id);
 	
 	Guid Insert(TEntity entity);
+
+	void Update(TEntity entity);
 }

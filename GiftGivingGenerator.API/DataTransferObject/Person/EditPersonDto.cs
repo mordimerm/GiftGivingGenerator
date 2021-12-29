@@ -2,7 +2,7 @@
 
 namespace GiftGivingGenerator.API.DataTransferObject.Get;
 
-public class GetName
+public class EditPersonDto
 {
 	[Required(ErrorMessage = "Name is required"),
 	 MinLength(4, ErrorMessage = "Min length is 4 chars."),

@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.Entities;
-using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +13,10 @@ namespace GiftGivingGenerator.API.Controllers;
 public class DrawingResultsController : ControllerBase
 {
 	private readonly AppContext _dbContext;
-	private readonly IMapper _mapper;
 	private readonly IDrawingResultRepository _repository;
-	public DrawingResultsController(AppContext dbContext, IMapper mapper, IDrawingResultRepository repository)
+	public DrawingResultsController(AppContext dbContext, IDrawingResultRepository repository)
 	{
 		_dbContext = dbContext;
-		_mapper = mapper;
 		_repository = repository;
 	}
 	
