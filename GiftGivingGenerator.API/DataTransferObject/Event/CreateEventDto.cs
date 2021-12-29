@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
 
 namespace GiftGivingGenerator.API.DataTransferObject.Event;
 

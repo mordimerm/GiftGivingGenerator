@@ -1,4 +1,6 @@
-﻿namespace GiftGivingGenerator.API.Entities;
+﻿using MoreLinq;
+
+namespace GiftGivingGenerator.API.Entities;
 
 public class Event : IEntity
 {
@@ -62,5 +64,44 @@ public class Event : IEntity
 	public void Deactivate()
 	{
 		IsActive = false;
+	}
+	public void DrawResults()
+	{
+		if (DrawingResults.Count != 0)
+		{
+			throw new Exception("The draw was genereted. Check it with httpget.");
+		}
+		
+		var personsIds = Persons
+			.Select(x => x.Id)
+			.ToList();
+
+		var permutationA = MoreEnumerable.Shuffle(personsIds).ToList();
+		var permutationB = new List<Guid>();
+
+		var i = 0;
+		do
+		{
+			permutationB = MoreEnumerable.Shuffle(personsIds).ToList();
+			for (i = 0; i < permutationA.Count; i++)
+			{
+				if (permutationA[i] == permutationB[i])
+				{
+					break;
+				}
+			}
+		}
+		while (personsIds.Count != i);
+
+		for (int j = 0; j < personsIds.Count; j++)
+		{
+			var drawingResult = new DrawingResult
+			{
+				GiverPersonId = permutationA[j],
+				RecipientPersonId = permutationB[j],
+			};
+			
+			DrawingResults.Add(drawingResult);
+		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.Get;
-using GiftGivingGenerator.API.DataTransferObject.Person;
+﻿using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.AspNetCore.Mvc;

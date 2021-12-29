@@ -1,5 +1,4 @@
 using GiftGivingGenerator.API;
-using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;

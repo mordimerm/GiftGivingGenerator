@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace GiftGivingGenerator.API.Repositories;
 
@@ -26,6 +25,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity> where TEnti
 	{
 		return WriteEntitySet().Single(x => x.Id == id);
 	}
+	
 	public TDto Get<TDto>(Guid id)
 	{
 		return DbContext.Set<TEntity>()
@@ -33,6 +33,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity> where TEnti
 			.ProjectTo<TDto>(Mapper.ConfigurationProvider)
 			.Single();
 	}
+	
 	public Guid Insert(TEntity entity)
 	{
 		DbContext.Set<TEntity>().Add(entity);
@@ -40,6 +41,7 @@ public abstract class RepositoryBase<TEntity> : IRepository<TEntity> where TEnti
 
 		return entity.Id;
 	}
+
 	public void Update(TEntity entity)
 	{
 		DbContext.Set<TEntity>().Update(entity);

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GiftGivingGenerator.API.DataTransferObject.Get;
+namespace GiftGivingGenerator.API.DataTransferObject.Person;
 
 public class CreatePersonDto
 {
