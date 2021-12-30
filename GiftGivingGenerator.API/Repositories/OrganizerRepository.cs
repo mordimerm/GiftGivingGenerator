@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 
@@ -11,13 +9,17 @@ public class OrganizerRepository : RepositoryBase<Organizer>, IOrganizerReposito
 	public OrganizerRepository(AppContext dbContext, IMapper mapper) : base(dbContext, mapper)
 	{
 	}
-	
-	public List<PersonDto> GetOrganizers()
+
+	public Organizer GetByEmail(string email)
 	{
-		var persons = DbContext.Organizer
-			.ProjectTo<PersonDto>(Mapper.ConfigurationProvider)
-			.ToList();
+		var organizer = DbContext.Organizer
+			.SingleOrDefault(x => x.Email == email);
+
+		if (organizer==null)
+		{
+			throw new Exception("Email address is incorrect.");
+		}
 		
-		return persons;
+		return organizer;
 	}
 }

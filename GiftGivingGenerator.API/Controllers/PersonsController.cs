@@ -15,7 +15,7 @@ public class PersonsController : ControllerBase
 		_repository = repository;
 	}
 
-	[HttpPost("/Organizers/{organizerId}/[controller]")]
+	[HttpPost("/Organizers/{organizerId}/Persons")]
 	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] CreatePersonDto get)
 	{
 		var person = Person.Create(get.Name, organizerId);

@@ -5,6 +5,5 @@ namespace GiftGivingGenerator.API.Repositories.Abstractions;
 
 public interface IOrganizerRepository : IRepository<Organizer>
 {
-	List<PersonDto> GetOrganizers();
-
+	public Organizer GetByEmail(string email);
 }

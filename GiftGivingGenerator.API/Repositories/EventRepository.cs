@@ -28,7 +28,4 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 		return base.WriteEntitySet()
 			.Include(x=>x.Persons);
 	}
-	
-	
-
 }

@@ -18,7 +18,7 @@ public class EventsController : ControllerBase
 		_personRepository = personRepository;
 	}
 
-	[HttpPost("/Organizers/{organizerId}/[controller]")]
+	[HttpPost("/Organizers/{organizerId}/Events")]
 	public ActionResult CreateEvent([FromRoute] Guid organizerId, [FromBody] CreateEventDto get)
 	{
 		var @event = Event.Create(organizerId, get.Name, get.EndDate);
@@ -31,7 +31,7 @@ public class EventsController : ControllerBase
 		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
 	}
 
-	[HttpGet("/Organizers/{organizerId}/[controller]")]
+	[HttpGet("/Organizers/{organizerId}/Events")]
 	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId)
 	{
 		var eventsDto = _repository.GetEventsByOrganizerId(organizerId);

@@ -1,6 +1,7 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.Person;
+﻿using GiftGivingGenerator.API.DataTransferObject.Organizer;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
+using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -9,7 +10,6 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class OrganizersController : ControllerBase
 {
-
 	private readonly IOrganizerRepository _repository;
 	private readonly IPersonRepository _repositoryPerson;
 	public OrganizersController(IOrganizerRepository repository, IPersonRepository repositoryPerson)
@@ -19,7 +19,7 @@ public class OrganizersController : ControllerBase
 	}
 
 	[HttpPost]
-	public ActionResult CreateOrganizer([FromBody] OrganizerDto get)
+	public ActionResult CreateOrganizer([FromBody] CreateOrganizerDto get)
 	{
 		var organizer = Organizer.Create(get.Name, get.Email, get.Password);
 		var organizerId = _repository.Insert(organizer);
@@ -30,19 +30,21 @@ public class OrganizersController : ControllerBase
 		return CreatedAtAction(nameof (CreateOrganizer), new {id = organizerId}, null);
 	}
 
-	[HttpGet]
-	public ActionResult GetOrganizers()
+	[HttpPost ("/Authorization")]
+	public ActionResult AuthorizeAndGetId([FromBody] OrganizerAuthorizationDto dto)
 	{
-		var organizersDto = _repository.GetOrganizers();
-
-		return Ok(organizersDto);
+		//Maciek: ask if it is correct?
+		var authorization = new AuthorizationServicee(_repository); 
+		var id = authorization.AuthorizateAndGetId(dto.Email, dto.Password);
+		
+		return Ok(id);
 	}
-
+	
 	[HttpGet("{id}")]
 	public ActionResult Get([FromRoute] Guid id)
 	{
-		var organizer = _repository.Get(id);
-
-		return Ok(organizer);
+		var organizerDto = _repository.Get<OrganizerWithEventsDto>(id);
+		
+		return Ok(organizerDto);
 	}
 }

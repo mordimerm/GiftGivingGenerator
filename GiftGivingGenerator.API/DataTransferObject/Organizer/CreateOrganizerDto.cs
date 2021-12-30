@@ -1,6 +1,6 @@
-﻿namespace GiftGivingGenerator.API.DataTransferObject.Person;
+﻿namespace GiftGivingGenerator.API.DataTransferObject.Organizer;
 
-public class OrganizerDto
+public class CreateOrganizerDto
 {
 	public string Name { get; set; }
 	public string Email { get; set; }
