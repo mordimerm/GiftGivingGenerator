@@ -34,7 +34,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("EventPerson");
+                    b.ToTable("EventPerson", (string)null);
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.DrawingResult", b =>
@@ -60,7 +60,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasIndex("RecipientPersonId");
 
-                    b.ToTable("DrawingResults");
+                    b.ToTable("DrawingResults", (string)null);
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
@@ -89,7 +89,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
@@ -112,7 +112,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizer");
+                    b.ToTable("Organizer", (string)null);
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
@@ -135,7 +135,7 @@ namespace GiftGivingGenerator.API.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
                 });
 
             modelBuilder.Entity("EventPerson", b =>

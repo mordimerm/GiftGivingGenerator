@@ -14,11 +14,6 @@ public class OrganizerRepository : RepositoryBase<Organizer>, IOrganizerReposito
 	{
 		var organizer = DbContext.Organizer
 			.SingleOrDefault(x => x.Email == email);
-
-		if (organizer==null)
-		{
-			throw new Exception("Email address is incorrect.");
-		}
 		
 		return organizer;
 	}

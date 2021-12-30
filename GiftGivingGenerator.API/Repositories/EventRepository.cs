@@ -26,6 +26,7 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 	public override IQueryable<Event> WriteEntitySet()
 	{
 		return base.WriteEntitySet()
-			.Include(x=>x.Persons);
+			.Include(x=>x.Persons)
+			.Include(x=>x.DrawingResults);
 	}
 }

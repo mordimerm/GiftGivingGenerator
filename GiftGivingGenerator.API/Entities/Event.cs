@@ -27,7 +27,7 @@ public class Event : IEntity
 		{
 			throw new ArgumentException("Date must be later then now.");
 		}
-		
+
 		var @event = new Event()
 		{
 			OrganizerId = organizerId,
@@ -53,13 +53,16 @@ public class Event : IEntity
 		{
 			throw new ArgumentException("Date must be later then now.");
 		}
-		
+
 		EndDate = date;
 	}
 	public void AssignAttendees(List<Person> persons)
 	{
 		Persons.Clear();
-		Persons.AddRange(persons);
+		if (persons.Count != 0)
+		{
+			Persons.AddRange(persons);
+		}
 	}
 	public void Deactivate()
 	{
@@ -71,7 +74,7 @@ public class Event : IEntity
 		{
 			throw new Exception("The draw was genereted. Check it with httpget.");
 		}
-		
+
 		var personsIds = Persons
 			.Select(x => x.Id)
 			.ToList();
@@ -100,7 +103,7 @@ public class Event : IEntity
 				GiverPersonId = permutationA[j],
 				RecipientPersonId = permutationB[j],
 			};
-			
+
 			DrawingResults.Add(drawingResult);
 		}
 	}

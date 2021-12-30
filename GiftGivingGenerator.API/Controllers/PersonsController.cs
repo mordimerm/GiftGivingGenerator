@@ -39,7 +39,7 @@ public class PersonsController : ControllerBase
 		person.ChangeName(get.Name);
 
 		_repository.Update(person);
-		return Ok(person);
+		return Ok();
 	}
 
 	[HttpDelete("{id}")]

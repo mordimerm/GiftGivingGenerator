@@ -34,7 +34,7 @@ public class OrganizersController : ControllerBase
 	public ActionResult AuthorizeAndGetId([FromBody] OrganizerAuthorizationDto dto)
 	{
 		//Maciek: ask if it is correct?
-		var authorization = new AuthorizationServicee(_repository); 
+		var authorization = new AuthorizationService(_repository); 
 		var id = authorization.AuthorizateAndGetId(dto.Email, dto.Password);
 		
 		return Ok(id);
