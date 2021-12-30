@@ -72,12 +72,17 @@ public class Event : IEntity
 	{
 		if (DrawingResults.Count != 0)
 		{
-			throw new Exception("The draw was genereted. Check it with httpget.");
+			throw new Exception("The draw was genereted. Can't do it second time.");
 		}
 
 		var personsIds = Persons
 			.Select(x => x.Id)
 			.ToList();
+
+		if (personsIds.Count <2)
+		{
+			throw new Exception("There must be minimum 2 persons to generate drawing results.");
+		}
 
 		var permutationA = MoreEnumerable.Shuffle(personsIds).ToList();
 		var permutationB = new List<Guid>();
