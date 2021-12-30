@@ -58,6 +58,11 @@ public class Event : IEntity
 	}
 	public void AssignAttendees(List<Person> persons)
 	{
+		if (DrawingResults.Count > 0)
+		{
+			throw new Exception("The drawing results was generated, can't change attendees.");
+		}
+		
 		Persons.Clear();
 		if (persons.Count != 0)
 		{
