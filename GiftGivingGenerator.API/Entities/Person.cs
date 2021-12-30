@@ -1,4 +1,6 @@
-﻿namespace GiftGivingGenerator.API.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace GiftGivingGenerator.API.Entities;
 
 public class Person : PersonBase
 {
@@ -6,17 +8,6 @@ public class Person : PersonBase
 	public Organizer Organizer { get; set; }
 	public bool? IsActive { get; private set; } = true;
 
-	public static Person Create(string name, Guid id)
-	{
-		var person = new Person()
-		{
-			Name = name,
-			OrganizerId = id,
-		};
-
-		return person;
-	}
-	
 	public void Deactivate()
 	{
 		IsActive = false;

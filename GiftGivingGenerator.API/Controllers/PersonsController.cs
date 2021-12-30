@@ -10,17 +10,20 @@ namespace GiftGivingGenerator.API.Controllers;
 public class PersonsController : ControllerBase
 {
 	private readonly IPersonRepository _repository;
-	public PersonsController(IPersonRepository repository)
+	private readonly IOrganizerRepository _organizerRepository;
+	public PersonsController(IPersonRepository repository, IOrganizerRepository organizerRepository)
 	{
 		_repository = repository;
+		_organizerRepository = organizerRepository;
 	}
 
 	[HttpPost("/Organizers/{organizerId}/Persons")]
-	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] CreatePersonDto get)
+	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] CreatePersonDto dto)
 	{
-		var person = Person.Create(get.Name, organizerId);
+		var organizer = _organizerRepository.Get(organizerId);
+		Guid personId = organizer.AddPerson(dto.Name);
 		
-		var personId = _repository.Insert(person);
+		_organizerRepository.Update(organizer);
 		return CreatedAtAction(nameof(CreatePerson), new {id = personId}, null);
 	}
 

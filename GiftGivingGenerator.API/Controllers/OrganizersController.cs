@@ -24,9 +24,6 @@ public class OrganizersController : ControllerBase
 		var organizer = Organizer.Create(get.Name, get.Email, get.Password);
 		var organizerId = _repository.Insert(organizer);
 		
-		var person = Person.Create(get.Name, organizerId);
-		_repositoryPerson.Insert(person);
-		
 		return CreatedAtAction(nameof (CreateOrganizer), new {id = organizerId}, null);
 	}
 
