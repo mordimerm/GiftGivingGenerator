@@ -4,9 +4,9 @@ public class Organizer : PersonBase
 {
 	public string Email { get; set; }
 	public string Password { get; set; }
-
+	
 	public List<Person> Persons { get; set; }
-
+	
 	public static Organizer Create(string name, string email, string password)
 	{
 		var organizer = new Organizer()
@@ -18,8 +18,10 @@ public class Organizer : PersonBase
 
 		return organizer;
 	}
-	public Guid AddPerson(string name)
+	public Person AddPerson(string name)
 	{
+		//Maciek: is this all method correct?
+
 		var persons = Persons.SingleOrDefault(x => x.Name == name);
 		
 		if (persons!=null)
@@ -35,6 +37,6 @@ public class Organizer : PersonBase
 		
 		Persons.Add(person);
 
-		return person.Id;
+		return person;
 	}
 }

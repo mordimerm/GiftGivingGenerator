@@ -1,0 +1,132 @@
+2022-01-03 21:43:00.987 +01:00 [INF] Started
+2022-01-03 21:43:17.604 +01:00 [INF] Started
+2022-01-03 22:01:52.383 +01:00 [INF] Started
+2022-01-03 22:06:48.292 +01:00 [INF] Started
+2022-01-03 22:08:36.678 +01:00 [INF] We added monster
+2022-01-03 22:19:47.973 +01:00 [INF] Started
+2022-01-03 22:31:41.364 +01:00 [INF] Started
+2022-01-03 22:34:43.684 +01:00 [INF] Started
+2022-01-03 22:49:14.728 +01:00 [INF] Started
+2022-01-03 22:51:02.982 +01:00 [INF] Started
+2022-01-03 22:52:40.082 +01:00 [INF] Started
+2022-01-03 23:19:40.535 +01:00 [INF] Started
+2022-01-03 23:32:38.579 +01:00 [INF] Started
+2022-01-03 23:32:56.055 +01:00 [INF] We added string11
+2022-01-03 23:34:11.089 +01:00 [INF] Started
+2022-01-03 23:34:29.490 +01:00 [INF] We added string 12 **********
+2022-01-03 23:35:27.580 +01:00 [INF] Started
+2022-01-03 23:46:28.154 +01:00 [INF] Started
+2022-01-03 23:46:28.443 +01:00 [INF] Now listening on: http://localhost:5036
+2022-01-03 23:46:28.457 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-01-03 23:46:28.457 +01:00 [INF] Hosting environment: Development
+2022-01-03 23:46:28.457 +01:00 [INF] Content root path: C:\Users\Adrian\RiderProjects\GiftGivingGenerator\GiftGivingGenerator.API\
+2022-01-03 23:46:28.620 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5036/swagger/index.html - -
+2022-01-03 23:46:28.802 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5036/swagger/index.html - - - 200 - text/html;charset=utf-8 185.5270ms
+2022-01-03 23:46:28.986 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5036/swagger/v1/swagger.json - -
+2022-01-03 23:46:29.185 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5036/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 198.6831ms
+2022-01-03 23:46:41.791 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5036/Organizers/B4683613-5C2D-4C5D-5928-08D9CAB568E0/Persons application/json 25
+2022-01-03 23:46:41.811 +01:00 [WRN] Failed to determine the https port for redirect.
+2022-01-03 23:46:41.818 +01:00 [INF] Executing endpoint 'GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API)'
+2022-01-03 23:46:41.844 +01:00 [INF] Route matched with {action = "CreatePerson", controller = "Persons"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult CreatePerson(System.Guid, GiftGivingGenerator.API.DataTransferObject.Person.CreatePersonDto) on controller GiftGivingGenerator.API.Controllers.PersonsController (GiftGivingGenerator.API).
+2022-01-03 23:46:43.606 +01:00 [INF] Entity Framework Core 6.0.0 initialized 'AppContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.0' with options: None
+2022-01-03 23:46:44.657 +01:00 [INF] Executed DbCommand (55ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Id], [t].[Email], [t].[Name], [t].[Password], [p].[Id], [p].[IsActive], [p].[Name], [p].[OrganizerId]
+FROM (
+    SELECT TOP(2) [o].[Id], [o].[Email], [o].[Name], [o].[Password]
+    FROM [Organizer] AS [o]
+    WHERE [o].[Id] = @__id_0
+) AS [t]
+LEFT JOIN [Persons] AS [p] ON [t].[Id] = [p].[OrganizerId]
+ORDER BY [t].[Id]
+2022-01-03 23:46:44.844 +01:00 [INF] Executed action GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API) in 2991.3454ms
+2022-01-03 23:46:44.844 +01:00 [INF] Executed endpoint 'GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API)'
+2022-01-03 23:46:44.871 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.Exception: There is person with the same name.
+   at GiftGivingGenerator.API.Entities.Organizer.AddPerson(String name) in C:\Users\Adrian\RiderProjects\GiftGivingGenerator\GiftGivingGenerator.API\Entities\Organizer.cs:line 31
+   at GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson(Guid organizerId, CreatePersonDto dto) in C:\Users\Adrian\RiderProjects\GiftGivingGenerator\GiftGivingGenerator.API\Controllers\PersonsController.cs:line 27
+   at lambda_method2(Closure , Object , Object[] )
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2022-01-03 23:46:44.882 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5036/Organizers/B4683613-5C2D-4C5D-5928-08D9CAB568E0/Persons application/json 25 - 500 - text/plain;+charset=utf-8 3091.7915ms
+2022-01-03 23:47:01.854 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5036/Organizers/B4683613-5C2D-4C5D-5928-08D9CAB568E0/Persons application/json 25
+2022-01-03 23:47:01.856 +01:00 [INF] Executing endpoint 'GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API)'
+2022-01-03 23:47:01.857 +01:00 [INF] Route matched with {action = "CreatePerson", controller = "Persons"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult CreatePerson(System.Guid, GiftGivingGenerator.API.DataTransferObject.Person.CreatePersonDto) on controller GiftGivingGenerator.API.Controllers.PersonsController (GiftGivingGenerator.API).
+2022-01-03 23:47:01.925 +01:00 [INF] Entity Framework Core 6.0.0 initialized 'AppContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.0' with options: None
+2022-01-03 23:47:01.937 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Id], [t].[Email], [t].[Name], [t].[Password], [p].[Id], [p].[IsActive], [p].[Name], [p].[OrganizerId]
+FROM (
+    SELECT TOP(2) [o].[Id], [o].[Email], [o].[Name], [o].[Password]
+    FROM [Organizer] AS [o]
+    WHERE [o].[Id] = @__id_0
+) AS [t]
+LEFT JOIN [Persons] AS [p] ON [t].[Id] = [p].[OrganizerId]
+ORDER BY [t].[Id]
+2022-01-03 23:47:01.940 +01:00 [INF] We added string 14 -----
+2022-01-03 23:47:02.128 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [Organizer] SET [Email] = @p0, [Name] = @p1, [Password] = @p2
+WHERE [Id] = @p3;
+SELECT @@ROWCOUNT;
+2022-01-03 23:47:02.142 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (Size = 4000), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Persons] ([Id], [IsActive], [Name], [OrganizerId])
+VALUES (@p0, @p1, @p2, @p3);
+2022-01-03 23:47:02.176 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'null'.
+2022-01-03 23:47:02.209 +01:00 [INF] Executed action GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API) in 352.341ms
+2022-01-03 23:47:02.210 +01:00 [INF] Executed endpoint 'GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API)'
+2022-01-03 23:47:02.210 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5036/Organizers/B4683613-5C2D-4C5D-5928-08D9CAB568E0/Persons application/json 25 - 201 0 - 355.6735ms
+2022-01-03 23:50:04.242 +01:00 [INF] Application is shutting down...
+2022-01-03 23:50:10.569 +01:00 [INF] ***************************************
+2022-01-03 23:50:10.609 +01:00 [INF] *************** Started ***************
+2022-01-03 23:50:10.609 +01:00 [INF] ***************************************
+2022-01-03 23:50:10.839 +01:00 [INF] Now listening on: http://localhost:5036
+2022-01-03 23:50:10.847 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-01-03 23:50:10.848 +01:00 [INF] Hosting environment: Development
+2022-01-03 23:50:10.848 +01:00 [INF] Content root path: C:\Users\Adrian\RiderProjects\GiftGivingGenerator\GiftGivingGenerator.API\
+2022-01-03 23:50:11.050 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5036/swagger/index.html - -
+2022-01-03 23:50:11.234 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5036/swagger/index.html - - - 200 - text/html;charset=utf-8 187.6245ms
+2022-01-03 23:50:11.397 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5036/swagger/v1/swagger.json - -
+2022-01-03 23:50:11.571 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5036/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 174.7752ms
+2022-01-03 23:50:27.256 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5036/Organizers/B4683613-5C2D-4C5D-5928-08D9CAB568E0/Persons application/json 25
+2022-01-03 23:50:27.276 +01:00 [WRN] Failed to determine the https port for redirect.
+2022-01-03 23:50:27.281 +01:00 [INF] Executing endpoint 'GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API)'
+2022-01-03 23:50:27.302 +01:00 [INF] Route matched with {action = "CreatePerson", controller = "Persons"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult CreatePerson(System.Guid, GiftGivingGenerator.API.DataTransferObject.Person.CreatePersonDto) on controller GiftGivingGenerator.API.Controllers.PersonsController (GiftGivingGenerator.API).
+2022-01-03 23:50:28.957 +01:00 [INF] Entity Framework Core 6.0.0 initialized 'AppContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.0' with options: None
+2022-01-03 23:50:29.957 +01:00 [INF] Executed DbCommand (65ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [t].[Id], [t].[Email], [t].[Name], [t].[Password], [p].[Id], [p].[IsActive], [p].[Name], [p].[OrganizerId]
+FROM (
+    SELECT TOP(2) [o].[Id], [o].[Email], [o].[Name], [o].[Password]
+    FROM [Organizer] AS [o]
+    WHERE [o].[Id] = @__id_0
+) AS [t]
+LEFT JOIN [Persons] AS [p] ON [t].[Id] = [p].[OrganizerId]
+ORDER BY [t].[Id]
+2022-01-03 23:50:30.125 +01:00 [INF] We added string 15 -----
+2022-01-03 23:50:30.319 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p3='?' (DbType = Guid), @p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+UPDATE [Organizer] SET [Email] = @p0, [Name] = @p1, [Password] = @p2
+WHERE [Id] = @p3;
+SELECT @@ROWCOUNT;
+2022-01-03 23:50:30.334 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (Size = 4000), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Persons] ([Id], [IsActive], [Name], [OrganizerId])
+VALUES (@p0, @p1, @p2, @p3);
+2022-01-03 23:50:30.367 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'null'.
+2022-01-03 23:50:30.403 +01:00 [INF] Executed action GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API) in 3093.8834ms
+2022-01-03 23:50:30.403 +01:00 [INF] Executed endpoint 'GiftGivingGenerator.API.Controllers.PersonsController.CreatePerson (GiftGivingGenerator.API)'
+2022-01-03 23:50:30.411 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5036/Organizers/B4683613-5C2D-4C5D-5928-08D9CAB568E0/Persons application/json 25 - 201 0 - 3154.7096ms

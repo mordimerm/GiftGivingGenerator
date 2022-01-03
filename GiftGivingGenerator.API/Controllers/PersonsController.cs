@@ -1,5 +1,4 @@
 ﻿using GiftGivingGenerator.API.DataTransferObject.Person;
-using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,20 +10,24 @@ public class PersonsController : ControllerBase
 {
 	private readonly IPersonRepository _repository;
 	private readonly IOrganizerRepository _organizerRepository;
-	public PersonsController(IPersonRepository repository, IOrganizerRepository organizerRepository)
+	private readonly ILogger<PersonsController> _logger;
+
+	public PersonsController(IPersonRepository repository, IOrganizerRepository organizerRepository, ILogger<PersonsController> logger)
 	{
 		_repository = repository;
 		_organizerRepository = organizerRepository;
+		_logger = logger;
 	}
 
 	[HttpPost("/Organizers/{organizerId}/Persons")]
 	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] CreatePersonDto dto)
 	{
 		var organizer = _organizerRepository.Get(organizerId);
-		Guid personId = organizer.AddPerson(dto.Name);
+		var person = organizer.AddPerson(dto.Name);
+		_logger.LogInformation($"Added {person.Name}.");
 		
 		_organizerRepository.Update(organizer);
-		return CreatedAtAction(nameof(CreatePerson), new {id = personId}, null);
+		return CreatedAtAction(nameof(CreatePerson), new {id = person.Id}, null);
 	}
 
 	[HttpGet("/Organizers/{organizerId}/Persons")]

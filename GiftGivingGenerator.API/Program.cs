@@ -2,6 +2,8 @@ using GiftGivingGenerator.API;
 using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
 using AppContext = GiftGivingGenerator.API.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +22,18 @@ builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
+builder.Services.AddLogging(x => x.AddSerilog());
 
+Log.Logger = new LoggerConfiguration()
+	.MinimumLevel.Information()
+	.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+	.MinimumLevel.Override("System", LogEventLevel.Error)
+	.WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+	.CreateLogger();
+
+Log.Information("****************************** Started ******************************");
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
