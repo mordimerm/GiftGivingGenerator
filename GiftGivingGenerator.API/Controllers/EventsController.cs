@@ -19,14 +19,14 @@ public class EventsController : ControllerBase
 	}
 
 	[HttpPost("/Organizers/{organizerId}/Events")]
-	public ActionResult CreateEvent([FromRoute] Guid organizerId, [FromBody] CreateEventDto get)
+	public ActionResult CreateEvent([FromRoute] Guid organizerId, [FromBody] CreateEventDto dto)
 	{
-		var @event = Event.Create(organizerId, get.Name, get.EndDate);
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
-		
+		var @event = Event.Create(organizerId, dto.Name, dto.EndDate);
+
 		var eventId = _repository.Insert(@event);
 		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
 	}

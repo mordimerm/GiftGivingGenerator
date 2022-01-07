@@ -18,11 +18,6 @@ public class Event : IEntity
 
 	public static Event Create(Guid organizerId, string name, DateTime date)
 	{
-		if (string.IsNullOrWhiteSpace(name))
-		{
-			throw new ArgumentException("Name can't be null.");
-		}
-
 		if (date < DateTime.Now)
 		{
 			throw new ArgumentException("Date must be later then now.");

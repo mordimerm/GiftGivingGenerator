@@ -4,8 +4,8 @@ namespace GiftGivingGenerator.API.DataTransferObject.Person;
 
 public class CreatePersonDto
 {
-	[Required(ErrorMessage = "Name is required"),
-	 MinLength(4, ErrorMessage = "Min length is 4 chars."),
-	 MaxLength(30, ErrorMessage = "Max length is 30 chars.")]
+	[Required]
+	[MinLength(4)]
+	[MaxLength(30)]
 	public string Name { get; set; }
 }

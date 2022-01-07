@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GiftGivingGenerator.API.Validations;
 
 namespace GiftGivingGenerator.API.DataTransferObject.Event;
 
 public class CreateEventDto
 {
-	[Required(ErrorMessage = "Name is required"),
-	 MinLength(4, ErrorMessage = "Min length is 4 chars."),
-	 MaxLength(30, ErrorMessage = "Max length is 30 chars.")]
+	[Required]
+	[MinLength(4)]
+	[MaxLength(30)]
 	public string Name { get; set; }
-	
+	[DateValidator]
 	public DateTime EndDate { get; set; }
 }
