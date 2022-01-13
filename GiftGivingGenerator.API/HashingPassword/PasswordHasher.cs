@@ -5,13 +5,11 @@ namespace GiftGivingGenerator.API.HashingPassword;
 
 public sealed class PasswordHasher
 {
-	//private readonly HashingOptions _options;
-	//**public HashingOptions Options { get; set; }
-	
-	public PasswordHasher(/*IOptions<HashingOptions> options*/)
+	private readonly HashingOptions _options;
+
+	public PasswordHasher(IOptions<HashingOptions> options)
 	{
-		//_options = options.Value;
-		//**Options = options.Value;
+		_options = options.Value;
 	}
 	
 	private const int SaltSize = 16;
@@ -19,19 +17,16 @@ public sealed class PasswordHasher
 
 	public string Hash(string password)
 	{
-		var options = new HashingOptions();
 		using (var algorithm = new Rfc2898DeriveBytes(
 			       password,
 			       SaltSize,
-			       options.Iterations,
-			       //_options.Iterations,
+			       _options.Iterations,
 			       HashAlgorithmName.SHA256))
 		{
 			var key = Convert.ToBase64String((algorithm.GetBytes((KeySize))));
 			var salt = Convert.ToBase64String(algorithm.Salt);
-
-			return $"{options.Iterations}.{salt}.{key}";
-			//return $"{_options.Iterations}.{salt}.{key}";
+			
+			return $"{_options.Iterations}.{salt}.{key}";
 		}
 	}
 
@@ -49,9 +44,7 @@ public sealed class PasswordHasher
 		var salt = Convert.FromBase64String(parts[1]);
 		var key = Convert.FromBase64String(parts[2]);
 		
-		var options = new HashingOptions();
-		var needsUpgrade = iterations != options.Iterations;
-		//var needsUpgrade = iterations != _options.Iterations;
+		var needsUpgrade = iterations != _options.Iterations;
 		
 		using (var algorithm = new Rfc2898DeriveBytes(
 			       password,

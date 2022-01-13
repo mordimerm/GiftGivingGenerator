@@ -26,12 +26,12 @@ public class AuthorizationService
 			throw new Exception("Email address is incorrect.");
 		}
 
-		var passwordHasher = new PasswordHasher(/*HashingOptions*/);
-		if (!passwordHasher.Check(organizer.Password, password).Verified)
-		{
-			Status = "Wrong password.";
-			throw new Exception("The password is incorrect.");
-		}
+		// var passwordHasher = new PasswordHasher(/*HashingOptions*/);
+		// if (!passwordHasher.Check(organizer.Password, password).Verified)
+		// {
+		// 	Status = "Wrong password.";
+		// 	throw new Exception("The password is incorrect.");
+		// }
 
 		return organizer.Id;
 	}

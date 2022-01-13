@@ -5,6 +5,11 @@ namespace GiftGivingGenerator.API.Entities;
 
 public class Organizer : PersonBase
 {
+	private static IOptions<HashingOptions> _options;
+	public Organizer(IOptions<HashingOptions> options)
+	{
+		_options = options;
+	}
 	public string Email { get; set; }
 	public string Password { get; set; }
 	
@@ -12,8 +17,8 @@ public class Organizer : PersonBase
 	
 	public static Organizer Create(string name, string email, string password)
 	{
-		var passwordHasher = new PasswordHasher(/*HashingOptions*/);
-		var organizer = new Organizer()
+		var passwordHasher = new PasswordHasher(_options);
+		var organizer = new Organizer(_options)
 		{
 			Name = name,
 			Email = email,
@@ -22,7 +27,6 @@ public class Organizer : PersonBase
 
 		return organizer;
 	}
-	public static IOptions<HashingOptions> HashingOptions { get; }
 
 	public Person AddPerson(string name)
 	{
