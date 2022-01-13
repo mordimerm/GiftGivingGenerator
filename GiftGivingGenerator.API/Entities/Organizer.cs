@@ -1,15 +1,7 @@
-﻿using GiftGivingGenerator.API.HashingPassword;
-using Microsoft.Extensions.Options;
-
-namespace GiftGivingGenerator.API.Entities;
+﻿namespace GiftGivingGenerator.API.Entities;
 
 public class Organizer : PersonBase
 {
-	private static IOptions<HashingOptions> _options;
-	public Organizer(IOptions<HashingOptions> options)
-	{
-		_options = options;
-	}
 	public string Email { get; set; }
 	public string Password { get; set; }
 	
@@ -17,12 +9,11 @@ public class Organizer : PersonBase
 	
 	public static Organizer Create(string name, string email, string password)
 	{
-		var passwordHasher = new PasswordHasher(_options);
-		var organizer = new Organizer(_options)
+		var organizer = new Organizer()
 		{
 			Name = name,
 			Email = email,
-			Password = passwordHasher.Hash(password),
+			Password = password,
 		};
 
 		return organizer;

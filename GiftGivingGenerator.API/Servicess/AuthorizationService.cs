@@ -7,9 +7,11 @@ namespace GiftGivingGenerator.API.Servicess;
 public class AuthorizationService
 {
 	private readonly IOrganizerRepository _repository;
-	public AuthorizationService(IOrganizerRepository repository)
+	private readonly HashingOptions _options;
+	public AuthorizationService(IOrganizerRepository repository, HashingOptions options)
 	{
 		_repository = repository;
+		_options = options;
 	}
 
 	public Guid Id { get; set; }
@@ -26,12 +28,12 @@ public class AuthorizationService
 			throw new Exception("Email address is incorrect.");
 		}
 
-		// var passwordHasher = new PasswordHasher(/*HashingOptions*/);
-		// if (!passwordHasher.Check(organizer.Password, password).Verified)
-		// {
-		// 	Status = "Wrong password.";
-		// 	throw new Exception("The password is incorrect.");
-		// }
+		var passwordHasher = new PasswordHasher(_options);
+		if (!passwordHasher.Check(organizer.Password, password).Verified)
+		{
+			Status = "Wrong password.";
+			throw new Exception("The password is incorrect.");
+		}
 
 		return organizer.Id;
 	}

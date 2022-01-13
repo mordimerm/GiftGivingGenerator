@@ -7,9 +7,9 @@ public sealed class PasswordHasher
 {
 	private readonly HashingOptions _options;
 
-	public PasswordHasher(IOptions<HashingOptions> options)
+	public PasswordHasher(HashingOptions options)
 	{
-		_options = options.Value;
+		_options = options;
 	}
 	
 	private const int SaltSize = 16;

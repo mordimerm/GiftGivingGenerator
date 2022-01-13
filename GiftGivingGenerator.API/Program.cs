@@ -24,8 +24,9 @@ builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddLogging(x => x.AddSerilog());
-builder.Services.Configure<HashingOptions>(
-	builder.Configuration.GetSection( "Position"));
+builder.Services.AddSingleton<HashingOptions>();
+// builder.Services.Configure<HashingOptions>(
+// 	builder.Configuration.GetSection( "HashingOptions"));
 
 Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Information()
