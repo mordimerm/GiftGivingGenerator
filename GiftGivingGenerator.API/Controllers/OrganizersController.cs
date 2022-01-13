@@ -11,11 +11,9 @@ namespace GiftGivingGenerator.API.Controllers;
 public class OrganizersController : ControllerBase
 {
 	private readonly IOrganizerRepository _repository;
-	private readonly IPersonRepository _repositoryPerson;
-	public OrganizersController(IOrganizerRepository repository, IPersonRepository repositoryPerson)
+	public OrganizersController(IOrganizerRepository repository)
 	{
 		_repository = repository;
-		_repositoryPerson = repositoryPerson;
 	}
 
 	[HttpPost]
@@ -30,7 +28,6 @@ public class OrganizersController : ControllerBase
 	[HttpPost ("/Authorization")]
 	public ActionResult AuthorizeAndGetId([FromBody] OrganizerAuthorizationDto dto)
 	{
-		//Maciek: ask if it is correct?
 		var authorization = new AuthorizationService(_repository); 
 		var id = authorization.AuthorizateAndGetId(dto.Email, dto.Password);
 		

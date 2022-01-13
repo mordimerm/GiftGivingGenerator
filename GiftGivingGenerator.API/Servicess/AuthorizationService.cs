@@ -1,4 +1,6 @@
-﻿using GiftGivingGenerator.API.Repositories.Abstractions;
+﻿using GiftGivingGenerator.API.HashingPassword;
+using GiftGivingGenerator.API.Repositories.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace GiftGivingGenerator.API.Servicess;
 
@@ -23,8 +25,9 @@ public class AuthorizationService
 			Status = "Wrong email";
 			throw new Exception("Email address is incorrect.");
 		}
-		
-		if (organizer.Password != password)
+
+		var passwordHasher = new PasswordHasher(/*HashingOptions*/);
+		if (!passwordHasher.Check(organizer.Password, password).Verified)
 		{
 			Status = "Wrong password.";
 			throw new Exception("The password is incorrect.");
@@ -32,4 +35,5 @@ public class AuthorizationService
 
 		return organizer.Id;
 	}
+	public IOptions<HashingOptions> HashingOptions { get; }
 }

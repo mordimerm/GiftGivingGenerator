@@ -1,4 +1,7 @@
-﻿namespace GiftGivingGenerator.API.Entities;
+﻿using GiftGivingGenerator.API.HashingPassword;
+using Microsoft.Extensions.Options;
+
+namespace GiftGivingGenerator.API.Entities;
 
 public class Organizer : PersonBase
 {
@@ -9,19 +12,20 @@ public class Organizer : PersonBase
 	
 	public static Organizer Create(string name, string email, string password)
 	{
+		var passwordHasher = new PasswordHasher(/*HashingOptions*/);
 		var organizer = new Organizer()
 		{
 			Name = name,
 			Email = email,
-			Password = password,
+			Password = passwordHasher.Hash(password),
 		};
 
 		return organizer;
 	}
+	public static IOptions<HashingOptions> HashingOptions { get; }
+
 	public Person AddPerson(string name)
 	{
-		//Maciek: is this all method correct?
-
 		var persons = Persons.SingleOrDefault(x => x.Name == name);
 		
 		if (persons!=null)
