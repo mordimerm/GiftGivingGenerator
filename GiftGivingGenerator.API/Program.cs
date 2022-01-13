@@ -37,6 +37,8 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Information("****************************** Started ******************************");
 
+//test
+
 var app = builder.Build();
 app.UseExceptionHandler("/Error");
 
