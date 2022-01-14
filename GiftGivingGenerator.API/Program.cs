@@ -25,8 +25,6 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddLogging(x => x.AddSerilog());
 builder.Services.AddSingleton<HashingOptions>();
-// builder.Services.Configure<HashingOptions>(
-// 	builder.Configuration.GetSection( "HashingOptions"));
 
 Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Information()
@@ -37,9 +35,14 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Information("****************************** Started ******************************");
 
-//test
+//builder.Services.AddTransient<Seeder>();
+//Seeder.Seed();
 
 var app = builder.Build();
+
+//var ser = app.Services.GetService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetService<Seeder>();
+//ser.Seed();
+
 app.UseExceptionHandler("/Error");
 
 // Configure the HTTP request pipeline.

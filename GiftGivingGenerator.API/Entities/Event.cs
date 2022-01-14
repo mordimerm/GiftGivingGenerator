@@ -5,7 +5,7 @@ namespace GiftGivingGenerator.API.Entities;
 public class Event : IEntity
 {
 	public Guid Id { get; set; }
-	public string Name { get; private set; }
+	public string Name { get; set; }
 	public DateTime CreatingDate { get; set; } = DateTime.Now;
 	public DateTime EndDate { get; set; }
 	public bool? IsActive { get; set; } = true;
