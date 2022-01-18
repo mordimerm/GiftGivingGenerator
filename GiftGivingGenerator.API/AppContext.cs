@@ -8,7 +8,7 @@ public class AppContext : DbContext
 	public AppContext(DbContextOptions options): base(options)
 	{
 	}
-	
+
 	public DbSet<Event> Events { get; set; }
 	public DbSet<Person> Persons { get; set; }
 	public DbSet<Organizer> Organizer { get; set; }

@@ -1,6 +1,4 @@
-﻿using GiftGivingGenerator.API.HashingPassword;
-using GiftGivingGenerator.API.Repositories.Abstractions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace GiftGivingGenerator.API.Controllers;
 
@@ -8,20 +6,21 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class SeederController : ControllerBase
 {
-	private readonly AppContext _dbContext;
-	private readonly HashingOptions _options;
-	private readonly IOrganizerRepository _organizerRepository;
-	public SeederController(AppContext dbContext, HashingOptions options, IOrganizerRepository organizerRepository)
+	private readonly ISeeder _seeder;
+	public SeederController(ISeeder seeder)
 	{
-		_dbContext = dbContext;
-		_options = options;
-		_organizerRepository = organizerRepository;
+		_seeder = seeder;
+	}
+
+	[HttpDelete]
+	public void RemoveAllDataInDb()
+	{
+		_seeder.RemoveAllDataInDb();
 	}
 	
 	[HttpPost]
 	public void Seed()
 	{
-		var seeder = new Seeder(_dbContext, _options, _organizerRepository);
-		seeder.Seed();
+		_seeder.Seed();
 	}
 }

@@ -1,20 +1,40 @@
 ﻿using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.HashingPassword;
-using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiftGivingGenerator.API;
 
-public class Seeder
+public class Seeder : ISeeder
 {
 	private readonly AppContext _dbContext;
 	private readonly HashingOptions _options;
-	private readonly IOrganizerRepository _organizerRepository;
-	public Seeder(AppContext dbContext, HashingOptions options, IOrganizerRepository organizerRepository)
+	public Seeder(AppContext dbContext, HashingOptions options)
 	{
 		_dbContext = dbContext;
 		_options = options;
-		_organizerRepository = organizerRepository;
+	}
+	
+	public void RemoveAllDataInDb()
+	{
+		var events = _dbContext.Events.ToList();
+		foreach (var @event in events)
+		{
+			var persons = _dbContext.Events
+				.Include(x=>x.Persons)
+				.Single(x => x.Id == @event.Id)
+				.Persons
+				.ToList();
+			foreach (var person in persons)
+			{
+				@event.Persons.Remove(person);
+			}
+			@event.Persons.RemoveAll(x=> persons.Contains(x));
+		}
+		
+		_dbContext.Persons.RemoveRange(_dbContext.Persons);
+		_dbContext.DrawingResults.RemoveRange(_dbContext.DrawingResults);
+		_dbContext.Organizer.RemoveRange(_dbContext.Organizer);
+		_dbContext.SaveChanges();
 	}
 
 	public void Seed()
@@ -36,7 +56,7 @@ public class Seeder
 			new Organizer
 			{
 				Name = "Adrian",
-				Email = "aczekaj.mat@gmail.com",
+				Email = "aczekaj.mat+test1@gmail.com",
 				Password = new PasswordHasher(_options).Hash("adrian"),
 				Events = new List<Event>()
 				{
@@ -48,7 +68,7 @@ public class Seeder
 					new Event
 					{
 						Name = "Walentynki",
-						EndDate = new DateTime(2022, 02, 14, 00, 00, 00),
+						EndDate = new DateTime(2021, 02, 14, 00, 00, 00),
 					},
 					new Event
 					{
@@ -70,7 +90,7 @@ public class Seeder
 			new Organizer
 			{
 				Name = "Maciek",
-				Email = "maciek@gmail.com",
+				Email = "aczekaj.mat+test2@gmail.com",
 				Password = new PasswordHasher(_options).Hash("maciek"),
 				Events = new List<Event>()
 				{
@@ -105,14 +125,14 @@ public class Seeder
 			new Organizer
 			{
 				Name = "Monika",
-				Email = "monika@gmail.com",
+				Email = "aczekaj.mat+test3@gmail.com",
 				Password = new PasswordHasher(_options).Hash("monika"),
 			},
 
 			new Organizer
 			{
 				Name = "Gargamel",
-				Email = "gargamel@gmail.com",
+				Email = "aczekaj.mat+test4@gmail.com",
 				Password = new PasswordHasher(_options).Hash("gargamel"),
 			}
 		};
@@ -128,7 +148,7 @@ public class Seeder
 		organizer = _dbContext.Organizer
 			.Include(x => x.Events)
 			.Include(x => x.Persons)
-			.Single(x => x.Email == "maciek@gmail.com");
+			.Single(x => x.Email == "aczekaj.mat+test2@gmail.com");
 		@event = organizer.Events.Single(x => x.Name == "Boże Narodzenie");
 
 		var persons = new List<Person>()
@@ -153,7 +173,7 @@ public class Seeder
 		organizer = _dbContext.Organizer
 			.Include(x => x.Events)
 			.Include(x => x.Persons)
-			.Single(x => x.Email == "aczekaj.mat@gmail.com");
+			.Single(x => x.Email == "aczekaj.mat+test1@gmail.com");
 		@event = organizer.Events.Single(x => x.Name == "Walentynki");
 
 		persons = new List<Person>()

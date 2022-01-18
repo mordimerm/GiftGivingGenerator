@@ -35,7 +35,14 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Information("****************************** Started ******************************");
 
-//builder.Services.AddTransient<Seeder>();
+builder.Services.AddScoped<ISeeder, Seeder>();
+
+// AppContext dbContext = new AppContext();
+// HashingOptions hashingOptions = new HashingOptions();
+// var seeder = new Seeder(dbContext, hashingOptions);
+// seeder.Seed();
+
+//builder.Services.AddTransient<Seeder>(sp => new Seeder());
 //Seeder.Seed();
 
 var app = builder.Build();
