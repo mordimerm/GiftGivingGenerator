@@ -22,5 +22,7 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 					.WithMany()
 					.HasForeignKey("EventId")
 					.OnDelete(DeleteBehavior.Restrict));
+		// builder.Property(x => x.IsActive)
+		// 	.HasComputedColumnSql($"SELECT {nameof(Event.EndDate)}, CASE WHEN {nameof(Event.EndDate)} < GetUtcDate() THEN 'false'");
 	}
 }
