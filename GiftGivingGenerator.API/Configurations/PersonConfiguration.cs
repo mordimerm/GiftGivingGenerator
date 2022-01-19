@@ -19,5 +19,10 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 			.WithOne(x=>x.RecipientPerson)
 			.HasForeignKey(x => x.RecipientPersonId)
 			.OnDelete(DeleteBehavior.Restrict);
+		
+		builder
+			.HasMany<GiftWish>()
+			.WithOne(x => x.Person)
+			.OnDelete(DeleteBehavior.Restrict);
 	}
 }

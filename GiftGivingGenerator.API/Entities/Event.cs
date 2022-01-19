@@ -9,18 +9,19 @@ public class Event : IEntity
 	public DateTime CreatingDate { get; set; } = DateTime.Now;
 	public DateTime EndDate { get; set; }
 	public bool? IsActive { get; set; } = true;
-
-
+	
 	public Guid OrganizerId { get; set; }
 	public Organizer Organizer { get; set; }
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
 
+	public List<GiftWish> GiftWishes { get; set; }
+	
 	public static Event Create(Guid organizerId, string name, DateTime date)
 	{
 		if (date < DateTime.Now)
 		{
-			throw new ArgumentException("Date must be later then now.");
+			throw new ArgumentException("Date must be later than now.");
 		}
 
 		var @event = new Event()

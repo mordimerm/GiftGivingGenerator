@@ -12,4 +12,6 @@ public class Person : PersonBase
 	{
 		IsActive = false;
 	}
+
+	//public List<GiftWish> GiftWishes { get; set; }
 }
