@@ -32,9 +32,9 @@ public class EventsController : ControllerBase
 	}
 
 	[HttpGet("/Organizers/{organizerId}/Events")]
-	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId)
+	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
 	{
-		var eventsDto = _repository.GetEventsByOrganizerId(organizerId);
+		var eventsDto = _repository.GetEventsByOrganizerId(organizerId, isActive, isEndDateExpired);
 		
 		return Ok(eventsDto);
 	}
