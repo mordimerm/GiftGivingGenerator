@@ -17,6 +17,7 @@ public class Event : IEntity
 
 	public List<GiftWish> GiftWishes { get; set; }
 	
+	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
 	public static Event Create(Guid organizerId, string name, DateTime date)
 	{
 		if (date < DateTime.Now)

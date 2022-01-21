@@ -67,7 +67,7 @@ public class EventsController : ControllerBase
 	public ActionResult AssignPersonsToEvent([FromRoute] Guid id, [FromBody] PersonsIds dto)
 	{
 		var @event = _repository.Get(id);
-		var persons = _personRepository.GetAllById(dto.Ids);
+		var persons = _personRepository.GetAllByIds(dto.Ids);
 		@event.AssignAttendees(persons);
 
 		_repository.Update(@event);

@@ -10,4 +10,19 @@ public class GiftWish : IEntity
 
 	public Guid PersonId { get; set; }
 	public Person Person { get; set; }
+	public static GiftWish Create(Guid eventId, Guid personId, string wish)
+	{
+		var giftWish = new GiftWish()
+		{
+			EventId = eventId,
+			PersonId = personId,
+			Wish = wish,
+		};
+		
+		return giftWish;
+	}
+	public void EditWish(string wish)
+	{
+		Wish = wish;
+	}
 }

@@ -13,6 +13,8 @@ public class DrawingResultRepository : RepositoryBase<DrawingResult>, IDrawingRe
 	}
 	public List<DrawingResultDto> GetDrawingResultsByEventId(Guid id)
 	{
+		//TODO: we want give only givers names and links
+		//there should be mapped only drawing result id without any additional data (especialy recipient name)
 		return DbContext.DrawingResults
 			.Where(x => x.EventId == id)
 			.ProjectTo<DrawingResultDto>(Mapper.ConfigurationProvider)

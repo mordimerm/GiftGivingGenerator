@@ -7,6 +7,6 @@ public interface IPersonRepository : IRepository<Person>
 {
 	List<PersonDto> GetPersonsByOrganizer(Guid organizerId);
 
-	List<Person> GetAllById(List<Guid> ids);
-
+	List<Person> GetAllByIds(List<Guid> ids);
+	
 }

@@ -47,6 +47,7 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 	{
 		return base.WriteEntitySet()
 			.Include(x=>x.Persons)
-			.Include(x=>x.DrawingResults);
+			.Include(x=>x.DrawingResults)
+			.Include(x=>x.GiftWishes);
 	}
 }

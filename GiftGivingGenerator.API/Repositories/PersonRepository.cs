@@ -21,7 +21,7 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
 		return persons;
 	}
 
-	public List<Person> GetAllById(List<Guid> ids)
+	public List<Person> GetAllByIds(List<Guid> ids)
 	{
 		return DbContext.Persons
 			.Where(x => ids.Contains(x.Id))
