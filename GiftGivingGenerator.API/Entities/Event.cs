@@ -9,14 +9,14 @@ public class Event : IEntity
 	public DateTime CreatingDate { get; set; } = DateTime.Now;
 	public DateTime EndDate { get; set; }
 	public bool? IsActive { get; set; } = true;
-	
+	public int? Budget { get; set; }
+	public string Message { get; set; }
 	public Guid OrganizerId { get; set; }
 	public Organizer Organizer { get; set; }
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
-
 	public List<GiftWish> GiftWishes { get; set; }
-	
+
 	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
 	public static Event Create(Guid organizerId, string name, DateTime date)
 	{
