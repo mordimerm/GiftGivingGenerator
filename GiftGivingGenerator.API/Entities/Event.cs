@@ -1,4 +1,5 @@
-﻿using MoreLinq;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MoreLinq;
 
 namespace GiftGivingGenerator.API.Entities;
 
@@ -10,7 +11,7 @@ public class Event : IEntity
 	public DateTime EndDate { get; set; }
 	public bool? IsActive { get; set; } = true;
 	public int? Budget { get; set; }
-	public string Message { get; set; }
+	public string? Message { get; set; }
 	public Guid OrganizerId { get; set; }
 	public Organizer Organizer { get; set; }
 	public List<Person> Persons { get; set; } = new List<Person>();
@@ -44,6 +45,17 @@ public class Event : IEntity
 
 		Name = name;
 	}
+	
+	public void ChangeMessage(string? message)
+	{
+		Message = message;
+	}
+	
+	public void ChangeBudget(int? budget)
+	{
+		Budget = budget;
+	}
+	
 	public void ChangeEndDate(DateTime date)
 	{
 		if (date < DateTime.Now)

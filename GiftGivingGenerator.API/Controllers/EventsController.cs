@@ -58,6 +58,8 @@ public class EventsController : ControllerBase
 
 		@event.ChangeName(dto.Name);
 		@event.ChangeEndDate(dto.Date);
+		@event.ChangeMessage(dto.Message);
+		@event.ChangeBudget(dto.Budget);
 
 		_repository.Update(@event);
 		return Ok();
