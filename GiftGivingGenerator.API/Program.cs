@@ -1,8 +1,10 @@
 using GiftGivingGenerator.API;
+using GiftGivingGenerator.API.Configurations;
 using GiftGivingGenerator.API.HashingPassword;
 using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using AppContext = GiftGivingGenerator.API.AppContext;
@@ -24,32 +26,22 @@ builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
+
+builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
+
 builder.Services.AddLogging(x => x.AddSerilog());
 builder.Services.AddSingleton<HashingOptions>();
-
 Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Information()
 	.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
 	.MinimumLevel.Override("System", LogEventLevel.Error)
 	.WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
 	.CreateLogger();
-
 Log.Information("****************************** Started ******************************");
 
 builder.Services.AddScoped<ISeeder, Seeder>();
 
-// AppContext dbContext = new AppContext();
-// HashingOptions hashingOptions = new HashingOptions();
-// var seeder = new Seeder(dbContext, hashingOptions);
-// seeder.Seed();
-
-//builder.Services.AddTransient<Seeder>(sp => new Seeder());
-//Seeder.Seed();
-
 var app = builder.Build();
-
-//var ser = app.Services.GetService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetService<Seeder>();
-//ser.Seed();
 
 app.UseExceptionHandler("/Error");
 
