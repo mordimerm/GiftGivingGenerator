@@ -1,9 +1,7 @@
-﻿using GiftGivingGenerator.API.Configurations;
-using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace GiftGivingGenerator.API.Controllers;
 
@@ -11,14 +9,16 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class DrawingResultsController : ControllerBase
 {
-	private readonly MailConfiguration _options;
+	private readonly IMailService _mail;
 	private readonly IDrawingResultRepository _repository;
 	private readonly IEventRepository _eventRepository;
-	public DrawingResultsController(IOptionsMonitor<MailConfiguration> options, IDrawingResultRepository repository, IEventRepository eventRepository)
+	private readonly IOrganizerRepository _organizerRepository;
+	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository, IOrganizerRepository organizerRepository)
 	{
-		_options = options.CurrentValue;
+		_mail = mail;
 		_repository = repository;
 		_eventRepository = eventRepository;
+		_organizerRepository = organizerRepository;
 	}
 	
 	[HttpPost("/{eventId}/DrawingResults")]
@@ -40,28 +40,19 @@ public class DrawingResultsController : ControllerBase
 	[HttpPost("/{eventId}/DrawingResults/SendMail")]
 	public ActionResult SendEmail([FromRoute] Guid eventId)
 	{
-		var userName = _options.userName;
-		var password = _options.password;
-		var @event = _eventRepository.Get(eventId);
-		var drawingResults = _repository.GetDrawingResultsByEventId(eventId).Select(x=>x.Id);
-		
-		string body="";
-		foreach (var drawingResult in drawingResults)
-		{
-			body += $"http://localhost:5036/DrawingResults/{drawingResult}\n";
-		}
-		
-		new EmailService().Send(
-			userName,
-			password,
-			"aczekaj.mat@gmail.com",
-			$"Links to drawing results: {@event.Name}", 
-			$"{body}");
-
+		//Maciek: it doesn't work - program threw Internal Server Error behind Bad Request
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
+		
+		var @event = _eventRepository.Get(eventId);
+		var organizer = _organizerRepository.Get(@event.OrganizerId);
+		
+		var drawingResultIds = _repository.GetDrawingResultsByEventId(eventId).Select(x=>x.Id);
+		var body = "http://localhost:5036/DrawingResults/" + string.Join("\nhttp://localhost:5036/DrawingResults/", drawingResultIds);
+
+		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
 		
 		return Ok();
 	}

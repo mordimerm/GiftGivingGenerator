@@ -3,6 +3,7 @@ using GiftGivingGenerator.API.Configurations;
 using GiftGivingGenerator.API.HashingPassword;
 using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
+using GiftGivingGenerator.API.Servicess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
+builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
 
