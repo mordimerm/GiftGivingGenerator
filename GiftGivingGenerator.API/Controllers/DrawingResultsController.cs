@@ -2,6 +2,7 @@
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace GiftGivingGenerator.API.Controllers;
 
@@ -25,7 +26,8 @@ public class DrawingResultsController : ControllerBase
 	public ActionResult GenerateDrawingResults([FromRoute] Guid eventId)
 	{
 		var @event = _eventRepository.Get(eventId);
-		@event.DrawResults();
+		var numberOfTries = @event.DrawResultsAndNumberTries();
+		Log.Information($"For event {eventId} I trie {numberOfTries} times to draw result.");
 		
 		_eventRepository.Update(@event);
 		return Ok();
@@ -41,6 +43,7 @@ public class DrawingResultsController : ControllerBase
 	public ActionResult SendEmail([FromRoute] Guid eventId)
 	{
 		//Maciek: it doesn't work - program threw Internal Server Error behind Bad Request
+		//it doesn't work when i change password to wrong one
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);

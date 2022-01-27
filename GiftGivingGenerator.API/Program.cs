@@ -5,7 +5,6 @@ using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using AppContext = GiftGivingGenerator.API.AppContext;

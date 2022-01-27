@@ -1,5 +1,4 @@
 ﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MoreLinq;
 
 namespace GiftGivingGenerator.API.Entities;
@@ -84,7 +83,7 @@ public class Event : IEntity
 	{
 		IsActive = false;
 	}
-	public void DrawResults()
+	public int DrawResultsAndNumberTries()
 	{
 		if (DrawingResults.Count != 0)
 		{
@@ -104,12 +103,18 @@ public class Event : IEntity
 		var permutationB = new List<Guid>();
 
 		var i = 0;
+		var numberOfTries = 0;
 		do
 		{
+			numberOfTries += 1;
 			permutationB = MoreEnumerable.Shuffle(personsIds).ToList();
 			for (i = 0; i < permutationA.Count; i++)
 			{
-				if (permutationA[i] == permutationB[i])
+				var exclusionsAi = Exclusions
+					.Where(x => x.PersonId == permutationA[i])
+					.Select(x=>x.ExcludedId)
+					.ToList();
+				if (permutationA[i] == permutationB[i] || exclusionsAi.Contains(permutationB[i]))
 				{
 					break;
 				}
@@ -127,6 +132,8 @@ public class Event : IEntity
 
 			DrawingResults.Add(drawingResult);
 		}
+
+		return numberOfTries;
 	}
 	public void InsertExclusions(List<ExclusionsDto> dto)
 	{

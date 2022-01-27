@@ -43,26 +43,6 @@ public class EventsController : ControllerBase
 		return Ok();
 	}
 	
-	/*
-	[
-	{
-		"personId": "7B0DC244-791B-455C-0844-08D9DA682F14",
-		"excludedId": [
-		"ADF70164-0785-43D4-0846-08D9DA682F14",
-		"5D307968-46E8-47E5-0849-08D9DA682F14"
-			]
-	},
-
-
-	{
-		"personId": "5D307968-46E8-47E5-0849-08D9DA682F14",
-		"excludedId": [
-		"75641FA5-483C-4CD9-084B-08D9DA682F14",
-		"5D307968-46E8-47E5-0849-08D9DA682F14"
-			]
-	},
-	]
-*/
 	[HttpGet("/Organizers/{organizerId}/Events")]
 	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
 	{
