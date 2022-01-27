@@ -1,4 +1,5 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.Event;
+﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
@@ -25,17 +26,25 @@ public class EventsController : ControllerBase
 		{
 			return BadRequest(ModelState);
 		}
+
 		var @event = Event.Create(organizerId, dto.Name, dto.EndDate);
 
 		var eventId = _repository.Insert(@event);
 		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
 	}
 
+	[HttpPost("{id}/Exclusions")]
+	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] ExclusionsDto get)
+	{
+		
+		return Ok();
+	}
+
 	[HttpGet("/Organizers/{organizerId}/Events")]
 	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
 	{
 		var eventsDto = _repository.GetEventsByOrganizerId(organizerId, isActive, isEndDateExpired);
-		
+
 		return Ok(eventsDto);
 	}
 
@@ -81,8 +90,10 @@ public class EventsController : ControllerBase
 	{
 		var @event = _repository.Get(id);
 		@event.Deactivate();
-		
+
 		_repository.Update(@event);
 		return NoContent();
 	}
+
+
 }

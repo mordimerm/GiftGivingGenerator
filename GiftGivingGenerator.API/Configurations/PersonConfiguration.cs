@@ -24,5 +24,18 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 			.HasMany<GiftWish>()
 			.WithOne(x => x.Person)
 			.OnDelete(DeleteBehavior.Restrict);
+
+		builder
+			.HasMany<Exclusion>()
+			.WithOne(x => x.Person)
+			.HasForeignKey(x=>x.PersonId)
+			.OnDelete(DeleteBehavior.Restrict);
+
+		builder
+			.HasMany<Exclusion>()
+			.WithOne(x => x.Excluded)
+			.HasForeignKey(x => x.ExcludedId)
+			.OnDelete(DeleteBehavior.Restrict);
+
 	}
 }

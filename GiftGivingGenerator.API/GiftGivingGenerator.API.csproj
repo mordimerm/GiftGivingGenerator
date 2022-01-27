@@ -37,6 +37,10 @@
       <Compile Remove="Migrations\20220119210437_CreatedGiftWish.Designer.cs" />
       <Compile Remove="Migrations\20220119221442_RemovedGiftWishConfigurationFromEventConfiguration.Designer.cs" />
       <Compile Remove="Migrations\20220119221442_RemovedGiftWishConfigurationFromEventConfiguration.cs" />
+      <Compile Remove="Migrations\20220127114428_Added2PersonsToExclusion.cs" />
+      <Compile Remove="Migrations\20220127114428_Added2PersonsToExclusion.Designer.cs" />
+      <Compile Remove="Migrations\20220126212913_AddedExclusions.cs" />
+      <Compile Remove="Migrations\20220126212913_AddedExclusions.Designer.cs" />
     </ItemGroup>
 
 </Project>

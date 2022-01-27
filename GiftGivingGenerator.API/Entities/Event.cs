@@ -17,6 +17,7 @@ public class Event : IEntity
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
 	public List<GiftWish> GiftWishes { get; set; }
+	public List<Exclusion> Exclusions { get; set; }
 
 	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
 	public static Event Create(Guid organizerId, string name, DateTime date)
