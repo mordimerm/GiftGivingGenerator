@@ -1,4 +1,6 @@
-﻿namespace GiftGivingGenerator.API.Entities;
+﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+
+namespace GiftGivingGenerator.API.Entities;
 
 public class Exclusion : IEntity
 {
@@ -9,4 +11,5 @@ public class Exclusion : IEntity
 	public Person Person { get; set; }
 	public Guid ExcludedId { get; set; }
 	public Person Excluded { get; set; }
+	
 }

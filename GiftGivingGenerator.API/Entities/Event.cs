@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MoreLinq;
 
 namespace GiftGivingGenerator.API.Entities;
@@ -17,7 +18,7 @@ public class Event : IEntity
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
 	public List<GiftWish> GiftWishes { get; set; }
-	public List<Exclusion> Exclusions { get; set; }
+	public List<Exclusion> Exclusions { get; set; } = new List<Exclusion>();
 
 	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
 	public static Event Create(Guid organizerId, string name, DateTime date)
@@ -125,6 +126,23 @@ public class Event : IEntity
 			};
 
 			DrawingResults.Add(drawingResult);
+		}
+	}
+	public void InsertExclusions(List<ExclusionsDto> dto)
+	{
+		foreach (var personDto in dto)
+		{
+			foreach (Guid excludedId in personDto.ExcludedId)
+			{
+				var exclusion = new Exclusion()
+				{
+					//EventId = Id,
+					PersonId = personDto.PersonId,
+					ExcludedId = excludedId,
+				};
+				
+				Exclusions.Add(exclusion);
+			}
 		}
 	}
 }
