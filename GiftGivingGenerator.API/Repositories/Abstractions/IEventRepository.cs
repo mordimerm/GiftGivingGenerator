@@ -1,5 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
-using GiftGivingGenerator.API.DataTransferObject.Event;
+﻿using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.Entities;
 
 namespace GiftGivingGenerator.API.Repositories.Abstractions;

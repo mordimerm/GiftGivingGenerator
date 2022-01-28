@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
@@ -49,6 +48,8 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 		return base.WriteEntitySet()
 			.Include(x=>x.Persons)
 			.Include(x=>x.DrawingResults)
-			.Include(x=>x.GiftWishes);
+			.Include(x=>x.GiftWishes)
+			.Include(x=>x.Exclusions)
+			.AsSplitQuery();
 	}
 }

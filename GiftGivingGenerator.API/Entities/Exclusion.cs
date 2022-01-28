@@ -1,6 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
-
-namespace GiftGivingGenerator.API.Entities;
+﻿namespace GiftGivingGenerator.API.Entities;
 
 public class Exclusion : IEntity
 {

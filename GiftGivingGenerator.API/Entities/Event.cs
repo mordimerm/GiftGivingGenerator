@@ -143,7 +143,6 @@ public class Event : IEntity
 			{
 				var exclusion = new Exclusion()
 				{
-					//EventId = Id,
 					PersonId = personDto.PersonId,
 					ExcludedId = excludedId,
 				};
