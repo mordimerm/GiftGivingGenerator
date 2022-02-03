@@ -72,7 +72,19 @@ public class Event : IEntity
 		{
 			throw new Exception("The drawing results was generated, can't change attendees.");
 		}
-		
+
+		var exclusions = Exclusions;
+		Exclusions.Clear();
+		foreach (var person in persons)
+		{
+			if (exclusions.Select(x=>x.PersonId).Contains(person.Id))
+			{
+				
+			}
+		}
+
+		var personsToRemove = Persons.Except(persons);
+
 		Persons.Clear();
 		if (persons.Count != 0)
 		{
