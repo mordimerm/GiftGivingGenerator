@@ -1,5 +1,4 @@
 ﻿using GiftGivingGenerator.API.Entities;
-using GiftGivingGenerator.API.HashingPassword;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiftGivingGenerator.API;
@@ -7,11 +6,9 @@ namespace GiftGivingGenerator.API;
 public class Seeder : ISeeder
 {
 	private readonly AppContext _dbContext;
-	private readonly HashingOptions _options;
-	public Seeder(AppContext dbContext, HashingOptions options)
+	public Seeder(AppContext dbContext)
 	{
 		_dbContext = dbContext;
-		_options = options;
 	}
 
 	public void RemoveAllDataInDb()
@@ -95,7 +92,6 @@ public class Seeder : ISeeder
 			{
 				Name = "Adrian",
 				Email = "aczekaj.mat+test1@gmail.com",
-				Password = new PasswordHasher(_options).Hash("adrian"),
 				Events = new List<Event>()
 				{
 					new Event
@@ -130,7 +126,6 @@ public class Seeder : ISeeder
 			{
 				Name = "Maciek",
 				Email = "aczekaj.mat+test2@gmail.com",
-				Password = new PasswordHasher(_options).Hash("maciek"),
 				Events = new List<Event>()
 				{
 					new Event
@@ -166,7 +161,6 @@ public class Seeder : ISeeder
 			{
 				Name = "Monika",
 				Email = "aczekaj.mat+test3@gmail.com",
-				Password = new PasswordHasher(_options).Hash("monika"),
 			},
 
 			//Create organizer Gargamel with 0 events and 0 persons
@@ -174,7 +168,6 @@ public class Seeder : ISeeder
 			{
 				Name = "Gargamel",
 				Email = "aczekaj.mat+test4@gmail.com",
-				Password = new PasswordHasher(_options).Hash("gargamel"),
 			}
 		};
 
