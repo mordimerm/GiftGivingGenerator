@@ -9,5 +9,5 @@ public class Exclusion : IEntity
 	public Person Person { get; set; }
 	public Guid ExcludedId { get; set; }
 	public Person Excluded { get; set; }
-	
+	//
 }
