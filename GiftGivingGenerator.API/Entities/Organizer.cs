@@ -9,6 +9,7 @@ public class Organizer : PersonBase
 	
 	public static Organizer Create(string name, string email, string password)
 	{
+		//sd
 		var organizer = new Organizer()
 		{
 			Name = name,
