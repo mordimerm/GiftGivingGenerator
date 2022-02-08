@@ -13,14 +13,14 @@ public class Seeder : ISeeder
 		_dbContext = dbContext;
 		_options = options;
 	}
-	
+
 	public void RemoveAllDataInDb()
 	{
 		var events = _dbContext.Events.ToList();
 		foreach (var @event in events)
 		{
 			var persons = _dbContext.Events
-				.Include(x=>x.Persons)
+				.Include(x => x.Persons)
 				.Single(x => x.Id == @event.Id)
 				.Persons
 				.ToList();
@@ -28,11 +28,13 @@ public class Seeder : ISeeder
 			{
 				@event.Persons.Remove(person);
 			}
-			@event.Persons.RemoveAll(x=> persons.Contains(x));
+
+			@event.Persons.RemoveAll(x => persons.Contains(x));
 		}
-		
+
 		_dbContext.Persons.RemoveRange(_dbContext.Persons);
 		_dbContext.DrawingResults.RemoveRange(_dbContext.DrawingResults);
+		_dbContext.Events.RemoveRange(_dbContext.Events);
 		_dbContext.Organizer.RemoveRange(_dbContext.Organizer);
 		_dbContext.SaveChanges();
 	}
@@ -45,14 +47,50 @@ public class Seeder : ISeeder
 			_dbContext.SaveChanges();
 		}
 
-		AddAttendeesToEvents();
+		//Asociate attendees to event: Maciek_ - Boże Narodzenie
+		var organizer = _dbContext.Organizer
+			.Include(x => x.Events)
+			.ThenInclude(x => x.Persons)
+			.Include(x => x.Persons)
+			.Single(x => x.Email == "aczekaj.mat+test2@gmail.com");
+		var @event = organizer.Events.Single(x => x.Name == "Boże Narodzenie");
+		if (!@event.Persons.Any())
+		{
+			@event.AssignAttendees(GetPersonToMaciek(organizer));
+			_dbContext.Update(@event);
+			_dbContext.SaveChanges();
+		}
+		
+		//Add exclusions
+		organizer = _dbContext.Organizer
+			.Include(x => x.Events)
+			.ThenInclude(x=>x.Exclusions)
+			.Include(x => x.Persons)
+			.Single(x => x.Email == "aczekaj.mat+test2@gmail.com");
+		@event = organizer.Events.Single(x => x.Name == "Boże Narodzenie");
+		@event.Exclusions.AddRange(GetExclusionToMaciek(organizer));
 		_dbContext.SaveChanges();
+		
+		//Asociate attendees to event: Adrian - Walentynki
+		organizer = _dbContext.Organizer
+			.Include(x => x.Events)
+			.ThenInclude(x=>x.Persons)
+			.Include(x => x.Persons)
+			.Single(x => x.Email == "aczekaj.mat+test1@gmail.com");
+		@event = organizer.Events.Single(x => x.Name == "Walentynki");
+		if (!@event.Persons.Any())
+		{
+			@event.AssignAttendees(GetPersonToAdrian(organizer));
+			_dbContext.Update(@event);
+			_dbContext.SaveChanges();
+		}
 	}
 
 	private List<Organizer> GetOrganizers()
 	{
 		var organizers = new List<Organizer>()
 		{
+			//Create organizer Adrian with 3 events and 6 persons
 			new Organizer
 			{
 				Name = "Adrian",
@@ -87,6 +125,7 @@ public class Seeder : ISeeder
 				}
 			},
 
+			//Create organizer Maciek_ with 2 events and 12 persons
 			new Organizer
 			{
 				Name = "Maciek",
@@ -122,6 +161,7 @@ public class Seeder : ISeeder
 				}
 			},
 
+			//Create organizer Monika with 0 events and 0 persons
 			new Organizer
 			{
 				Name = "Monika",
@@ -129,6 +169,7 @@ public class Seeder : ISeeder
 				Password = new PasswordHasher(_options).Hash("monika"),
 			},
 
+			//Create organizer Gargamel with 0 events and 0 persons
 			new Organizer
 			{
 				Name = "Gargamel",
@@ -140,17 +181,8 @@ public class Seeder : ISeeder
 		return organizers;
 	}
 
-	public void AddAttendeesToEvents()
+	public List<Person> GetPersonToMaciek(Organizer organizer)
 	{
-		var organizer = new Organizer();
-		var @event = new Event();
-		
-		organizer = _dbContext.Organizer
-			.Include(x => x.Events)
-			.Include(x => x.Persons)
-			.Single(x => x.Email == "aczekaj.mat+test2@gmail.com");
-		@event = organizer.Events.Single(x => x.Name == "Boże Narodzenie");
-
 		var persons = new List<Person>()
 		{
 			organizer.Persons.Single(x => x.Name == "Władysław"),
@@ -166,24 +198,77 @@ public class Seeder : ISeeder
 			organizer.Persons.Single(x => x.Name == "Justyna"),
 			organizer.Persons.Single(x => x.Name == "Daria"),
 		};
+		return persons;
+	}
 
-		
-		@event.AssignAttendees(persons);
-		
-		organizer = _dbContext.Organizer
-			.Include(x => x.Events)
-			.Include(x => x.Persons)
-			.Single(x => x.Email == "aczekaj.mat+test1@gmail.com");
-		@event = organizer.Events.Single(x => x.Name == "Walentynki");
-
-		persons = new List<Person>()
+	public List<Person> GetPersonToAdrian(Organizer organizer)
+	{
+		var persons = new List<Person>()
 		{
 			organizer.Persons.Single(x => x.Name == "S_Klaudia"),
 			organizer.Persons.Single(x => x.Name == "S_Zofia"),
 			organizer.Persons.Single(x => x.Name == "S_Ksawery"),
 			organizer.Persons.Single(x => x.Name == "S_Łukasz"),
 		};
-		
-		@event.AssignAttendees(persons);
+
+		return persons;
 	}
+
+	public List<Exclusion> GetExclusionToMaciek(Organizer organizer)
+	{
+		var exclusionsss = new List<Exclusion>()
+		{
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Władysław"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Krystyna"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Władysław"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Krzysztof"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Władysław"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Justyn"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Krzysztof"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Krystyna"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Krystyna"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Krzysztof"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Justyn"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Krystyna"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Justyn"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Krzysztof"),
+			},
+
+			new Exclusion
+			{
+				Person = organizer.Persons.Single(x => x.Name == "Justyn"),
+				Excluded = organizer.Persons.Single(x => x.Name == "Władysław"),
+			},
+		};
+
+		return exclusionsss;
+	}
+
+
 }
