@@ -33,7 +33,7 @@ public class EventsController : ControllerBase
 		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
 	}
 
-	[HttpPost("{id}/Exclusions")]
+	[HttpPut("{id}/Exclusions")]
 	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ExclusionsDto> dto)
 	{
 		 var @event = _repository.Get(id);
