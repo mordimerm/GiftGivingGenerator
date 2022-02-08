@@ -7,5 +7,5 @@ services:
     networks:
       - default
     environment:
-      SA_PASSWORD: "Your_password123"
+      SA_PASSWORD: "pQUCATNWpX6Xsx7dx5PU"
       ACCEPT_EULA: "Y"
