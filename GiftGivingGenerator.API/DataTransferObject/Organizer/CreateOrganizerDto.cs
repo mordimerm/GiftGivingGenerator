@@ -11,9 +11,4 @@ public class CreateOrganizerDto
 	public string Name { get; set; }
 	[EmailAddress]
 	public string Email { get; set; }
-	[Required]
-	[MinLength(4)]
-	[MaxLength(30)]
-	[PasswordPropertyText(true)]
-	public string Password { get; set; }
 }
