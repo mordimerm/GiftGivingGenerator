@@ -9,30 +9,19 @@ namespace GiftGivingGenerator.API.Controllers;
 public class PersonsController : ControllerBase
 {
 	private readonly IPersonRepository _repository;
-	private readonly IOrganizerRepository _organizerRepository;
 
-	public PersonsController(IPersonRepository repository, IOrganizerRepository organizerRepository)
+	public PersonsController(IPersonRepository repository)
 	{
 		_repository = repository;
-		_organizerRepository = organizerRepository;
-	}
-
-	[HttpPost("/Organizers/{organizerId}/Persons")]
-	public ActionResult CreatePerson([FromRoute] Guid organizerId, [FromBody] CreatePersonDto dto)
-	{
-		var organizer = _organizerRepository.Get(organizerId);
-		var person = organizer.AddPerson(dto.Name);
-		
-		_organizerRepository.Update(organizer);
-		return CreatedAtAction(nameof(CreatePerson), new {id = person.Id}, null);
 	}
 
 	[HttpGet("/Organizers/{organizerId}/Persons")]
 	public ActionResult<List<PersonDto>> GetPersonsByOrganizer([FromRoute] Guid organizerId)
 	{
-		var personsDto = _repository.GetPersonsByOrganizer(organizerId);
+		//TODO: write new method to GetPersonsByOrganizer
+		//var personsDto = _repository.GetPersonsByOrganizer(organizerId);
 		
-		return Ok(personsDto);
+		return Ok(/*personsDto*/);
 	}
 
 	[HttpPut("{id}/Name")]
@@ -43,15 +32,5 @@ public class PersonsController : ControllerBase
 
 		_repository.Update(person);
 		return Ok();
-	}
-
-	[HttpDelete("{id}")]
-	public ActionResult DeactivatePerson([FromRoute] Guid id)
-	{
-		var person = _repository.Get(id);
-		person.Deactivate();
-
-		_repository.Update(person);
-		return NoContent();
 	}
 }

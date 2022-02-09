@@ -13,13 +13,11 @@ public class DrawingResultsController : ControllerBase
 	private readonly IMailService _mail;
 	private readonly IDrawingResultRepository _repository;
 	private readonly IEventRepository _eventRepository;
-	private readonly IOrganizerRepository _organizerRepository;
-	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository, IOrganizerRepository organizerRepository)
+	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository)
 	{
 		_mail = mail;
 		_repository = repository;
 		_eventRepository = eventRepository;
-		_organizerRepository = organizerRepository;
 	}
 	
 	[HttpPost("/{eventId}/DrawingResults")]
@@ -42,20 +40,19 @@ public class DrawingResultsController : ControllerBase
 	[HttpPost("/{eventId}/DrawingResults/SendMail")]
 	public ActionResult SendEmail([FromRoute] Guid eventId)
 	{
-		//Maciek: it doesn't work - program threw Internal Server Error behind Bad Request
-		//it doesn't work when i change password to wrong one
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
 		
-		var @event = _eventRepository.Get(eventId);
-		var organizer = _organizerRepository.Get(@event.OrganizerId);
-		
-		var drawingResultIds = _repository.GetDrawingResultsByEventId(eventId).Select(x=>x.Id);
-		var body = "http://localhost:5036/DrawingResults/" + string.Join("\nhttp://localhost:5036/DrawingResults/", drawingResultIds);
-
-		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
+		//TODO: fix - organizer is now person type
+		// var @event = _eventRepository.Get(eventId);
+		// var organizer = _organizerRepository.Get(@event.OrganizerId);
+		//
+		// var drawingResultIds = _repository.GetDrawingResultsByEventId(eventId).Select(x=>x.Id);
+		// var body = "http://localhost:5036/DrawingResults/" + string.Join("\nhttp://localhost:5036/DrawingResults/", drawingResultIds);
+		//
+		// _mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
 		
 		return Ok();
 	}

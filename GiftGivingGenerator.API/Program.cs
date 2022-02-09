@@ -21,7 +21,6 @@ builder.Services.AddDbContext<AppContext>(x =>
 	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"))
 );
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
@@ -37,8 +36,6 @@ Log.Logger = new LoggerConfiguration()
 	.WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
 	.CreateLogger();
 Log.Information("****************************** Started ******************************");
-
-builder.Services.AddScoped<ISeeder, Seeder>();
 
 var app = builder.Build();
 

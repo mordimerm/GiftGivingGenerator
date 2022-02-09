@@ -1,15 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿namespace GiftGivingGenerator.API.Entities;
 
-namespace GiftGivingGenerator.API.Entities;
-
-public class Person : PersonBase
+public class Person : IEntity
 {
-	public Guid OrganizerId { get; set; }
-	public Organizer Organizer { get; set; }
-	public bool? IsActive { get; private set; } = true;
+	public Guid Id { get; set; }
+	public string Name { get; protected internal set; }
+	
+	public List<Event> Events { get; set; } = new List<Event>();
 
-	public void Deactivate()
+	public void ChangeName(string name)
 	{
-		IsActive = false;
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			throw new ArgumentException("Name can't be null.");
+		}
+			
+		Name = name;
 	}
 }
