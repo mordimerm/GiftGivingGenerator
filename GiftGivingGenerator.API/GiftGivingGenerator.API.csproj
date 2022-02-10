@@ -41,6 +41,8 @@
       <Compile Remove="Migrations\20220127114428_Added2PersonsToExclusion.Designer.cs" />
       <Compile Remove="Migrations\20220126212913_AddedExclusions.cs" />
       <Compile Remove="Migrations\20220126212913_AddedExclusions.Designer.cs" />
+      <Compile Remove="Migrations\20220209124003_RemovedMostAssociationsToOrganizerButNotChangedOrganizerToPersonInEvent.cs" />
+      <Compile Remove="Migrations\20220209124003_RemovedMostAssociationsToOrganizerButNotChangedOrganizerToPersonInEvent.Designer.cs" />
     </ItemGroup>
 
 </Project>
