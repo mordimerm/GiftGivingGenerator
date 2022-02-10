@@ -7,6 +7,8 @@ public class Person : IEntity
 
 	public string? Email { get; set; }
 	
+	public List<Event> CreatedEvents { get; set; } = new List<Event>();
+
 	public List<Event> Events { get; set; } = new List<Event>();
 
 	public void ChangeName(string name)

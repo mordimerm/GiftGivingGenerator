@@ -43,6 +43,8 @@
       <Compile Remove="Migrations\20220126212913_AddedExclusions.Designer.cs" />
       <Compile Remove="Migrations\20220209124003_RemovedMostAssociationsToOrganizerButNotChangedOrganizerToPersonInEvent.cs" />
       <Compile Remove="Migrations\20220209124003_RemovedMostAssociationsToOrganizerButNotChangedOrganizerToPersonInEvent.Designer.cs" />
+      <Compile Remove="Migrations\20220210204910_ChangedNameFromOrganizer2ToOrganizer.Designer.cs" />
+      <Compile Remove="Migrations\20220210204910_ChangedNameFromOrganizer2ToOrganizer.cs" />
     </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using GiftGivingGenerator.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiftGivingGenerator.API.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20220210171816_AddedToEventOrganizerOfTypePerson")]
+    partial class AddedToEventOrganizerOfTypePerson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,10 +90,15 @@ namespace GiftGivingGenerator.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Organizer2Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("OrganizerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Organizer2Id");
 
                     b.HasIndex("OrganizerId");
 
@@ -147,6 +154,25 @@ namespace GiftGivingGenerator.API.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("GiftWish");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Organizer");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
@@ -211,13 +237,21 @@ namespace GiftGivingGenerator.API.Migrations
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
                 {
-                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Organizer")
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Organizer2")
                         .WithMany("CreatedEvents")
+                        .HasForeignKey("Organizer2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GiftGivingGenerator.API.Entities.Organizer", "Organizer")
+                        .WithMany("Events")
                         .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Organizer");
+
+                    b.Navigation("Organizer2");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Exclusion", b =>
@@ -273,6 +307,11 @@ namespace GiftGivingGenerator.API.Migrations
                     b.Navigation("Exclusions");
 
                     b.Navigation("GiftWishes");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>

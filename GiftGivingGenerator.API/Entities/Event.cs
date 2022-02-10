@@ -13,13 +13,8 @@ public class Event : IEntity
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
 	
-	//TODO: change organizer type from organizer to person
-	//move 
-	public Guid OrganizerId { get; set; }
-	public Organizer Organizer { get; set; }
-
-	// public Guid OrganizerPersonId  { get; set; }
-	// public Person OrganizerPerson { get; set; }
+	public Guid OrganizerId  { get; set; }
+	public Person Organizer { get; set; }
 
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
