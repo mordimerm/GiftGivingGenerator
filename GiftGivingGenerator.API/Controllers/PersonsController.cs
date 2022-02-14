@@ -15,15 +15,6 @@ public class PersonsController : ControllerBase
 		_repository = repository;
 	}
 
-	[HttpGet("/Organizers/{organizerId}/Persons")]
-	public ActionResult<List<PersonDto>> GetPersonsByOrganizer([FromRoute] Guid organizerId)
-	{
-		//TODO: write new method to GetPersonsByOrganizer
-		//var personsDto = _repository.GetPersonsByOrganizer(organizerId);
-		
-		return Ok(/*personsDto*/);
-	}
-
 	[HttpPut("{id}/Name")]
 	public ActionResult ChangePersonName([FromRoute] Guid id, [FromBody] EditPersonDto get)
 	{

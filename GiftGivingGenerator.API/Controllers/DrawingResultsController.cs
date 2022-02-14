@@ -13,20 +13,22 @@ public class DrawingResultsController : ControllerBase
 	private readonly IMailService _mail;
 	private readonly IDrawingResultRepository _repository;
 	private readonly IEventRepository _eventRepository;
-	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository)
+	private readonly IPersonRepository _personRepository;
+	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository, IPersonRepository personRepository)
 	{
 		_mail = mail;
 		_repository = repository;
 		_eventRepository = eventRepository;
+		_personRepository = personRepository;
 	}
-	
+
 	[HttpPost("/{eventId}/DrawingResults")]
 	public ActionResult GenerateDrawingResults([FromRoute] Guid eventId)
 	{
 		var @event = _eventRepository.Get(eventId);
 		var numberOfTries = @event.DrawResultsAndNumberTries();
 		Log.Information($"For event {eventId} I trie {numberOfTries} times to draw result.");
-		
+
 		_eventRepository.Update(@event);
 		return Ok();
 	}
@@ -44,20 +46,19 @@ public class DrawingResultsController : ControllerBase
 		{
 			return BadRequest(ModelState);
 		}
-		
-		//TODO: fix - organizer is now person type
-		// var @event = _eventRepository.Get(eventId);
-		// var organizer = _organizerRepository.Get(@event.OrganizerId);
-		//
-		// var drawingResultIds = _repository.GetDrawingResultsByEventId(eventId).Select(x=>x.Id);
-		// var body = "http://localhost:5036/DrawingResults/" + string.Join("\nhttp://localhost:5036/DrawingResults/", drawingResultIds);
-		//
-		// _mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
-		
+
+		var @event = _eventRepository.Get(eventId);
+		var organizer = _personRepository.Get(@event.OrganizerId);
+
+		var drawingResultIds = _repository.GetDrawingResultsByEventId(eventId).Select(x => x.Id);
+		var body = "http://localhost:5036/DrawingResults/" + string.Join("\nhttp://localhost:5036/DrawingResults/", drawingResultIds);
+
+		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
+
 		return Ok();
 	}
-	
-	[HttpGet ("{id}")]
+
+	[HttpGet("{id}")]
 	public ActionResult<DrawingResultDto> Get([FromRoute] Guid id)
 	{
 		return Ok(_repository.Get(id));

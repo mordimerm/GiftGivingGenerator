@@ -13,7 +13,7 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 	{
 	}
 
-	public List<EventToListDto> GetEventsByOrganizerId(Guid organizerId, bool? isActive, bool? isEndDateExpired)
+	public List<EventToListDto> GetByOrganizerId(Guid organizerId, bool? isActive, bool? isEndDateExpired)
 	{
 		var events = DbContext.Events
 			.Where(x => x.OrganizerId == organizerId)

@@ -15,8 +15,7 @@ public class MailService : IMailService
 	{
 		MailMessage message = new MailMessage(_options.userName, to, subject, body);
 
-		System.Net.NetworkCredential basicCredential1 = new
-			System.Net.NetworkCredential(_options.userName, "_options.password");
+		System.Net.NetworkCredential basicCredential1 = new System.Net.NetworkCredential(_options.userName, _options.password);
 		SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
 		{
 			EnableSsl = true,
