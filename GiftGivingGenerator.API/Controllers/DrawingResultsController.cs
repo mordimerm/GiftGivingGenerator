@@ -33,9 +33,17 @@ public class DrawingResultsController : ControllerBase
 	}
 
 	[HttpGet("/{eventId}/DrawingResults")]
-	public ActionResult<List<DrawingResultDto>> GetAllForEvent([FromRoute] Guid eventId)
+	public ActionResult<List<DrawingResultsForOrganizerDto>> GetAllForEvent([FromRoute] Guid eventId)
 	{
-		return Ok(_repository.GetDrawingResultsByEventId(eventId));
+		var drawingResults = _repository.GetDrawingResultsByEventId(eventId);
+		if (drawingResults.Count == 0)
+		{
+			return NotFound();
+		}
+		else
+		{
+			return Ok();
+		}
 	}
 
 	[HttpGet("{id}")]
