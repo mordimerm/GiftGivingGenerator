@@ -12,8 +12,10 @@ public class Event : IEntity
 	public bool? IsActive { get; set; } = true;
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
-	public Guid OrganizerId { get; set; }
-	public Organizer Organizer { get; set; }
+	
+	public Guid OrganizerId  { get; set; }
+	public Person Organizer { get; set; }
+
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
 	public List<GiftWish> GiftWishes { get; set; }

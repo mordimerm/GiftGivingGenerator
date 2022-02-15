@@ -8,4 +8,6 @@ public class CreatePersonDto
 	[MinLength(4)]
 	[MaxLength(30)]
 	public string Name { get; set; }
+	[EmailAddress]
+	public string? Email { get; set; }
 }

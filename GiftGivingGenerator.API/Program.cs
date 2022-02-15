@@ -1,6 +1,5 @@
 using GiftGivingGenerator.API;
 using GiftGivingGenerator.API.Configurations;
-using GiftGivingGenerator.API.HashingPassword;
 using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
@@ -22,16 +21,15 @@ builder.Services.AddDbContext<AppContext>(x =>
 	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"))
 );
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
+builder.Services.Configure<AppSettings>(builder.Configuration);
 
 builder.Services.AddLogging(x => x.AddSerilog());
-builder.Services.AddSingleton<HashingOptions>();
 Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Information()
 	.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -39,8 +37,6 @@ Log.Logger = new LoggerConfiguration()
 	.WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
 	.CreateLogger();
 Log.Information("****************************** Started ******************************");
-
-builder.Services.AddScoped<ISeeder, Seeder>();
 
 var app = builder.Build();
 

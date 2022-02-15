@@ -4,6 +4,7 @@ using GiftGivingGenerator.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiftGivingGenerator.API.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20220209100924_RemovedPasswordFromOrganizer")]
+    partial class RemovedPasswordFromOrganizer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,13 +151,14 @@ namespace GiftGivingGenerator.API.Migrations
                     b.ToTable("GiftWish");
                 });
 
-            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -163,6 +166,29 @@ namespace GiftGivingGenerator.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.ToTable("Organizer");
+                });
+
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganizerId");
 
                     b.ToTable("Persons");
                 });
@@ -211,8 +237,8 @@ namespace GiftGivingGenerator.API.Migrations
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
                 {
-                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Organizer")
-                        .WithMany("CreatedEvents")
+                    b.HasOne("GiftGivingGenerator.API.Entities.Organizer", "Organizer")
+                        .WithMany("Events")
                         .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -266,6 +292,17 @@ namespace GiftGivingGenerator.API.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
+                {
+                    b.HasOne("GiftGivingGenerator.API.Entities.Organizer", "Organizer")
+                        .WithMany("Persons")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organizer");
+                });
+
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
                 {
                     b.Navigation("DrawingResults");
@@ -275,9 +312,11 @@ namespace GiftGivingGenerator.API.Migrations
                     b.Navigation("GiftWishes");
                 });
 
-            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
+            modelBuilder.Entity("GiftGivingGenerator.API.Entities.Organizer", b =>
                 {
-                    b.Navigation("CreatedEvents");
+                    b.Navigation("Events");
+
+                    b.Navigation("Persons");
                 });
 #pragma warning restore 612, 618
         }

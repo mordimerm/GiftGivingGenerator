@@ -1,9 +1,12 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.Configurations;
+using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
+using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace GiftGivingGenerator.API.Controllers;
 
@@ -13,10 +16,14 @@ public class EventsController : ControllerBase
 {
 	private readonly IEventRepository _repository;
 	private readonly IPersonRepository _personRepository;
-	public EventsController(IEventRepository repository, IPersonRepository personRepository)
+	private readonly IMailService _mail;
+	private readonly AppSettings _settings;
+	public EventsController(IEventRepository repository, IPersonRepository personRepository, IMailService mail, IOptionsMonitor<AppSettings> settings)
 	{
 		_repository = repository;
 		_personRepository = personRepository;
+		_mail = mail;
+		_settings = settings.CurrentValue;
 	}
 
 	[HttpPost("/Organizers/{organizerId}/Events")]
@@ -46,7 +53,7 @@ public class EventsController : ControllerBase
 	[HttpGet("/Organizers/{organizerId}/Events")]
 	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
 	{
-		var eventsDto = _repository.GetEventsByOrganizerId(organizerId, isActive, isEndDateExpired);
+		var eventsDto = _repository.GetByOrganizerId(organizerId, isActive, isEndDateExpired);
 
 		return Ok(eventsDto);
 	}
@@ -96,5 +103,29 @@ public class EventsController : ControllerBase
 
 		_repository.Update(@event);
 		return NoContent();
+	}
+	
+	[HttpPost("/{id}/SendMail")]
+	public ActionResult SendEmail([FromRoute] Guid id)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var @event = _repository.Get<EventToSendEmailDto>(id);
+		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
+
+		var body = $"Hello {organizer.Name}," +
+		           $"<br>" +
+		           $"<br>you created event {@event.Name}." +
+		           $"<br>Go <a href=\"{_settings.WebApplicationUrl}/Events/{id}\"><b>link</b></a> to view more details." +
+		           $"<br>" +
+		           $"<br>Best wishes" +
+		           $"<br>GiftGivingGenerator";
+
+		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
+
+		return Ok();
 	}
 }

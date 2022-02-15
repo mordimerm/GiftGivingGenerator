@@ -4,6 +4,7 @@ using GiftGivingGenerator.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiftGivingGenerator.API.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20220210211259_RemovedOrganizerIdFromEvent")]
+    partial class RemovedOrganizerIdFromEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,12 +90,12 @@ namespace GiftGivingGenerator.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizerId")
+                    b.Property<Guid>("Organizer2Id")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizerId");
+                    b.HasIndex("Organizer2Id");
 
                     b.ToTable("Events");
                 });
@@ -211,13 +213,13 @@ namespace GiftGivingGenerator.API.Migrations
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>
                 {
-                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Organizer")
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Organizer2")
                         .WithMany("CreatedEvents")
-                        .HasForeignKey("OrganizerId")
+                        .HasForeignKey("Organizer2Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Organizer");
+                    b.Navigation("Organizer2");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Exclusion", b =>
