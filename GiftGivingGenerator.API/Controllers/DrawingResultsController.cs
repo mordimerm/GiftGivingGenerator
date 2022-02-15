@@ -1,9 +1,6 @@
-﻿using GiftGivingGenerator.API.Configurations;
-using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.Repositories.Abstractions;
-using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -39,8 +36,8 @@ public class DrawingResultsController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult<DrawingResultDto> Get([FromRoute] Guid id)
+	public ActionResult<DrawingResultForUserDto> Get([FromRoute] Guid id)
 	{
-		return Ok(_repository.Get(id));
+		return Ok(_repository.Get<DrawingResultForUserDto>(id));
 	}
 }
