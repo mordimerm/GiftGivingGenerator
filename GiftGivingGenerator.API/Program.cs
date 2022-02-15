@@ -27,6 +27,7 @@ builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
+builder.Services.Configure<AppSettings>(builder.Configuration);
 
 builder.Services.AddLogging(x => x.AddSerilog());
 Log.Logger = new LoggerConfiguration()

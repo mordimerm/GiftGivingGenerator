@@ -10,13 +10,22 @@ public class MappingProfile : Profile
 {
 	public MappingProfile()
 	{
+		//Person
 		CreateMap<Person, PersonDto>();
-		CreateMap<Event, OutputEventDto>();
+		CreateMap<Person, OrganizerToSendEmailDto>();
+		
+		//Event
 		CreateMap<CreateEventDto, Event>();
+		
+		CreateMap<Event, OutputEventDto>();
 		CreateMap<Event, EventWithPersonsDto>();
+		CreateMap<Event, EventToListDto>();
+		CreateMap<Event, EventToSendEmailDto>();
+		
+		//DrawingResult
 		CreateMap<DrawingResult, DrawingResultDto>()
 			.ForMember(x=>x.GiverName, y=>y.MapFrom(z=>z.GiverPerson.Name))
 			.ForMember(x=>x.RecipientName, y=>y.MapFrom(z=>z.RecipientPerson.Name));
-		CreateMap<Event, EventToListDto>();
+		
 	}
 }

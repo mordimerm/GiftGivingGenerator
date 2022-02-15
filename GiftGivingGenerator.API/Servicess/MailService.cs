@@ -13,10 +13,13 @@ public class MailService : IMailService
 	}
 	public void Send(string to, string subject, string body)
 	{
-		MailMessage message = new MailMessage(_options.userName, to, subject, body);
+		var message = new MailMessage(_options.userName, to, subject, body)
+		{
+			IsBodyHtml = true,
+		};
 
-		System.Net.NetworkCredential basicCredential1 = new System.Net.NetworkCredential(_options.userName, _options.password);
-		SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
+		var basicCredential1 = new System.Net.NetworkCredential(_options.userName, _options.password);
+		var client = new SmtpClient("smtp.gmail.com", 587)
 		{
 			EnableSsl = true,
 			UseDefaultCredentials = false,

@@ -1,7 +1,10 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.Configurations;
+using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -14,12 +17,15 @@ public class DrawingResultsController : ControllerBase
 	private readonly IDrawingResultRepository _repository;
 	private readonly IEventRepository _eventRepository;
 	private readonly IPersonRepository _personRepository;
-	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository, IPersonRepository personRepository)
+	private readonly AppSettings _settings;
+
+	public DrawingResultsController(IMailService mail, IDrawingResultRepository repository, IEventRepository eventRepository, IPersonRepository personRepository, IOptionsMonitor<AppSettings> settings)
 	{
 		_mail = mail;
 		_repository = repository;
 		_eventRepository = eventRepository;
 		_personRepository = personRepository;
+		_settings = settings.CurrentValue;
 	}
 
 	[HttpPost("/{eventId}/DrawingResults")]
@@ -47,11 +53,16 @@ public class DrawingResultsController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var @event = _eventRepository.Get(eventId);
-		var organizer = _personRepository.Get(@event.OrganizerId);
+		var @event = _eventRepository.Get<EventToSendEmailDto>(eventId);
+		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
-		var drawingResultIds = _repository.GetDrawingResultsByEventId(eventId).Select(x => x.Id);
-		var body = "http://localhost:5036/DrawingResults/" + string.Join("\nhttp://localhost:5036/DrawingResults/", drawingResultIds);
+		var body = $"Hello {organizer.Name}," +
+						$"<br>" +
+						$"<br>you created event {@event.Name}." +
+						$"<br>Go <a href=\"{_settings.WebApplicationUrl}/Events/{eventId}\"><b>link</b></a> to view more details." +
+						$"<br>" +
+						$"<br>Best wishes" +
+						$"<br>GiftGivingGenerator";
 
 		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
 
