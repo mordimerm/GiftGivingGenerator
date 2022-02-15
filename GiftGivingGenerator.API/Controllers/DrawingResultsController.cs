@@ -1,9 +1,6 @@
-﻿using GiftGivingGenerator.API.Configurations;
-using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.Repositories.Abstractions;
-using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace GiftGivingGenerator.API.Controllers;
@@ -36,13 +33,13 @@ public class DrawingResultsController : ControllerBase
 	public ActionResult<List<DrawingResultsForOrganizerDto>> GetAllForEvent([FromRoute] Guid eventId)
 	{
 		var drawingResults = _repository.GetDrawingResultsByEventId(eventId);
-		if (drawingResults.Count == 0)
+		if (!drawingResults.Any())
 		{
 			return NotFound();
 		}
 		else
 		{
-			return Ok();
+			return Ok(drawingResults);
 		}
 	}
 
