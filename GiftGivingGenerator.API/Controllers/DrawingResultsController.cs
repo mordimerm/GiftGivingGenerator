@@ -44,8 +44,8 @@ public class DrawingResultsController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult<DrawingResultDto> Get([FromRoute] Guid id)
+	public ActionResult<DrawingResultForUserDto> Get([FromRoute] Guid id)
 	{
-		return Ok(_repository.Get(id));
+		return Ok(_repository.Get<DrawingResultForUserDto>(id));
 	}
 }
