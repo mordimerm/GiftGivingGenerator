@@ -24,9 +24,11 @@ public class MappingProfile : Profile
 
 		//DrawingResult
 		CreateMap<DrawingResult, DrawingResultDto>()
-			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name))
-			.ForMember(x => x.RecipientName, y => y.MapFrom(z => z.RecipientPerson.Name));
-
+			.ForMember(x=>x.GiverName, y=>y.MapFrom(z=>z.GiverPerson.Name))
+			.ForMember(x=>x.RecipientName, y=>y.MapFrom(z=>z.RecipientPerson.Name));
+		CreateMap<DrawingResult, DrawingResultsForOrganizerDto>()
+			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name));
+		
 		CreateMap<DrawingResult, DrawingResultForUserDto>()
 			.ForMember(x => x.EventName, y => y.MapFrom(z => z.Event.Name))
 			.ForMember(x => x.EndDate, y => y.MapFrom(z => z.Event.EndDate))

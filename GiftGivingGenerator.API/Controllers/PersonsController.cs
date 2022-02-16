@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.Configurations;
+using GiftGivingGenerator.API.Configurations;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
