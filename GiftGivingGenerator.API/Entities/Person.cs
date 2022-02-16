@@ -13,22 +13,17 @@ public class Person : IEntity
 
 	public List<Event> Events { get; set; } = new List<Event>();
 
-	public static List<Person> CreateMany(List<CreatePersonDto> personsDtos)
+	public static Person Create(string name, string email)
 	{
-		var persons = new List<Person>();
-		foreach (var personDto in personsDtos)
+		var person = new Person()
 		{
-			var person = new Person()
-			{
-				Name = personDto.Name,
-				Email = personDto.Email
-			};
-			persons.Add(person);
-		}
+			Name = name,
+			Email = email
+		};
 
-		return persons;
+		return person;
 	}
-
+	
 	public void ChangeName(string name)
 	{
 		if (string.IsNullOrWhiteSpace(name))

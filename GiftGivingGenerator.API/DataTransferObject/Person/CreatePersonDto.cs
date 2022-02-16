@@ -5,7 +5,7 @@ namespace GiftGivingGenerator.API.DataTransferObject.Person;
 public class CreatePersonDto
 {
 	[Required]
-	[MinLength(4)]
+	[MinLength(3)]
 	[MaxLength(30)]
 	public string Name { get; set; }
 	[EmailAddress]

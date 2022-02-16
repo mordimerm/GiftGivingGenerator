@@ -19,14 +19,6 @@ public class PersonsController : ControllerBase
 		_personRepository = personRepository;
 		_settings = settings.CurrentValue;
 	}
-	
-	[HttpPost] 
-	public ActionResult Create([FromBody] List<CreatePersonDto> personsDtos) 
-	{ 
-		var persons = Person.CreateMany(personsDtos); 
-		_personRepository.InsertMany(persons); 
-		return Created($"{_settings.WebApplicationUrl}/Persons/", persons); 
-	} 
 
 	[HttpPut("{id}/Name")]
 	public ActionResult ChangePersonName([FromRoute] Guid id, [FromBody] EditPersonDto get)

@@ -22,7 +22,7 @@ public class Event : IEntity
 	public List<Exclusion> Exclusions { get; set; } = new List<Exclusion>();
 
 	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
-	public static Event Create(Guid organizerId, string name, DateTime date)
+	public static Event Create(Person organizer, string name, DateTime date, int? budget, string? message)
 	{
 		if (date < DateTime.Now)
 		{
@@ -31,9 +31,11 @@ public class Event : IEntity
 
 		var @event = new Event()
 		{
-			OrganizerId = organizerId,
+			Organizer = organizer,
 			Name = name,
 			EndDate = date.Date,
+			Budget = budget,
+			Message = message,
 		};
 
 		return @event;
