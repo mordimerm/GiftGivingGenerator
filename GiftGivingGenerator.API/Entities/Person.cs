@@ -20,4 +20,14 @@ public class Person : IEntity
 			
 		Name = name;
 	}
+	public static Person Create(string name, string? email)
+	{
+		var person = new Person()
+		{
+			Name = name,
+			Email = email,
+		};
+
+		return person;
+	}
 }
