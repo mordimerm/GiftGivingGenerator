@@ -9,11 +9,13 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class PersonsController : ControllerBase
 {
+	private readonly IEventRepository _eventRepository;
 	private readonly IPersonRepository _personRepository;
 	private readonly IDrawingResultRepository _drawingResultRepository;
 
-	public PersonsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository)
+	public PersonsController(IEventRepository eventRepository, IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository)
 	{
+		_eventRepository = eventRepository;
 		_personRepository = personRepository;
 		_drawingResultRepository = drawingResultRepository;
 	}

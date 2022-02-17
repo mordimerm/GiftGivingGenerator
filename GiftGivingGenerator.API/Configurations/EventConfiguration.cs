@@ -16,7 +16,7 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 					.HasOne<Person>()
 					.WithMany()
 					.HasForeignKey("PersonId")
-					.OnDelete(DeleteBehavior.Restrict),
+					.OnDelete(DeleteBehavior.Cascade),
 				x => x
 					.HasOne<Event>()
 					.WithMany()
