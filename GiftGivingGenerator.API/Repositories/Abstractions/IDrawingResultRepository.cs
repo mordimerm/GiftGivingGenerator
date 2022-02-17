@@ -6,4 +6,5 @@ namespace GiftGivingGenerator.API.Repositories.Abstractions;
 public interface IDrawingResultRepository : IRepository<DrawingResult>
 {
 	List<DrawingResultsForOrganizerDto> GetDrawingResultsByEventId(Guid id);
+	DrawingResult? GetByPersonId(Guid id);
 }
