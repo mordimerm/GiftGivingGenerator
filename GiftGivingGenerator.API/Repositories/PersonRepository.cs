@@ -18,7 +18,7 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
 			.Where(x => ids.Contains(x.Id))
 			.ToList();
 	}
-	public void Remove(Person person)
+	public void Delete(Person person)
 	{
 		DbContext.Persons.Remove(person);
 		DbContext.SaveChanges();

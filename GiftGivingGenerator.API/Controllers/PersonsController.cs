@@ -37,7 +37,7 @@ public class PersonsController : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
-	public ActionResult RemovePerson(Guid id)
+	public ActionResult DeletePerson(Guid id)
 	{
 		var drawingResult = _drawingResultRepository.GetByPersonId(id);
 		if (drawingResult != null)
@@ -46,7 +46,7 @@ public class PersonsController : ControllerBase
 		}
 		
 		var person = _personRepository.Get(id);
-		_personRepository.Remove(person);
+		_personRepository.Delete(person);
 
 		return NoContent();
 	}
