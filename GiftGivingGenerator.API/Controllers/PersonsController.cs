@@ -48,7 +48,7 @@ public class PersonsController : ControllerBase
 		}
 		
 		var person = _personRepository.Get(id);
-		_personRepository.Delete(person);
+		_personRepository.Delete(id);
 
 		return NoContent();
 	}

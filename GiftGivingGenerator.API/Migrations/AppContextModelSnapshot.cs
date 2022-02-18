@@ -249,21 +249,17 @@ namespace GiftGivingGenerator.API.Migrations
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.GiftWish", b =>
                 {
-                    b.HasOne("GiftGivingGenerator.API.Entities.Event", "Event")
+                    b.HasOne("GiftGivingGenerator.API.Entities.Event", null)
                         .WithMany("GiftWishes")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("GiftGivingGenerator.API.Entities.Person", "Person")
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", null)
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Event", b =>

@@ -22,7 +22,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 		
 		builder
 			.HasMany<GiftWish>()
-			.WithOne(x => x.Person)
+			.WithOne()
 			.OnDelete(DeleteBehavior.Restrict);
 
 		builder

@@ -26,5 +26,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 		builder.HasOne(x => x.Organizer)
 			.WithMany(x => x.CreatedEvents)
 			.HasForeignKey(x => x.OrganizerId);
+
+		builder.HasMany(x => x.GiftWishes)
+			.WithOne()
+			.OnDelete(DeleteBehavior.NoAction);
 	}
 }
