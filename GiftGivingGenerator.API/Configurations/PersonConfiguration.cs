@@ -23,7 +23,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 		builder
 			.HasMany<GiftWish>()
 			.WithOne()
-			.OnDelete(DeleteBehavior.Restrict);
+			.OnDelete(DeleteBehavior.Cascade);
 
 		builder
 			.HasMany<Exclusion>()
@@ -36,6 +36,5 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 			.WithOne(x => x.Excluded)
 			.HasForeignKey(x => x.ExcludedId)
 			.OnDelete(DeleteBehavior.Restrict);
-
 	}
 }
