@@ -18,4 +18,9 @@ public class DrawingResultRepository : RepositoryBase<DrawingResult>, IDrawingRe
 			.ProjectTo<DrawingResultsForOrganizerDto>(Mapper.ConfigurationProvider)
 			.ToList();
 	}
+	public DrawingResult? GetByPerson(Guid id)
+	{
+		return DbContext.DrawingResults
+			.SingleOrDefault(x => x.GiverPersonId == id);
+	}
 }

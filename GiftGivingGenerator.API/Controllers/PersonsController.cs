@@ -10,10 +10,12 @@ namespace GiftGivingGenerator.API.Controllers;
 public class PersonsController : ControllerBase
 {
 	private readonly IPersonRepository _personRepository;
+	private readonly IDrawingResultRepository _drawingResultRepository;
 
-	public PersonsController(IPersonRepository personRepository)
+	public PersonsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository)
 	{
 		_personRepository = personRepository;
+		_drawingResultRepository = drawingResultRepository;
 	}
 
 	[HttpPost]
@@ -32,5 +34,18 @@ public class PersonsController : ControllerBase
 
 		_personRepository.Update(person);
 		return Ok();
+	}
+
+	[HttpDelete("{id}")]
+	public ActionResult Delete(Guid id)
+	{
+		var drawingResult = _drawingResultRepository.GetByPerson(id);
+		if (drawingResult != null)
+		{
+			return new StatusCodeResult(StatusCodes.Status405MethodNotAllowed);
+		}
+
+		_personRepository.Delete(id);
+		return NoContent();
 	}
 }

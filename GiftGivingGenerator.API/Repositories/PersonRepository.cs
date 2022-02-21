@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 
@@ -17,5 +15,16 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
 		return DbContext.Persons
 			.Where(x => ids.Contains(x.Id))
 			.ToList();
+	}
+	public void Delete(Guid id)
+	{
+		var person = DbContext.Persons
+			.Single(x => x.Id == id);
+		var exclusions = DbContext.Exclusion.
+			Where(x => x.ExcludedId == id || x.PersonId == id);
+		
+		DbContext.Exclusion.RemoveRange(exclusions);
+		DbContext.Persons.Remove(person);
+		DbContext.SaveChanges();
 	}
 }
