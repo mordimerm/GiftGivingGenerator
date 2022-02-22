@@ -7,7 +7,7 @@ namespace GiftGivingGenerator.API.DataTransferObject.Event;
 public class CreateEventWithPersonsDto
 {
 	[Required]
-	[MinLength(3)]
+	[MinLength(2)]
 	[MaxLength(30)]
 	public string OrganizerName { get; set; }
 	[Required]
