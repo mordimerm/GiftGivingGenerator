@@ -15,7 +15,7 @@ public class MappingProfile : Profile
 		CreateMap<Person, OrganizerToSendEmailDto>();
 
 		//Event
-		CreateMap<CreateEventDto, Event>();
+		CreateMap<CreateEventWithPersonsDto, Event>();
 
 		CreateMap<Event, OutputEventDto>();
 		CreateMap<Event, EventWithPersonsDto>();

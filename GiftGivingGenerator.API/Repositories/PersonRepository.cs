@@ -12,6 +12,12 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
 	{
 	}
 	
+	public void InsertMany(List<Person> persons) 
+	{ 
+		DbContext.Persons.AddRange(persons); 
+		DbContext.SaveChanges(); 
+	} 
+	
 	public List<Person> GetAllByIds(List<Guid> ids)
 	{
 		return DbContext.Persons
