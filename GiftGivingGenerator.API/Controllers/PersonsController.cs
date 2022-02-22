@@ -1,5 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.Person;
-using GiftGivingGenerator.API.Entities;
+using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,14 +15,6 @@ public class PersonsController : ControllerBase
 	{
 		_personRepository = personRepository;
 		_drawingResultRepository = drawingResultRepository;
-	}
-
-	[HttpPost]
-	public ActionResult Create([FromBody] CreatePersonDto dto)
-	{
-		var person = Person.Create(dto.Name, dto.Email);
-		_personRepository.Insert(person);
-		return Created($"/Persons/{person.Id}", person);
 	}
 
 	[HttpPut("{id}/Name")]

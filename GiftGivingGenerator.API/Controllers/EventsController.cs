@@ -14,38 +14,45 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class EventsController : ControllerBase
 {
-	private readonly IEventRepository _repository;
+	private readonly IEventRepository _eventRepository;
 	private readonly IPersonRepository _personRepository;
 	private readonly IMailService _mail;
 	private readonly AppSettings _settings;
-	public EventsController(IEventRepository repository, IPersonRepository personRepository, IMailService mail, IOptionsMonitor<AppSettings> settings)
+	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mail, IOptionsMonitor<AppSettings> settings)
 	{
-		_repository = repository;
+		_eventRepository = eventRepository;
 		_personRepository = personRepository;
 		_mail = mail;
 		_settings = settings.CurrentValue;
 	}
 
-	[HttpPost("/Organizers/{organizerId}/Events")]
-	public ActionResult CreateEvent([FromRoute] Guid organizerId, [FromBody] CreateEventDto dto)
+	[HttpPost]
+	public ActionResult CreateEvent([FromBody] CreateEventWithPersonsDto dto)
 	{
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
 
-		var @event = Event.Create(organizerId, dto.Name, dto.EndDate);
+		var organizer = Person.Create(dto.OrganizerName, dto.OrganizerEmail);
+		var @event = Event.Create(organizer, dto.EventName, dto.EndDate, dto.Budget, dto.Message);
+		foreach (var personDto in dto.Persons)
+		{
+			var person = Person.Create(personDto.Name, personDto.Email);
+			@event.Persons.Add(person);
+		}
 
-		var eventId = _repository.Insert(@event);
+		var eventId = _eventRepository.Insert(@event);
+		
 		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
 	}
 
 	[HttpPut("{id}/Exclusions")]
 	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ExclusionsDto> dto)
 	{
-		 var @event = _repository.Get(id);
+		 var @event = _eventRepository.Get(id);
 		 @event.InsertExclusions(dto);
-		_repository.Update(@event);
+		_eventRepository.Update(@event);
 		
 		return Ok();
 	}
@@ -53,7 +60,7 @@ public class EventsController : ControllerBase
 	[HttpGet("/Organizers/{organizerId}/Events")]
 	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
 	{
-		var eventsDto = _repository.GetByOrganizerId(organizerId, isActive, isEndDateExpired);
+		var eventsDto = _eventRepository.GetByOrganizerId(organizerId, isActive, isEndDateExpired);
 
 		return Ok(eventsDto);
 	}
@@ -66,42 +73,42 @@ public class EventsController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var @eventDto = _repository.Get<EventWithPersonsDto>(id);
+		var @eventDto = _eventRepository.Get<EventWithPersonsDto>(id);
 		return Ok(@eventDto);
 	}
 
 	[HttpPut("{id}/Edit")]
 	public ActionResult Edit([FromRoute] Guid id, [FromBody] EditEventDto dto)
 	{
-		var @event = _repository.Get(id);
+		var @event = _eventRepository.Get(id);
 
 		@event.ChangeName(dto.Name);
 		@event.ChangeEndDate(dto.Date);
 		@event.ChangeMessage(dto.Message);
 		@event.ChangeBudget(dto.Budget);
 
-		_repository.Update(@event);
+		_eventRepository.Update(@event);
 		return Ok();
 	}
 
 	[HttpPut("{id}/Attendees")]
 	public ActionResult AssignPersonsToEvent([FromRoute] Guid id, [FromBody] PersonsIds dto)
 	{
-		var @event = _repository.Get(id);
+		var @event = _eventRepository.Get(id);
 		var persons = _personRepository.GetAllByIds(dto.Ids);
 		@event.AssignAttendees(persons);
 
-		_repository.Update(@event);
+		_eventRepository.Update(@event);
 		return Ok();
 	}
 
 	[HttpDelete("{id}")]
 	public ActionResult Deactivate([FromRoute] Guid id)
 	{
-		var @event = _repository.Get(id);
+		var @event = _eventRepository.Get(id);
 		@event.Deactivate();
 
-		_repository.Update(@event);
+		_eventRepository.Update(@event);
 		return NoContent();
 	}
 	
@@ -113,7 +120,7 @@ public class EventsController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var @event = _repository.Get<EventToSendEmailDto>(id);
+		var @event = _eventRepository.Get<EventToSendEmailDto>(id);
 		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
 		var body = $"Hello {organizer.Name}," +
