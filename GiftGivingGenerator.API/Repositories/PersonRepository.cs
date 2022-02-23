@@ -26,10 +26,10 @@ public class PersonRepository : RepositoryBase<Person>, IPersonRepository
 	{
 		var person = DbContext.Persons
 			.Single(x => x.Id == id);
-		var exclusions = DbContext.Exclusion.
+		var exclusions = DbContext.Exclusions.
 			Where(x => x.ExcludedId == id || x.PersonId == id);
 		
-		DbContext.Exclusion.RemoveRange(exclusions);
+		DbContext.Exclusions.RemoveRange(exclusions);
 		DbContext.Persons.Remove(person);
 		DbContext.SaveChanges();
 	}

@@ -44,11 +44,11 @@ public class EventsController : ControllerBase
 
 		var eventId = _eventRepository.Insert(@event);
 		
-		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
+		return CreatedAtAction(nameof(GetEventWithPersonsAndExclusions), new {id = @eventId}, null);
 	}
 
 	[HttpPut("{id}/Exclusions")]
-	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ExclusionsDto> dto)
+	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
 	{
 		 var @event = _eventRepository.Get(id);
 		 @event.InsertExclusions(dto);
@@ -66,14 +66,14 @@ public class EventsController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult GetEventWithPersons([FromRoute] Guid id)
+	public ActionResult GetEventWithPersonsAndExclusions([FromRoute] Guid id)
 	{
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
 
-		var @eventDto = _eventRepository.Get<EventWithPersonsDto>(id);
+		var @eventDto = _eventRepository.Get<EventDto>(id);
 		return Ok(@eventDto);
 	}
 

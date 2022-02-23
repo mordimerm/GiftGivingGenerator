@@ -145,7 +145,7 @@ public class Event : IEntity
 
 		return numberOfTries;
 	}
-	public void InsertExclusions(List<ExclusionsDto> dto)
+	public void InsertExclusions(List<ListOfExclusionsForOnePersonDto> dto)
 	{
 		foreach (var personDto in dto)
 		{

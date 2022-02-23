@@ -18,10 +18,14 @@ public class MappingProfile : Profile
 		CreateMap<CreateEventWithPersonsDto, Event>();
 
 		CreateMap<Event, OutputEventDto>();
-		CreateMap<Event, EventWithPersonsDto>();
+		CreateMap<Event, EventDto>();
 		CreateMap<Event, EventToListDto>();
 		CreateMap<Event, EventToSendEmailDto>();
-
+		
+		//Exclusion
+		CreateMap<Exclusion, ExclusionDto>()
+			.ForMember(x=>x.Excluded, y=>y.MapFrom(z=>z.Excluded.Name));
+			
 		//DrawingResult
 		CreateMap<DrawingResult, DrawingResultDto>()
 			.ForMember(x=>x.GiverName, y=>y.MapFrom(z=>z.GiverPerson.Name))
