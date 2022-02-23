@@ -1,17 +1,13 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.Person;
-
-namespace GiftGivingGenerator.API.Entities;
+﻿namespace GiftGivingGenerator.API.Entities;
 
 public class Person : IEntity
 {
 	public Guid Id { get; set; }
 	public string Name { get; protected internal set; }
-
 	public string? Email { get; set; }
-
 	public List<Event> CreatedEvents { get; set; } = new List<Event>();
-
 	public List<Event> Events { get; set; } = new List<Event>();
+	public virtual List<Exclusion> Exclusions { get; set; }
 
 	public static Person Create(string name, string email)
 	{

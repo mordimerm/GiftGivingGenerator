@@ -48,7 +48,7 @@ public class EventsController : ControllerBase
 	}
 
 	[HttpPut("{id}/Exclusions")]
-	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ExclusionsDto> dto)
+	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
 	{
 		 var @event = _eventRepository.Get(id);
 		 @event.InsertExclusions(dto);
@@ -73,7 +73,7 @@ public class EventsController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var @eventDto = _eventRepository.Get<EventWithPersonsDto>(id);
+		var @eventDto = _eventRepository.Get<EventToPrintDto>(id);
 		return Ok(@eventDto);
 	}
 

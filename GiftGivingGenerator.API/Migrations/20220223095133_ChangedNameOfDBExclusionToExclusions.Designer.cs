@@ -4,6 +4,7 @@ using GiftGivingGenerator.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiftGivingGenerator.API.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20220223095133_ChangedNameOfDBExclusionToExclusions")]
+    partial class ChangedNameOfDBExclusionToExclusions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +237,9 @@ namespace GiftGivingGenerator.API.Migrations
                         .IsRequired();
 
                     b.HasOne("GiftGivingGenerator.API.Entities.Person", "Person")
-                        .WithMany("Exclusions")
+                        .WithMany()
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Event");
@@ -278,8 +280,6 @@ namespace GiftGivingGenerator.API.Migrations
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Person", b =>
                 {
                     b.Navigation("CreatedEvents");
-
-                    b.Navigation("Exclusions");
                 });
 #pragma warning restore 612, 618
         }

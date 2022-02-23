@@ -11,17 +11,21 @@ public class MappingProfile : Profile
 	public MappingProfile()
 	{
 		//Person
-		CreateMap<Person, PersonDto>();
+		CreateMap<Person, PersonToPrintingEventDto>();
 		CreateMap<Person, OrganizerToSendEmailDto>();
 
 		//Event
 		CreateMap<CreateEventWithPersonsDto, Event>();
 
 		CreateMap<Event, OutputEventDto>();
-		CreateMap<Event, EventWithPersonsDto>();
+		CreateMap<Event, EventToPrintDto>();
 		CreateMap<Event, EventToListDto>();
 		CreateMap<Event, EventToSendEmailDto>();
-
+		
+		//Exclusion
+		CreateMap<Exclusion, ExclusionToPrintingEventDto>()
+			.ForMember(x=>x.Excluded, y=>y.MapFrom(z=>z.Excluded.Name));
+			
 		//DrawingResult
 		CreateMap<DrawingResult, DrawingResultDto>()
 			.ForMember(x=>x.GiverName, y=>y.MapFrom(z=>z.GiverPerson.Name))
