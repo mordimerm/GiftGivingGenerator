@@ -44,7 +44,7 @@ public class EventsController : ControllerBase
 
 		var eventId = _eventRepository.Insert(@event);
 		
-		return CreatedAtAction(nameof(GetEventWithPersons), new {id = @eventId}, null);
+		return CreatedAtAction(nameof(GetEventWithPersonsAndExclusions), new {id = @eventId}, null);
 	}
 
 	[HttpPut("{id}/Exclusions")]
@@ -66,7 +66,7 @@ public class EventsController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult GetEventWithPersons([FromRoute] Guid id)
+	public ActionResult GetEventWithPersonsAndExclusions([FromRoute] Guid id)
 	{
 		if (!ModelState.IsValid)
 		{
