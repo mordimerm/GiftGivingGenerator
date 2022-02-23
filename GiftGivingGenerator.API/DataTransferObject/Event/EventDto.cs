@@ -1,7 +1,7 @@
 ﻿using GiftGivingGenerator.API.DataTransferObject.Person;
 namespace GiftGivingGenerator.API.DataTransferObject.Event;
 
-public class EventToPrintDto
+public class EventDto
 {
 	public Guid Id { get; set; }
 	public string Name { get; set; }
@@ -9,5 +9,5 @@ public class EventToPrintDto
 	public DateTime EndDate { get; set; }
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
-	public virtual IEnumerable<PersonToPrintingEventDto> Persons { get; set; }
+	public virtual IEnumerable<PersonDto> Persons { get; set; }
 }

@@ -73,7 +73,7 @@ public class EventsController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var @eventDto = _eventRepository.Get<EventToPrintDto>(id);
+		var @eventDto = _eventRepository.Get<EventDto>(id);
 		return Ok(@eventDto);
 	}
 
