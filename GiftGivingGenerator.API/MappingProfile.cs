@@ -17,9 +17,7 @@ public class MappingProfile : Profile
 		//Event
 		CreateMap<CreateEventWithPersonsDto, Event>();
 
-		CreateMap<Event, OutputEventDto>();
 		CreateMap<Event, EventDto>();
-		CreateMap<Event, EventToListDto>();
 		CreateMap<Event, EventToSendEmailDto>();
 		
 		//Exclusion
@@ -27,9 +25,6 @@ public class MappingProfile : Profile
 			.ForMember(x=>x.Excluded, y=>y.MapFrom(z=>z.Excluded.Name));
 			
 		//DrawingResult
-		CreateMap<DrawingResult, DrawingResultDto>()
-			.ForMember(x=>x.GiverName, y=>y.MapFrom(z=>z.GiverPerson.Name))
-			.ForMember(x=>x.RecipientName, y=>y.MapFrom(z=>z.RecipientPerson.Name));
 		CreateMap<DrawingResult, DrawingResultsForOrganizerDto>()
 			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name));
 		
