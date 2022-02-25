@@ -1,6 +1,6 @@
 ﻿using GiftGivingGenerator.API.Configurations;
-using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
+using GiftGivingGenerator.API.DataTransferObject.Exclusion;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
@@ -48,10 +48,10 @@ public class EventsController : ControllerBase
 	}
 
 	[HttpPut("{id}/Exclusions")]
-	public ActionResult CreateExclusions([FromRoute]Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
+	public ActionResult UpdateExclusions([FromRoute]Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
 	{
 		 var @event = _eventRepository.Get(id);
-		 @event.InsertExclusions(dto);
+		 @event.UpdateExclusions(dto);
 		_eventRepository.Update(@event);
 		
 		return Ok();
@@ -83,12 +83,16 @@ public class EventsController : ControllerBase
 		return Ok();
 	}
 
-	[HttpPut("{id}/Attendees")]
-	public ActionResult AssignPersonsToEvent([FromRoute] Guid id, [FromBody] PersonsIds dto)
+	[HttpPost("{id}/Attendees")]
+	public ActionResult AddPersonsToEvent([FromRoute] Guid id, [FromBody] List<CreatePersonDto> dto)
 	{
 		var @event = _eventRepository.Get(id);
-		var persons = _personRepository.GetAllByIds(dto.Ids);
-		@event.AssignAttendees(persons);
+		
+		foreach (var personDto in dto)
+		{
+			var person = Person.Create(personDto.Name, personDto.Email);
+			@event.Persons.Add(person);
+		}
 
 		_eventRepository.Update(@event);
 		return Ok();

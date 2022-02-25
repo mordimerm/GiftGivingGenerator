@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.DataTransferObject.Exclusion;
 
 namespace GiftGivingGenerator.API.DataTransferObject.Person;
 

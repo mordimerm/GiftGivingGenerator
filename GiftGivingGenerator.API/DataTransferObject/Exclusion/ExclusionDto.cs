@@ -1,4 +1,4 @@
-﻿namespace GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿namespace GiftGivingGenerator.API.DataTransferObject.Exclusion;
 
 public class ExclusionDto
 {

@@ -1,7 +1,7 @@
-﻿namespace GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿namespace GiftGivingGenerator.API.DataTransferObject.Exclusion;
 
 public class ListOfExclusionsForOnePersonDto
 {
 	public Guid PersonId { get; set; }
-	public List<Guid?> ExcludedId { get; set; }
+	public IEnumerable<Guid>? ExcludedId { get; set; }
 }
