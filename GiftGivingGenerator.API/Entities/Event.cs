@@ -1,4 +1,4 @@
-﻿using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+﻿using GiftGivingGenerator.API.DataTransferObject.Exclusion;
 using MoreLinq;
 
 namespace GiftGivingGenerator.API.Entities;
@@ -12,8 +12,8 @@ public class Event : IEntity
 	public bool? IsActive { get; set; } = true;
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
-	
-	public Guid OrganizerId  { get; set; }
+
+	public Guid OrganizerId { get; set; }
 	public Person Organizer { get; set; }
 
 	public List<Person> Persons { get; set; } = new List<Person>();
@@ -21,7 +21,6 @@ public class Event : IEntity
 	public List<GiftWish> GiftWishes { get; set; }
 	public List<Exclusion> Exclusions { get; set; } = new List<Exclusion>();
 
-	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
 	public static Event Create(Person organizer, string name, DateTime date, int? budget, string? message)
 	{
 		if (date < DateTime.Now)
@@ -50,17 +49,17 @@ public class Event : IEntity
 
 		Name = name;
 	}
-	
+
 	public void ChangeMessage(string? message)
 	{
 		Message = message;
 	}
-	
+
 	public void ChangeBudget(int? budget)
 	{
 		Budget = budget;
 	}
-	
+
 	public void ChangeEndDate(DateTime date)
 	{
 		if (date < DateTime.Now)
@@ -82,7 +81,7 @@ public class Event : IEntity
 			.Where(x => exceptedPersons.Contains(x.Person) || exceptedPersons.Contains(x.Excluded))
 			.ToList();
 		Exclusions.RemoveAll(x => exclusions.Contains(x));
-		
+
 		Persons.Clear();
 		if (persons.Count != 0)
 		{
@@ -104,7 +103,7 @@ public class Event : IEntity
 			.Select(x => x.Id)
 			.ToList();
 
-		if (personsIds.Count <2)
+		if (personsIds.Count < 2)
 		{
 			throw new Exception("There must be minimum 2 persons to generate drawing results.");
 		}
@@ -122,7 +121,7 @@ public class Event : IEntity
 			{
 				var exclusionsAi = Exclusions
 					.Where(x => x.PersonId == permutationA[i])
-					.Select(x=>x.ExcludedId)
+					.Select(x => x.ExcludedId)
 					.ToList();
 				if (permutationA[i] == permutationB[i] || exclusionsAi.Contains(permutationB[i]))
 				{
@@ -145,19 +144,37 @@ public class Event : IEntity
 
 		return numberOfTries;
 	}
-	public void InsertExclusions(List<ListOfExclusionsForOnePersonDto> dto)
+	public void UpdateExclusions(List<ListOfExclusionsForOnePersonDto> dto)
 	{
-		foreach (var personDto in dto)
+		foreach (var person in Persons)
 		{
-			foreach (Guid excludedId in personDto.ExcludedId)
+			var oldExclusions = Exclusions
+				.Where(x => x.PersonId == person.Id)
+				.Select(x => x.ExcludedId)
+				.ToList();
+			var exclusionsDto = dto
+				.SingleOrDefault(x => x.PersonId == person.Id)!
+				.ExcludedId
+				.ToList();
+
+			var newExclusions = exclusionsDto.Except<Guid>(oldExclusions);
+			foreach (var newExclusion in newExclusions)
 			{
 				var exclusion = new Exclusion()
 				{
-					PersonId = personDto.PersonId,
-					ExcludedId = excludedId,
+					PersonId = person.Id,
+					ExcludedId = newExclusion,
 				};
-				
+
 				Exclusions.Add(exclusion);
+			}
+
+			var exclusionsToRemove = oldExclusions.Except(exclusionsDto);
+			foreach (var exclusionToRemove in exclusionsToRemove)
+			{
+				var exclusion = Exclusions.Single(x => x.PersonId == person.Id && x.ExcludedId == exclusionToRemove);
+
+				Exclusions.Remove(exclusion);
 			}
 		}
 	}
