@@ -17,7 +17,7 @@ public class GiftWishRepository : RepositoryBase<GiftWish>, IGiftWishRepository
 		
 		return giftWish;
 	}
-	public void RemoveAll(Guid eventId, Guid personId)
+	public void Remove(Guid eventId, Guid personId)
 	{
 		var giftWish = DbContext.GiftWish.SingleOrDefault(x => x.EventId == eventId && x.PersonId == personId);
 		if (giftWish!=null)

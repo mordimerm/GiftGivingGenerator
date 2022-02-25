@@ -20,7 +20,7 @@ public class GiftWishController : ControllerBase
 	public ActionResult UpdateGiftWish(Guid eventId, Guid personId, [FromBody] CreateGiftWishDto dto)
 	{
 		var giftWish = GiftWish.Create(eventId, personId, dto.Wish);
-		_giftWishRepository.RemoveAll(eventId, personId);
+		_giftWishRepository.Remove(eventId, personId);
 		_giftWishRepository.Insert(giftWish);
 		
 		return Ok();
