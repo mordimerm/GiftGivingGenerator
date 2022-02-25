@@ -57,14 +57,6 @@ public class EventsController : ControllerBase
 		return Ok();
 	}
 	
-	[HttpGet("/Organizers/{organizerId}/Events")]
-	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
-	{
-		var eventsDto = _eventRepository.GetByOrganizerId(organizerId, isActive, isEndDateExpired);
-
-		return Ok(eventsDto);
-	}
-
 	[HttpGet("{id}")]
 	public ActionResult GetEventWithPersonsAndExclusions([FromRoute] Guid id)
 	{
@@ -100,16 +92,6 @@ public class EventsController : ControllerBase
 
 		_eventRepository.Update(@event);
 		return Ok();
-	}
-
-	[HttpDelete("{id}")]
-	public ActionResult Deactivate([FromRoute] Guid id)
-	{
-		var @event = _eventRepository.Get(id);
-		@event.Deactivate();
-
-		_eventRepository.Update(@event);
-		return NoContent();
 	}
 	
 	[HttpPost("/{id}/SendMail")]

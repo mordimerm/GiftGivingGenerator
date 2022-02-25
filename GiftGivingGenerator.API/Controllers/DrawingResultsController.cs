@@ -18,7 +18,7 @@ public class DrawingResultsController : ControllerBase
 		_eventRepository = eventRepository;
 	}
 
-	[HttpPost("/{eventId}/DrawingResults")]
+	[HttpPost("/Events/{eventId}/DrawingResults")]
 	public ActionResult GenerateDrawingResults([FromRoute] Guid eventId)
 	{
 		var @event = _eventRepository.Get(eventId);
@@ -29,7 +29,7 @@ public class DrawingResultsController : ControllerBase
 		return Ok();
 	}
 
-	[HttpGet("/{eventId}/DrawingResults")]
+	[HttpGet("/Events/{eventId}/DrawingResults")]
 	public ActionResult<List<DrawingResultsForOrganizerDto>> GetAllForEvent([FromRoute] Guid eventId)
 	{
 		var drawingResults = _repository.GetDrawingResultsByEventId(eventId);
