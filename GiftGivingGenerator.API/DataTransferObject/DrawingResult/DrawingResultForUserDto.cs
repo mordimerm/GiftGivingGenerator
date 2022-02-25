@@ -8,6 +8,7 @@ public class DrawingResultForUserDto
     public string? Message { get; set; }
     
     public string GiverName { get; set; }
+    public string GiverGiftWishes { get; set; }
     public string RecipientName { get; set; }
   	public string RecipientGiftWishes { get; set; }
 }
