@@ -27,7 +27,6 @@ public class MappingProfile : Profile
 		//DrawingResult
 		CreateMap<DrawingResult, DrawingResultsForOrganizerDto>()
 			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name));
-		
 		CreateMap<DrawingResult, DrawingResultForUserDto>()
 			.ForMember(x => x.EventName, y => y.MapFrom(z => z.Event.Name))
 			.ForMember(x => x.EndDate, y => y.MapFrom(z => z.Event.EndDate))

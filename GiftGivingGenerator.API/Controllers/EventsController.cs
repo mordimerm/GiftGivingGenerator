@@ -105,13 +105,13 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get<EventToSendEmailDto>(id);
 		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
-		var body = $"Hello {organizer.Name}," +
-		           $"<br>" +
-		           $"<br>you created event {@event.Name}." +
-		           $"<br>Go <a href=\"{_settings.WebApplicationUrl}/Events/{id}\"><b>link</b></a> to view more details." +
-		           $"<br>" +
-		           $"<br>Best wishes" +
-		           $"<br>GiftGivingGenerator";
+		var body = $@"Hello {organizer.Name},
+						<br>
+						<br>you created event {@event.Name}.
+						<br>Go <a href={_settings.WebApplicationUrl}/Events/{id}><b>link</b></a> to view more details.
+						<br>
+						<br>Best wishes
+						<br>GiftGivingGenerator";
 
 		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
 

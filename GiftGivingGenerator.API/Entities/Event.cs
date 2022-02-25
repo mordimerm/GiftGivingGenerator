@@ -11,7 +11,6 @@ public class Event : IEntity
 	public DateTime EndDate { get; set; }
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
-	
 	public Guid OrganizerId  { get; set; }
 	public Person Organizer { get; set; }
 	public List<Person> Persons { get; set; } = new List<Person>();
@@ -19,7 +18,6 @@ public class Event : IEntity
 	public List<GiftWish> GiftWishes { get; set; }
 	public List<Exclusion> Exclusions { get; set; } = new List<Exclusion>();
 
-	//Maciek: Wheather the method below shouldn't be in the DrawingResultRepository?
 	public static Event Create(Person organizer, string name, DateTime date, int? budget, string? message)
 	{
 		if (date < DateTime.Now)

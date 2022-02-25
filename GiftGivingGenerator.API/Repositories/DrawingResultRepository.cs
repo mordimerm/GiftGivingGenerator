@@ -11,6 +11,7 @@ public class DrawingResultRepository : RepositoryBase<DrawingResult>, IDrawingRe
 	public DrawingResultRepository(AppContext dbContext, IMapper mapper) : base(dbContext, mapper)
 	{
 	}
+	
 	public List<DrawingResultsForOrganizerDto> GetDrawingResultsByEventId(Guid id)
 	{
 		return DbContext.DrawingResults
