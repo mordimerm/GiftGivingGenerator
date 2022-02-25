@@ -39,6 +39,7 @@ public class MappingProfile : Profile
 			.ForMember(x => x.Budget, y => y.MapFrom(z => z.Event.Budget))
 			.ForMember(x => x.Message, y => y.MapFrom(z => z.Event.Message))
 			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name))
+			.ForMember(x => x.GiverGiftWishes, y => y.MapFrom(z => z.Event.GiftWishes.SingleOrDefault(za =>za.PersonId==z.GiverPersonId).Wish))
 			.ForMember(x => x.RecipientName, y => y.MapFrom(z => z.RecipientPerson.Name))
 			.ForMember(x => x.RecipientGiftWishes, y => y.MapFrom(z => z.Event.GiftWishes.SingleOrDefault(za =>za.PersonId==z.RecipientPersonId).Wish));
 	}
