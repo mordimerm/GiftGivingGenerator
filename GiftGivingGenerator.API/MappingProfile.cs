@@ -34,10 +34,12 @@ public class MappingProfile : Profile
 			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name));
 		
 		CreateMap<DrawingResult, DrawingResultForUserDto>()
+			.ForMember(x => x.EventId, y => y.MapFrom(z => z.Event.Id))
 			.ForMember(x => x.EventName, y => y.MapFrom(z => z.Event.Name))
 			.ForMember(x => x.EndDate, y => y.MapFrom(z => z.Event.EndDate))
 			.ForMember(x => x.Budget, y => y.MapFrom(z => z.Event.Budget))
 			.ForMember(x => x.Message, y => y.MapFrom(z => z.Event.Message))
+			.ForMember(x => x.GiverId, y => y.MapFrom(z => z.GiverPerson.Id))
 			.ForMember(x => x.GiverName, y => y.MapFrom(z => z.GiverPerson.Name))
 			.ForMember(x => x.RecipientName, y => y.MapFrom(z => z.RecipientPerson.Name))
 			.ForMember(x => x.RecipientGiftWishes, y => y.MapFrom(z => z.Event.GiftWishes.SingleOrDefault(za =>za.PersonId==z.RecipientPersonId).Wish));
