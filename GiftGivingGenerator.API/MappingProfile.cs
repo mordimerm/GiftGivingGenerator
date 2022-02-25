@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
 using GiftGivingGenerator.API.DataTransferObject.Event;
+using GiftGivingGenerator.API.DataTransferObject.Exclusion;
 using GiftGivingGenerator.API.DataTransferObject.Person;
 using GiftGivingGenerator.API.Entities;
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace GiftGivingGenerator.API.Repositories;
 
