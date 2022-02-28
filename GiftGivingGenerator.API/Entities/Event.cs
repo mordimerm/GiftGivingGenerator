@@ -9,13 +9,10 @@ public class Event : IEntity
 	public string Name { get; set; }
 	public DateTime CreatingDate { get; set; } = DateTime.Now;
 	public DateTime EndDate { get; set; }
-	public bool? IsActive { get; set; } = true;
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
-
-	public Guid OrganizerId { get; set; }
+	public Guid OrganizerId  { get; set; }
 	public Person Organizer { get; set; }
-
 	public List<Person> Persons { get; set; } = new List<Person>();
 	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
 	public List<GiftWish> GiftWishes { get; set; }
@@ -88,10 +85,7 @@ public class Event : IEntity
 			Persons.AddRange(persons);
 		}
 	}
-	public void Deactivate()
-	{
-		IsActive = false;
-	}
+
 	public int DrawResultsAndNumberTries()
 	{
 		if (DrawingResults.Count != 0)

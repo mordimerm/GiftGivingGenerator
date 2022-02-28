@@ -57,14 +57,6 @@ public class EventsController : ControllerBase
 		return Ok();
 	}
 	
-	[HttpGet("/Organizers/{organizerId}/Events")]
-	public ActionResult<IEnumerable<Event>> GetEventsByOrganizerId([FromRoute] Guid organizerId, bool? isActive, bool? isEndDateExpired)
-	{
-		var eventsDto = _eventRepository.GetByOrganizerId(organizerId, isActive, isEndDateExpired);
-
-		return Ok(eventsDto);
-	}
-
 	[HttpGet("{id}")]
 	public ActionResult GetEventWithPersonsAndExclusions([FromRoute] Guid id)
 	{
@@ -105,16 +97,6 @@ public class EventsController : ControllerBase
 		_eventRepository.Update(@event);
 		return Ok();
 	}
-
-	[HttpDelete("{id}")]
-	public ActionResult Deactivate([FromRoute] Guid id)
-	{
-		var @event = _eventRepository.Get(id);
-		@event.Deactivate();
-
-		_eventRepository.Update(@event);
-		return NoContent();
-	}
 	
 	[HttpPost("/{id}/SendMail")]
 	public ActionResult SendEmail([FromRoute] Guid id)
@@ -127,13 +109,13 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get<EventToSendEmailDto>(id);
 		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
-		var body = $"Hello {organizer.Name}," +
-		           $"<br>" +
-		           $"<br>you created event {@event.Name}." +
-		           $"<br>Go <a href=\"{_settings.WebApplicationUrl}/Events/{id}\"><b>link</b></a> to view more details." +
-		           $"<br>" +
-		           $"<br>Best wishes" +
-		           $"<br>GiftGivingGenerator";
+		var body = $@"Hello {organizer.Name},
+						<br>
+						<br>you created event {@event.Name}.
+						<br>Go <a href={_settings.WebApplicationUrl}/Events/{id}><b>link</b></a> to view more details.
+						<br>
+						<br>Best wishes
+						<br>GiftGivingGenerator";
 
 		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
 
