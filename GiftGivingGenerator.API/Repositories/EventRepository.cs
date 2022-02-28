@@ -18,6 +18,7 @@ public class EventRepository : RepositoryBase<Event>, IEventRepository
 			.Include(x=>x.DrawingResults)
 			.Include(x=>x.GiftWishes)
 			.Include(x=>x.Exclusions)
+			.Include(x=>x.Organizer)
 			.AsSplitQuery();
 	}
 }

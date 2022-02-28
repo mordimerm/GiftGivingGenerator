@@ -16,13 +16,13 @@ public class EventsController : ControllerBase
 {
 	private readonly IEventRepository _eventRepository;
 	private readonly IPersonRepository _personRepository;
-	private readonly IMailService _mail;
+	private readonly IMailService _mailService;
 	private readonly AppSettings _settings;
-	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mail, IOptionsMonitor<AppSettings> settings)
+	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mailService, IOptionsMonitor<AppSettings> settings)
 	{
 		_eventRepository = eventRepository;
 		_personRepository = personRepository;
-		_mail = mail;
+		_mailService = mailService;
 		_settings = settings.CurrentValue;
 	}
 
@@ -109,15 +109,19 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get<EventToSendEmailDto>(id);
 		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
-		var body = $@"Hello {organizer.Name},
-						<br>
-						<br>you created event {@event.Name}.
+		var body = $@"<p>Hello {organizer.Name},</p>
+						
+						<p>
+						you created event {@event.Name}.
 						<br>Go <a href={_settings.WebApplicationUrl}/Events/{id}><b>link</b></a> to view more details.
-						<br>
-						<br>Best wishes
-						<br>GiftGivingGenerator";
+						</p>
 
-		_mail.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
+						<p>
+						Best wishes
+						<br>GiftGivingGenerator
+						</p>";
+
+		_mailService.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
 
 		return Ok();
 	}

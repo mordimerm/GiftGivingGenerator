@@ -19,6 +19,13 @@ public class DrawingResultRepository : RepositoryBase<DrawingResult>, IDrawingRe
 			.ProjectTo<DrawingResultsForOrganizerDto>(Mapper.ConfigurationProvider)
 			.ToList();
 	}
+	public List<TDto> GetByEvent<TDto>(Guid id)
+	{
+		return DbContext.DrawingResults
+			.Where(x => x.EventId == id)
+			.ProjectTo<TDto>(Mapper.ConfigurationProvider)
+			.ToList();
+	}
 	public DrawingResult? GetByPerson(Guid id)
 	{
 		return DbContext.DrawingResults

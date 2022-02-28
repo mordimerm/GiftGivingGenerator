@@ -16,15 +16,15 @@ public class DrawingResultsController : ControllerBase
 	private readonly IDrawingResultRepository _drawingResultRepository;
 	private readonly IEventRepository _eventRepository;
 	private readonly AppSettings _settings;
-	private readonly IMailService _mail;
+	private readonly IMailService _mailService;
 
-	public DrawingResultsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IMailService mail)
+	public DrawingResultsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IMailService mailService)
 	{
 		_personRepository = personRepository;
 		_drawingResultRepository = drawingResultRepository;
 		_eventRepository = eventRepository;
 		_settings = settings.CurrentValue;
-		_mail = mail;
+		_mailService = mailService;
 	}
 
 	[HttpPost("/Events/{eventId}/DrawingResults")]
@@ -35,30 +35,30 @@ public class DrawingResultsController : ControllerBase
 		Log.Information($"For event {eventId} I trie {numberOfTries} times to draw result.");
 		_eventRepository.Update(@event);
 		
-		var organizer = _personRepository.Get(@event.OrganizerId);
-		var personsWithEmail = @event.Persons
-			.Where(x=>x.Email!=null);
+		var drawingResults = @event.DrawingResults
+			.Where(x => x.GiverPerson.Email != null);
 		
-		foreach (var person in personsWithEmail)
+		foreach (var drawingResult in drawingResults)
 		{
-			var id = _drawingResultRepository.GetByPerson(person.Id).Id;
-			Console.WriteLine(person.Name);
-			Console.WriteLine(organizer.Name);
-			Console.WriteLine(@event.Name);
+			var body = $@"<p>Hello {drawingResult.GiverPerson.Name},</p>
+							
+							<p>
+							{@event.Organizer.Name} created event {@event.Name}.
+							<br>Go <a href={_settings.WebApplicationUrl}/DrawingResults/{drawingResult.Id}><b>link</b></a> to:
+							</p>
 
-			var body = $@"Hello {person.Name},
-							<br>
-							<br>{@event.Organizer.Name} created event {@event.Name}.
-							<br>Go <a href={_settings.WebApplicationUrl}/DrawingResults/{id}><b>link</b></a> to:
 							<ul>
 								<li>view your drawing result,</li>
 								<li>write your gift wish,</li>
 								<li>read your recipient's gift wish.</li>
-								</ul>
-							<br>Best wishes
-							<br>GiftGivingGenerator";
+							</ul>
 
-			_mail.Send($"{person.Email}", $"Links to drawing result '{@event.Name}'", $"{body}");
+							<p>
+							Best wishes
+							<br>GiftGivingGenerator
+							</p>";
+
+			_mailService.Send($"{drawingResult.GiverPerson.Email}", $"Links to drawing result '{@event.Name}'", $"{body}");
 		}
 
 		
@@ -68,7 +68,7 @@ public class DrawingResultsController : ControllerBase
 	[HttpGet("/Events/{eventId}/DrawingResults")]
 	public ActionResult<List<DrawingResultsForOrganizerDto>> GetAllForEvent([FromRoute] Guid eventId)
 	{
-		var drawingResults = _drawingResultRepository.GetDrawingResultsByEventId(eventId);
+		var drawingResults = _drawingResultRepository.GetByEvent<DrawingResultsForOrganizerDto>(eventId);
 		if (!drawingResults.Any())
 		{
 			return NotFound();
