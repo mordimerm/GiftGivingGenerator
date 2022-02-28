@@ -9,18 +9,19 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class GiftWishController : ControllerBase
 {
-	private readonly IGiftWishRepository _repository;
+	private readonly IGiftWishRepository _giftWishRepository;
 
-	public GiftWishController(IGiftWishRepository repository)
+	public GiftWishController(IGiftWishRepository giftWishRepository)
 	{
-		_repository = repository;
+		_giftWishRepository = giftWishRepository;
 	}
 	
 	[HttpPost("/Events/{eventId}/Persons/{personId}/GiftWishes")]
-	public ActionResult CreateGiftWish(Guid eventId, Guid personId, [FromBody] CreateGiftWishDto dto)
+	public ActionResult UpdateGiftWish(Guid eventId, Guid personId, [FromBody] CreateGiftWishDto dto)
 	{
 		var giftWish = GiftWish.Create(eventId, personId, dto.Wish);
-		_repository.Insert(giftWish);
+		_giftWishRepository.Remove(eventId, personId);
+		_giftWishRepository.Insert(giftWish);
 		
 		return Ok();
 	}
@@ -28,7 +29,7 @@ public class GiftWishController : ControllerBase
 	[HttpGet("/Events/{eventId}/Persons/{personId}/GiftWishes")]
 	public ActionResult GetByEventAndPerson(Guid eventId, Guid personId)
 	{
-		var giftWish = _repository.GetByEventAndPerson(eventId, personId);
+		var giftWish = _giftWishRepository.GetByEventAndPerson(eventId, personId);
 		
 		return Ok(giftWish);
 	}
@@ -36,9 +37,9 @@ public class GiftWishController : ControllerBase
 	[HttpPut("{id}/Wish")]
 	public ActionResult EditGiftWish(Guid id, [FromBody] EditGiftWishDto dto)
 	{
-		var giftWish = _repository.Get(id);
+		var giftWish = _giftWishRepository.Get(id);
 		giftWish.EditWish(dto.Wish);
-		_repository.Update(giftWish);
+		_giftWishRepository.Update(giftWish);
 		
 		return Ok();
 	}
