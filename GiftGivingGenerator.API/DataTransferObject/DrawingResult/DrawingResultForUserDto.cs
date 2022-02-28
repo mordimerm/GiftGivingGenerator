@@ -2,6 +2,7 @@
 
 public class DrawingResultForUserDto
 {
+	public Guid EventId { get; set; }
     public string EventName { get; set; }    
     public DateTime EndDate { get; set; }
     public int? Budget { get; set; }

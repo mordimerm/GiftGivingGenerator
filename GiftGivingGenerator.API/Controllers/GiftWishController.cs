@@ -21,6 +21,7 @@ public class GiftWishController : ControllerBase
 	{
 		var giftWish = GiftWish.Create(eventId, personId, dto.Wish);
 		_giftWishRepository.Insert(giftWish);
+
 		
 		return Ok();
 	}
