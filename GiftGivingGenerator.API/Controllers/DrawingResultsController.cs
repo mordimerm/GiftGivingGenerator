@@ -28,7 +28,7 @@ public class DrawingResultsController : ControllerBase
 	}
 
 	[HttpPost("/Events/{eventId}/DrawingResults")]
-	public ActionResult GenerateDrawingResultsAndSendEmailToEachPerson([FromRoute] Guid eventId)
+	public ActionResult GenerateDrawingResults([FromRoute] Guid eventId)
 	{
 		var @event = _eventRepository.Get(eventId);
 		var numberOfTries = @event.DrawResultsAndNumberTries();
