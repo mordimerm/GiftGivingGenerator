@@ -27,6 +27,7 @@ builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
+builder.Services.Configure<AllowedHostsConfiguration>(builder.Configuration.GetSection("AllowedHosts"));
 builder.Services.Configure<AppSettings>(builder.Configuration);
 
 builder.Services.AddLogging(x => x.AddSerilog());
@@ -41,9 +42,9 @@ Log.Information("****************************** Started ************************
 builder.Services.AddCors(options =>
 {
 	options.AddDefaultPolicy(
-		builder =>
+		corsPolicyBuilder =>
 		{
-			builder.WithOrigins("http://localhost:3000");
+			corsPolicyBuilder.WithOrigins(builder.Configuration.GetValue<string[]>("AllowedHosts"));
 		});
 });
 
