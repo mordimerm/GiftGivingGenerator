@@ -27,6 +27,7 @@ builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
+builder.Services.Configure<AllowedHostsConfiguration>(builder.Configuration.GetSection("AllowedHosts"));
 builder.Services.Configure<AppSettings>(builder.Configuration);
 
 builder.Services.AddLogging(x => x.AddSerilog());
@@ -37,6 +38,15 @@ Log.Logger = new LoggerConfiguration()
 	.WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
 	.CreateLogger();
 Log.Information("****************************** Started ******************************");
+
+builder.Services.AddCors(options =>
+{
+	options.AddDefaultPolicy(
+		corsPolicyBuilder =>
+		{
+			corsPolicyBuilder.WithOrigins(builder.Configuration.GetValue<string[]>("AllowedHosts"));
+		});
+});
 
 var app = builder.Build();
 
@@ -52,6 +62,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
