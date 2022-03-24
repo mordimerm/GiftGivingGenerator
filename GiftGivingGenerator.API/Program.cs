@@ -38,6 +38,15 @@ Log.Logger = new LoggerConfiguration()
 	.CreateLogger();
 Log.Information("****************************** Started ******************************");
 
+builder.Services.AddCors(options =>
+{
+	options.AddDefaultPolicy(
+		builder =>
+		{
+			builder.WithOrigins("http://localhost:3000");
+		});
+});
+
 var app = builder.Build();
 
 app.UseExceptionHandler("/Error");
@@ -52,6 +61,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
