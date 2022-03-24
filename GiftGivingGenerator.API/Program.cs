@@ -44,7 +44,7 @@ builder.Services.AddCors(options =>
 	options.AddDefaultPolicy(
 		corsPolicyBuilder =>
 		{
-			corsPolicyBuilder.WithOrigins(builder.Configuration.GetValue<string[]>("AllowedHosts"));
+			corsPolicyBuilder.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Get<string[]>());
 		});
 });
 
