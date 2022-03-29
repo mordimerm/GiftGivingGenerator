@@ -39,12 +39,15 @@ Log.Logger = new LoggerConfiguration()
 	.CreateLogger();
 Log.Information("****************************** Started ******************************");
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-	options.AddDefaultPolicy(
+	options.AddPolicy(name: MyAllowSpecificOrigins,
 		corsPolicyBuilder =>
 		{
-			corsPolicyBuilder.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Get<string[]>());
+			corsPolicyBuilder.WithOrigins(builder.Configuration.GetSection("AllowedHosts").Get<string[]>())
+				.AllowAnyHeader()
+				.AllowAnyMethod();
 		});
 });
 
@@ -63,7 +66,9 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseRouting();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
