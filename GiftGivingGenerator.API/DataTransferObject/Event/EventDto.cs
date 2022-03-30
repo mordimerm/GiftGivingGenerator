@@ -9,5 +9,6 @@ public class EventDto
 	public DateTime EndDate { get; set; }
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
+	public string OrganizerName { get; set; }
 	public virtual IEnumerable<PersonDto> Persons { get; set; }
 }

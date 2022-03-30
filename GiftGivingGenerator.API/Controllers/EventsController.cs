@@ -43,8 +43,9 @@ public class EventsController : ControllerBase
 		}
 
 		var eventId = _eventRepository.Insert(@event);
+		var eventToReturn = _eventRepository.Get<EventDto>(eventId);
 		
-		return CreatedAtAction(nameof(GetEventWithPersonsAndExclusions), new {id = @eventId}, null);
+		return Ok(eventToReturn);
 	}
 
 	[HttpPut("{id}/Exclusions")]
