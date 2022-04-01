@@ -19,9 +19,7 @@ public class MappingProfile : Profile
 		CreateMap<CreateEventWithPersonsDto, Event>();
 
 		CreateMap<Event, EventDto>();
-		CreateMap<Event, EventWithOrganizerDto>()
-			.ForMember(x=>x.OrganizerId, y=>y.MapFrom(z=>z.OrganizerId))
-			.ForMember(x=>x.OrganizerName, y=>y.MapFrom(z=>z.Organizer.Name));
+		CreateMap<Event, EventWithOrganizerDto>();
 		CreateMap<Event, EventToSendEmailDto>();
 		
 		//Exclusion
