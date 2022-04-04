@@ -19,6 +19,7 @@ public class MappingProfile : Profile
 		CreateMap<CreateEventWithPersonsDto, Event>();
 
 		CreateMap<Event, EventDto>();
+		CreateMap<Event, EventWithOrganizerDto>();
 		CreateMap<Event, EventToSendEmailDto>();
 		
 		//Exclusion
