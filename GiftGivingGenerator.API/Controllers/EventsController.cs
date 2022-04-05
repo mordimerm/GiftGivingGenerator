@@ -43,7 +43,7 @@ public class EventsController : ControllerBase
 		}
 
 		var eventId = _eventRepository.Insert(@event);
-		var eventWithOrganizerDto = _eventRepository.Get<EventWithOrganizerDto>(eventId);
+		var eventWithOrganizerDto = _eventRepository.Get<EventDto>(eventId);
 		
 		return CreatedAtAction(nameof(CreateEvent), new {id = eventId}, eventWithOrganizerDto);
 	}
