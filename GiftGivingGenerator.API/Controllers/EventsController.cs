@@ -35,7 +35,7 @@ public class EventsController : ControllerBase
 		}
 
 		var organizer = Person.Create(dto.OrganizerName, dto.OrganizerEmail);
-		var @event = Event.Create(organizer, dto.EventName, dto.EndDate, dto.Budget, dto.Message);
+		var @event = Event.Create(organizer, dto.Name, dto.EndDate, dto.Budget, dto.Message);
 		foreach (var personDto in dto.Persons)
 		{
 			var person = Person.Create(personDto.Name, personDto.Email);
