@@ -16,7 +16,7 @@ public class CreateEventWithPersonsDto
 	[Required]
 	[MinLength(3)]
 	[MaxLength(30)]
-	public string EventName { get; set; }
+	public string Name { get; set; }
 	
 	[DateValidator]
 	public DateTime EndDate { get; set; }
