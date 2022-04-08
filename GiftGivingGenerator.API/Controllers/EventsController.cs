@@ -36,6 +36,18 @@ public class EventsController : ControllerBase
 
 		var organizer = Person.Create(dto.OrganizerName, dto.OrganizerEmail);
 		var @event = Event.Create(organizer, dto.Name, dto.EndDate, dto.Budget, dto.Message);
+
+		var listOfDuplicates = dto.Persons.GroupBy(x => x.Name)
+			.Where(x => x.Count() > 1)
+			.Select(x=>x.Key);
+
+		var duplicates = string.Join(", ", listOfDuplicates);
+
+		if (listOfDuplicates.Any())
+		{
+			return Conflict($"There are persons with the same names: {duplicates}.");
+		}
+		
 		foreach (var personDto in dto.Persons)
 		{
 			var person = Person.Create(personDto.Name, personDto.Email);
