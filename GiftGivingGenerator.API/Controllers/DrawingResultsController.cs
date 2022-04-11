@@ -42,7 +42,7 @@ public class DrawingResultsController : ControllerBase
 							
 							<p>
 							{@event.Organizer.Name} created event {@event.Name}.
-							<br>Go <a href={_settings.WebApplicationUrl}/{drawingResult.Id}><b>link</b></a> to:
+							<br>Go <a href={_settings.WebApplicationUrl}/drawing-results/{drawingResult.Id}><b>link</b></a> to:
 							</p>
 
 							<ul>

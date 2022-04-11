@@ -6,7 +6,4 @@ public interface IPersonRepository : IRepository<Person>
 {
 	List<Person> GetAllByIds(List<Guid> ids);
 	void Delete(Guid id);
-
-
-	
 }
