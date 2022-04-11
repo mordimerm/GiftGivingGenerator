@@ -14,12 +14,14 @@ public class MappingProfile : Profile
 		//Person
 		CreateMap<Person, PersonDto>();
 		CreateMap<Person, OrganizerToSendEmailDto>();
-
+		CreateMap<Person, PersonToSendEmailDto>();
+		
 		//Event
 		CreateMap<CreateEventWithPersonsDto, Event>();
 
 		CreateMap<Event, EventDto>();
 		CreateMap<Event, EventToSendEmailDto>();
+		CreateMap<Event, EventWithDrawingResultDto>();
 		
 		//Exclusion
 		CreateMap<Exclusion, ExclusionDto>()
