@@ -19,7 +19,8 @@ public class EventsController : ControllerBase
 	private readonly IPersonRepository _personRepository;
 	private readonly IMailService _mailService;
 	private readonly AppSettings _settings;
-	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mailService, IOptionsMonitor<AppSettings> settings)
+	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mailService,
+		IOptionsMonitor<AppSettings> settings)
 	{
 		_eventRepository = eventRepository;
 		_personRepository = personRepository;
@@ -40,15 +41,14 @@ public class EventsController : ControllerBase
 
 		var listOfDuplicates = dto.Persons.GroupBy(x => x.Name)
 			.Where(x => x.Count() > 1)
-			.Select(x=>x.Key);
-
-		var duplicates = string.Join(", ", listOfDuplicates);
+			.Select(x => x.Key);
 
 		if (listOfDuplicates.Any())
 		{
+			var duplicates = string.Join(", ", listOfDuplicates);
 			return Conflict($"There are persons with the same names: {duplicates}.");
 		}
-		
+
 		foreach (var personDto in dto.Persons)
 		{
 			var person = Person.Create(personDto.Name, personDto.Email);
@@ -57,20 +57,20 @@ public class EventsController : ControllerBase
 
 		var eventId = _eventRepository.Insert(@event);
 		var eventWithOrganizerDto = _eventRepository.Get<EventDto>(eventId);
-		
+
 		return CreatedAtAction(nameof(CreateEvent), new {id = eventId}, eventWithOrganizerDto);
 	}
 
 	[HttpPut("{id}/Exclusions")]
-	public ActionResult UpdateExclusions([FromRoute]Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
+	public ActionResult UpdateExclusions([FromRoute] Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
 	{
-		 var @event = _eventRepository.Get(id);
-		 @event.UpdateExclusions(dto);
+		var @event = _eventRepository.Get(id);
+		@event.UpdateExclusions(dto);
 		_eventRepository.Update(@event);
-		
+
 		return Ok();
 	}
-	
+
 	[HttpGet("{id}")]
 	public ActionResult GetEventWithPersonsAndExclusions([FromRoute] Guid id)
 	{
@@ -101,7 +101,7 @@ public class EventsController : ControllerBase
 	public ActionResult AddPersonsToEvent([FromRoute] Guid id, [FromBody] List<CreatePersonDto> dto)
 	{
 		var @event = _eventRepository.Get(id);
-		
+
 		foreach (var personDto in dto)
 		{
 			var person = Person.Create(personDto.Name, personDto.Email);
@@ -111,7 +111,7 @@ public class EventsController : ControllerBase
 		_eventRepository.Update(@event);
 		return Ok();
 	}
-	
+
 	[HttpPost("/{id}/SendMail")]
 	public ActionResult SendEmailToOrganizer([FromRoute] Guid id)
 	{
