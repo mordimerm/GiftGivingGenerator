@@ -1,6 +1,9 @@
-﻿namespace GiftGivingGenerator.API.Servicess;
+﻿using GiftGivingGenerator.API.DataTransferObject.Email;
+
+namespace GiftGivingGenerator.API.Servicess;
 
 public interface IMailService
 {
-	void Send(string to, string subject, string body);
+	void Send(List<Mail> mails);
+	void Send(Mail mail);
 }

@@ -1,11 +1,10 @@
 using GiftGivingGenerator.API.Configurations;
+using GiftGivingGenerator.API.DataTransferObject.Email;
 using GiftGivingGenerator.API.DataTransferObject.Person;
-using GiftGivingGenerator.API.Entities;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using MoreLinq.Experimental;
 
 namespace GiftGivingGenerator.API.Controllers;
 
@@ -43,7 +42,10 @@ public class PersonsController : ControllerBase
 		var @event = person.Events.First();
 		var drawingResult = @event.DrawingResults.SingleOrDefault(x => x.GiverPersonId == id);
 
-		var body = $@"<p>Hello {person.Name},</p>
+		var mail = new Mail();
+		mail.Recipient = person.Email;
+		mail.Subject = $"Links to drawing result '{@event.Name}'";
+		mail.Body = $@"<p>Hello {person.Name},</p>
 							
 							<p>
 							{@event.Organizer.Name} created event {@event.Name}.
@@ -61,7 +63,7 @@ public class PersonsController : ControllerBase
 							<br>GiftGivingGenerator
 							</p>";
 
-		_mailService.Send($"{person.Email}", $"Links to drawing result '{@event.Name}'", $"{body}");
+		_mailService.Send(mail);
 		
 		return Ok();
 	}
