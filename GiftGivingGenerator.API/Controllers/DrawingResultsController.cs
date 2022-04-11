@@ -12,15 +12,13 @@ namespace GiftGivingGenerator.API.Controllers;
 [Route("[controller]")]
 public class DrawingResultsController : ControllerBase
 {
-	private readonly IPersonRepository _personRepository;
 	private readonly IDrawingResultRepository _drawingResultRepository;
 	private readonly IEventRepository _eventRepository;
 	private readonly AppSettings _settings;
 	private readonly IMailService _mailService;
 
-	public DrawingResultsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IMailService mailService)
+	public DrawingResultsController(IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IMailService mailService)
 	{
-		_personRepository = personRepository;
 		_drawingResultRepository = drawingResultRepository;
 		_eventRepository = eventRepository;
 		_settings = settings.CurrentValue;
@@ -44,7 +42,7 @@ public class DrawingResultsController : ControllerBase
 							
 							<p>
 							{@event.Organizer.Name} created event {@event.Name}.
-							<br>Go <a href={_settings.WebApplicationUrl}/DrawingResults/{drawingResult.Id}><b>link</b></a> to:
+							<br>Go <a href={_settings.WebApplicationUrl}/{drawingResult.Id}><b>link</b></a> to:
 							</p>
 
 							<ul>
