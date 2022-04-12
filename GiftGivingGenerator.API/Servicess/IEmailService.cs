@@ -2,8 +2,8 @@
 
 namespace GiftGivingGenerator.API.Servicess;
 
-public interface IMailService
+public interface IEmailService
 {
-	void Send(List<Mail> mails);
-	void Send(Mail mail);
+	void Send(List<Email> emails);
+	void Send(Email email);
 }

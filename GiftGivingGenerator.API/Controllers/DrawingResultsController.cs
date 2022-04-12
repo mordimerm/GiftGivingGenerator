@@ -16,14 +16,14 @@ public class DrawingResultsController : ControllerBase
 	private readonly IDrawingResultRepository _drawingResultRepository;
 	private readonly IEventRepository _eventRepository;
 	private readonly AppSettings _settings;
-	private readonly IMailService _mailService;
+	private readonly IEmailService _emailService;
 
-	public DrawingResultsController(IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IMailService mailService)
+	public DrawingResultsController(IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IEmailService emailService)
 	{
 		_drawingResultRepository = drawingResultRepository;
 		_eventRepository = eventRepository;
 		_settings = settings.CurrentValue;
-		_mailService = mailService;
+		_emailService = emailService;
 	}
 
 	[HttpPost("/Events/{eventId}/DrawingResults")]
@@ -37,11 +37,11 @@ public class DrawingResultsController : ControllerBase
 		var drawingResults = @event.DrawingResults
 			.Where(x => x.GiverPerson.Email != null);
 
-		var mails = new List<Mail>();
+		var mails = new List<Email>();
 		
 		foreach (var drawingResult in drawingResults)
 		{
-			var mail = new Mail();
+			var mail = new Email();
 			mail.Recipient = drawingResult.GiverPerson.Email;
 			mail.Subject = $"Links to drawing result '{@event.Name}'";
 			mail.Body = $@"<p>Hello {drawingResult.GiverPerson.Name},</p>
@@ -65,7 +65,7 @@ public class DrawingResultsController : ControllerBase
 			mails.Add(mail);
 		}
 		
-		_mailService.Send(mails);
+		_emailService.Send(mails);
 		
 		return Ok();
 	}

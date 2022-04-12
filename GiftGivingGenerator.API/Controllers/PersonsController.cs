@@ -14,14 +14,14 @@ public class PersonsController : ControllerBase
 {
 	private readonly IPersonRepository _personRepository;
 	private readonly IDrawingResultRepository _drawingResultRepository;
-	private readonly IMailService _mailService;
+	private readonly IEmailService _emailService;
 	private readonly AppSettings _settings;
 
-	public PersonsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository, IOptionsMonitor<AppSettings> settings, IMailService mailService)
+	public PersonsController(IPersonRepository personRepository, IDrawingResultRepository drawingResultRepository, IOptionsMonitor<AppSettings> settings, IEmailService emailService)
 	{
 		_personRepository = personRepository;
 		_drawingResultRepository = drawingResultRepository;
-		_mailService = mailService;
+		_emailService = emailService;
 		_settings = settings.CurrentValue;
 	}
 
@@ -42,7 +42,7 @@ public class PersonsController : ControllerBase
 		var @event = person.Events.First();
 		var drawingResult = @event.DrawingResults.SingleOrDefault(x => x.GiverPersonId == id);
 
-		var mail = new Mail();
+		var mail = new Email();
 		mail.Recipient = person.Email;
 		mail.Subject = $"Links to drawing result '{@event.Name}'";
 		mail.Body = $@"<p>Hello {person.Name},</p>
@@ -63,7 +63,7 @@ public class PersonsController : ControllerBase
 							<br>GiftGivingGenerator
 							</p>";
 
-		_mailService.Send(mail);
+		_emailService.Send(mail);
 		
 		return Ok();
 	}

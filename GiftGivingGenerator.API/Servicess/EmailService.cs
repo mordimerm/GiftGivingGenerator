@@ -6,22 +6,22 @@ using Serilog;
 
 namespace GiftGivingGenerator.API.Servicess;
 
-public class MailService : IMailService
+public class EmailService : IEmailService
 {
 	private readonly MailConfiguration _options;
-	public MailService(IOptionsMonitor<MailConfiguration> options)
+	public EmailService(IOptionsMonitor<MailConfiguration> options)
 	{
 		_options = options.CurrentValue;
 	}
 
-	public void Send(Mail mail)
+	public void Send(Email email)
 	{
-		var mails = new List<Mail>();
-		mails.Add(mail);
-		Send(mails);
+		var emails = new List<Email>();
+		emails.Add(email);
+		Send(emails);
 	}
 
-	public void Send(List<Mail> mails)
+	public void Send(List<Email> emails)
 	{
 		var basicCredential1 = new System.Net.NetworkCredential(_options.userName, _options.password);
 		var client = new SmtpClient("smtp.gmail.com", 587)
@@ -31,7 +31,7 @@ public class MailService : IMailService
 			Credentials = basicCredential1,
 		};
 		
-		foreach (var mail in mails)
+		foreach (var mail in emails)
 		{
 			var message = new MailMessage(_options.userName, mail.Recipient, mail.Subject, mail.Body)
 			{

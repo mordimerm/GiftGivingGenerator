@@ -17,14 +17,14 @@ public class EventsController : ControllerBase
 {
 	private readonly IEventRepository _eventRepository;
 	private readonly IPersonRepository _personRepository;
-	private readonly IMailService _mailService;
+	private readonly IEmailService _emailService;
 	private readonly AppSettings _settings;
-	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mailService,
+	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IEmailService emailService,
 		IOptionsMonitor<AppSettings> settings)
 	{
 		_eventRepository = eventRepository;
 		_personRepository = personRepository;
-		_mailService = mailService;
+		_emailService = emailService;
 		_settings = settings.CurrentValue;
 	}
 
@@ -123,7 +123,7 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get<EventToSendEmailDto>(id);
 		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
-		var mail = new Mail();
+		var mail = new Email();
 		mail.Recipient = organizer.Email;
 		mail.Subject = $"Links to drawing results '{@event.Name}'";
 		mail.Body = $@"<p>Hello {organizer.Name},</p>
@@ -138,7 +138,7 @@ public class EventsController : ControllerBase
 						<br>GiftGivingGenerator
 						</p>";
 
-		_mailService.Send(mail);
+		_emailService.Send(mail);
 
 		return Ok();
 	}
