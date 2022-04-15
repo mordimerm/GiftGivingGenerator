@@ -11,7 +11,7 @@ public class EditEventDto
 	public string Name { get; set; }
 
 	[DateValidator]
-	public DateTime Date { get; set; }
+	public DateTime EndDate { get; set; }
 	
 	public string? Message { get; set; }
 	public int? Budget { get; set; }

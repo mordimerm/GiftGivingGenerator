@@ -89,7 +89,7 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get(id);
 
 		@event.ChangeName(dto.Name);
-		@event.ChangeEndDate(dto.Date);
+		@event.ChangeEndDate(dto.EndDate);
 		@event.ChangeMessage(dto.Message);
 		@event.ChangeBudget(dto.Budget);
 
