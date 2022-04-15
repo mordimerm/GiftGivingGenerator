@@ -1,4 +1,5 @@
 ﻿using GiftGivingGenerator.API.Configurations;
+using GiftGivingGenerator.API.DataTransferObject.Email;
 using GiftGivingGenerator.API.DataTransferObject.Event;
 using GiftGivingGenerator.API.DataTransferObject.Exclusion;
 using GiftGivingGenerator.API.DataTransferObject.Person;
@@ -16,13 +17,14 @@ public class EventsController : ControllerBase
 {
 	private readonly IEventRepository _eventRepository;
 	private readonly IPersonRepository _personRepository;
-	private readonly IMailService _mailService;
+	private readonly IEmailService _emailService;
 	private readonly AppSettings _settings;
-	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IMailService mailService, IOptionsMonitor<AppSettings> settings)
+	public EventsController(IEventRepository eventRepository, IPersonRepository personRepository, IEmailService emailService,
+		IOptionsMonitor<AppSettings> settings)
 	{
 		_eventRepository = eventRepository;
 		_personRepository = personRepository;
-		_mailService = mailService;
+		_emailService = emailService;
 		_settings = settings.CurrentValue;
 	}
 
@@ -39,15 +41,14 @@ public class EventsController : ControllerBase
 
 		var listOfDuplicates = dto.Persons.GroupBy(x => x.Name)
 			.Where(x => x.Count() > 1)
-			.Select(x=>x.Key);
-
-		var duplicates = string.Join(", ", listOfDuplicates);
+			.Select(x => x.Key);
 
 		if (listOfDuplicates.Any())
 		{
+			var duplicates = string.Join(", ", listOfDuplicates);
 			return Conflict($"There are persons with the same names: {duplicates}.");
 		}
-		
+
 		foreach (var personDto in dto.Persons)
 		{
 			var person = Person.Create(personDto.Name, personDto.Email);
@@ -56,20 +57,20 @@ public class EventsController : ControllerBase
 
 		var eventId = _eventRepository.Insert(@event);
 		var eventWithOrganizerDto = _eventRepository.Get<EventDto>(eventId);
-		
+
 		return CreatedAtAction(nameof(CreateEvent), new {id = eventId}, eventWithOrganizerDto);
 	}
 
 	[HttpPut("{id}/Exclusions")]
-	public ActionResult UpdateExclusions([FromRoute]Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
+	public ActionResult UpdateExclusions([FromRoute] Guid id, [FromBody] List<ListOfExclusionsForOnePersonDto> dto)
 	{
-		 var @event = _eventRepository.Get(id);
-		 @event.UpdateExclusions(dto);
+		var @event = _eventRepository.Get(id);
+		@event.UpdateExclusions(dto);
 		_eventRepository.Update(@event);
-		
+
 		return Ok();
 	}
-	
+
 	[HttpGet("{id}")]
 	public ActionResult GetEventWithPersonsAndExclusions([FromRoute] Guid id)
 	{
@@ -88,7 +89,7 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get(id);
 
 		@event.ChangeName(dto.Name);
-		@event.ChangeEndDate(dto.Date);
+		@event.ChangeEndDate(dto.EndDate);
 		@event.ChangeMessage(dto.Message);
 		@event.ChangeBudget(dto.Budget);
 
@@ -100,7 +101,7 @@ public class EventsController : ControllerBase
 	public ActionResult AddPersonsToEvent([FromRoute] Guid id, [FromBody] List<CreatePersonDto> dto)
 	{
 		var @event = _eventRepository.Get(id);
-		
+
 		foreach (var personDto in dto)
 		{
 			var person = Person.Create(personDto.Name, personDto.Email);
@@ -110,9 +111,9 @@ public class EventsController : ControllerBase
 		_eventRepository.Update(@event);
 		return Ok();
 	}
-	
+
 	[HttpPost("/{id}/SendMail")]
-	public ActionResult SendEmail([FromRoute] Guid id)
+	public ActionResult SendEmailToOrganizer([FromRoute] Guid id)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -122,7 +123,10 @@ public class EventsController : ControllerBase
 		var @event = _eventRepository.Get<EventToSendEmailDto>(id);
 		var organizer = _personRepository.Get<OrganizerToSendEmailDto>(@event.OrganizerId);
 
-		var body = $@"<p>Hello {organizer.Name},</p>
+		var mail = new Email();
+		mail.Recipient = organizer.Email;
+		mail.Subject = $"Links to drawing results '{@event.Name}'";
+		mail.Body = $@"<p>Hello {organizer.Name},</p>
 						
 						<p>
 						you created event {@event.Name}.
@@ -134,7 +138,7 @@ public class EventsController : ControllerBase
 						<br>GiftGivingGenerator
 						</p>";
 
-		_mailService.Send($"{organizer.Email}", $"Links to drawing results '{@event.Name}'", $"{body}");
+		_emailService.Send(mail);
 
 		return Ok();
 	}

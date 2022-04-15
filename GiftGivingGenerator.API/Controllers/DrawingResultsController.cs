@@ -1,5 +1,6 @@
 ﻿using GiftGivingGenerator.API.Configurations;
 using GiftGivingGenerator.API.DataTransferObject.DrawingResult;
+using GiftGivingGenerator.API.DataTransferObject.Email;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,14 @@ public class DrawingResultsController : ControllerBase
 	private readonly IDrawingResultRepository _drawingResultRepository;
 	private readonly IEventRepository _eventRepository;
 	private readonly AppSettings _settings;
-	private readonly IMailService _mailService;
+	private readonly IEmailService _emailService;
 
-	public DrawingResultsController(IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IMailService mailService)
+	public DrawingResultsController(IDrawingResultRepository drawingResultRepository, IEventRepository eventRepository, IOptionsMonitor<AppSettings> settings, IEmailService emailService)
 	{
 		_drawingResultRepository = drawingResultRepository;
 		_eventRepository = eventRepository;
 		_settings = settings.CurrentValue;
-		_mailService = mailService;
+		_emailService = emailService;
 	}
 
 	[HttpPost("/Events/{eventId}/DrawingResults")]
@@ -35,10 +36,15 @@ public class DrawingResultsController : ControllerBase
 		
 		var drawingResults = @event.DrawingResults
 			.Where(x => x.GiverPerson.Email != null);
+
+		var mails = new List<Email>();
 		
 		foreach (var drawingResult in drawingResults)
 		{
-			var body = $@"<p>Hello {drawingResult.GiverPerson.Name},</p>
+			var mail = new Email();
+			mail.Recipient = drawingResult.GiverPerson.Email;
+			mail.Subject = $"Links to drawing result '{@event.Name}'";
+			mail.Body = $@"<p>Hello {drawingResult.GiverPerson.Name},</p>
 							
 							<p>
 							{@event.Organizer.Name} created event {@event.Name}.
@@ -56,9 +62,10 @@ public class DrawingResultsController : ControllerBase
 							<br>GiftGivingGenerator
 							</p>";
 
-			_mailService.Send($"{drawingResult.GiverPerson.Email}", $"Links to drawing result '{@event.Name}'", $"{body}");
+			mails.Add(mail);
 		}
-
+		
+		_emailService.Send(mails);
 		
 		return Ok();
 	}

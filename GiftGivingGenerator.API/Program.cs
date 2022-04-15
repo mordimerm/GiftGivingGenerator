@@ -24,7 +24,7 @@ builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
 builder.Services.AddScoped<IGiftWishRepository, GiftWishRepository>();
-builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.Configure<MailConfiguration>(builder.Configuration.GetSection("MailAccess"));
 builder.Services.Configure<AllowedHostsConfiguration>(builder.Configuration.GetSection("AllowedHosts"));
