@@ -6,8 +6,9 @@ namespace GiftGivingGenerator.API;
 
 public class AppContext : DbContext
 {
-	public AppContext(DbContextOptions options) : base(options)
+	public AppContext(DbContextOptions<AppContext> options) : base(options)
 	{
+		Database.Migrate();
 	}
 
 	public DbSet<Event> Events { get; set; }

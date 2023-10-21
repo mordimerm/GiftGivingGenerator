@@ -18,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDbContext<AppContext>(x =>
-	x.UseCosmos(builder.Configuration.GetConnectionString("Db")!, "gift-giving-generator")
+	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"))
 );
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();

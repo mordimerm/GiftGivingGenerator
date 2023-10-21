@@ -3,11 +3,69 @@ param location string = resourceGroup().location
 param repositoryUrl string
 param branch string
 param environment string
+param frontendUrl string
+
+param sqlAdminLogin string
+
+@secure()
+param sqlAdminPassword string
 
 var tags = {
   environment: environment
 }
 var locationSuffix = substring(location, 0, 6)
+
+resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
+  name: 'sql-${name}-${environment}-${locationSuffix}'
+  location: location
+  properties: {
+    administratorLogin: sqlAdminLogin
+    administratorLoginPassword: sqlAdminPassword
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Disabled'
+  }
+}
+
+resource sqlDb 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
+  name: name
+  parent: sqlServer
+  location: location
+  sku: {
+    name: 'GP_S_Gen5_2'
+    tier: 'GeneralPurpose'
+  }
+  properties: {
+    collation: 'Latin1_General_100_CI_AI_SC_UTF8'
+    zoneRedundant: false
+    autoPauseDelay: 60
+    useFreeLimit: true
+    freeLimitExhaustionBehavior: 'AutoPause'
+  }
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: 'log-${name}-${environment}-${locationSuffix}'
+  location: location
+  tags: tags
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 30
+  }
+}
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'appi-${name}-${environment}-${locationSuffix}'
+  location: location
+  tags: tags
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+    Flow_Type: 'Bluefield'
+  }
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'asp-${name}-${environment}-${locationSuffix}'
@@ -20,36 +78,6 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   }
   kind: 'linux'
   tags: tags
-}
-
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-09-15' = {
-  name: 'cosmos-${name}-${environment}-${locationSuffix}'
-  location: location
-  tags: tags
-  properties: {
-    enableFreeTier: true
-    databaseAccountOfferType: 'Standard'
-    consistencyPolicy: {
-      defaultConsistencyLevel: 'Session'
-    }
-    locations: [
-      {
-        locationName: location
-      }
-    ]
-  }
-
-  resource sqlDatabase 'sqlDatabases@2023-09-15' = {
-    name: name
-    properties: {
-      resource: {
-        id: name
-      }
-      options: {
-        throughput: 400
-      }
-    }
-  }
 }
 
 resource api 'Microsoft.Web/sites@2022-09-01' = {
@@ -79,7 +107,17 @@ resource api 'Microsoft.Web/sites@2022-09-01' = {
       connectionStrings: [
         {
           name: 'Db'
-          connectionString: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+          connectionString: 'server=tcp:${sqlServer.name}.database.windows.net,1433;Database=${sqlDb.name};User ID=${sqlAdminLogin};Password=${sqlAdminPassword};Trusted_Connection=False;Encrypt=True;'
+        }
+      ]
+      appSettings: [
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: applicationInsights.properties.ConnectionString
+        }
+        {
+          name: 'WebApplicationUrl'
+          value: frontendUrl
         }
       ]
     }
