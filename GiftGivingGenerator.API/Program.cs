@@ -3,6 +3,8 @@ using GiftGivingGenerator.API.Configurations;
 using GiftGivingGenerator.API.Repositories;
 using GiftGivingGenerator.API.Repositories.Abstractions;
 using GiftGivingGenerator.API.Servicess;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -20,6 +22,10 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDbContext<AppContext>(x =>
 	x.UseSqlServer(builder.Configuration.GetConnectionString("Db"))
 );
+builder.Services.AddHealthChecks()
+	.AddSqlServer(builder.Configuration.GetConnectionString("Db")!);
+builder.Services.AddHealthChecksUI();
+builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IDrawingResultRepository, DrawingResultRepository>();
@@ -63,6 +69,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.MapHealthChecks("/healthz", new HealthCheckOptions
+{
+	ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+app.MapHealthChecksUI();
 
 app.UseHttpsRedirection();
 
