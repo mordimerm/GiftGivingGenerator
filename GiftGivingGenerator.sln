@@ -2,6 +2,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiftGivingGenerator.API", "GiftGivingGenerator.API\GiftGivingGenerator.API.csproj", "{B5AE35FE-70D4-4A9C-9F90-1B3316427E70}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{195D6A79-D279-4716-B856-2540E0E3C066}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{79E751E2-67BA-41D1-8531-FF4396A03832}"
+	ProjectSection(SolutionItems) = preProject
+		infrastructure\main.bicep = infrastructure\main.bicep
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +22,8 @@ Global
 		{B5AE35FE-70D4-4A9C-9F90-1B3316427E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5AE35FE-70D4-4A9C-9F90-1B3316427E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5AE35FE-70D4-4A9C-9F90-1B3316427E70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{79E751E2-67BA-41D1-8531-FF4396A03832} = {195D6A79-D279-4716-B856-2540E0E3C066}
 	EndGlobalSection
 EndGlobal
