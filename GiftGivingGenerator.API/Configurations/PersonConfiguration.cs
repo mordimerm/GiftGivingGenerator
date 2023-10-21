@@ -30,7 +30,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 			.HasForeignKey(x => x.ExcludedId)
 			.OnDelete(DeleteBehavior.Restrict);
 
-		builder.HasMany<Exclusion>()
+		builder.HasMany<Exclusion>(x => x.Exclusions)
 			.WithOne(x => x.Person)
 			.HasForeignKey(x => x.PersonId)
 			.OnDelete(DeleteBehavior.Restrict);
