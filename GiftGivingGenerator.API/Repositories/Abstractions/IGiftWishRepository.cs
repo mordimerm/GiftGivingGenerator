@@ -4,5 +4,5 @@ namespace GiftGivingGenerator.API.Repositories.Abstractions;
 
 public interface IGiftWishRepository : IRepository<GiftWish>
 {
-	public GiftWish GetByEventAndPerson(Guid eventId, Guid personId);
+	public GiftWish? FindByEventAndPerson(Guid eventId, Guid personId);
 }

@@ -19,9 +19,17 @@ public class GiftWishController : ControllerBase
 	[HttpPut("/Events/{eventId}/Persons/{personId}/GiftWishes")]
 	public ActionResult CreateGiftWish(Guid eventId, Guid personId, [FromBody] CreateGiftWishDto dto)
 	{
-		var giftWish = GiftWish.Create(eventId, personId, dto.Wish);
-		_giftWishRepository.Insert(giftWish);
+		var giftWish = _giftWishRepository.FindByEventAndPerson(eventId, personId);
 
+		if (giftWish != null)
+		{
+			giftWish.Wish = dto.Wish;
+			_giftWishRepository.Update(giftWish);
+		}
+		else
+		{
+			_giftWishRepository.Insert(GiftWish.Create(eventId, personId, dto.Wish));
+		}
 		
 		return Ok();
 	}

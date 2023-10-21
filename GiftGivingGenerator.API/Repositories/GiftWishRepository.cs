@@ -10,10 +10,10 @@ public class GiftWishRepository : RepositoryBase<GiftWish>, IGiftWishRepository
 	{
 	}
 
-	public GiftWish GetByEventAndPerson(Guid eventId, Guid personsId)
+	public GiftWish? FindByEventAndPerson(Guid eventId, Guid personsId)
 	{
 		var giftWish = DbContext.GiftWish
-			.Single(x => x.EventId == eventId && x.PersonId == personsId);
+			.SingleOrDefault(x => x.EventId == eventId && x.PersonId == personsId);
 		
 		return giftWish;
 	}
