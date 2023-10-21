@@ -110,7 +110,8 @@ namespace GiftGivingGenerator.API.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExcludedId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ExcludedId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PersonId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -132,7 +133,12 @@ namespace GiftGivingGenerator.API.Migrations
                         column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Exclusions_Persons_PersonId1",
+                        column: x => x.PersonId1,
+                        principalTable: "Persons",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -200,6 +206,11 @@ namespace GiftGivingGenerator.API.Migrations
                 name: "IX_Exclusions_PersonId",
                 table: "Exclusions",
                 column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Exclusions_PersonId1",
+                table: "Exclusions",
+                column: "PersonId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GiftWish_EventId",

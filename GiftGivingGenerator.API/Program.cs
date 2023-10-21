@@ -24,7 +24,6 @@ builder.Services.AddDbContext<AppContext>(x =>
 );
 builder.Services.AddHealthChecks()
 	.AddSqlServer(builder.Configuration.GetConnectionString("Db")!);
-builder.Services.AddHealthChecksUI();
 builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();

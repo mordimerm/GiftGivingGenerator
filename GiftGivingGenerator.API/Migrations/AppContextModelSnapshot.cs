@@ -93,8 +93,6 @@ namespace GiftGivingGenerator.API.Migrations
                     b.HasIndex("OrganizerId");
 
                     b.ToTable("Events");
-
-                    b.HasAnnotation("Cosmos:ContainerName", "Event");
                 });
 
             modelBuilder.Entity("GiftGivingGenerator.API.Entities.Exclusion", b =>
@@ -112,6 +110,9 @@ namespace GiftGivingGenerator.API.Migrations
                     b.Property<Guid>("PersonId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("PersonId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
@@ -119,6 +120,8 @@ namespace GiftGivingGenerator.API.Migrations
                     b.HasIndex("ExcludedId");
 
                     b.HasIndex("PersonId");
+
+                    b.HasIndex("PersonId1");
 
                     b.ToTable("Exclusions");
                 });
@@ -164,8 +167,6 @@ namespace GiftGivingGenerator.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Persons");
-
-                    b.HasAnnotation("Cosmos:ContainerName", "Person");
                 });
 
             modelBuilder.Entity("EventPerson", b =>
@@ -236,10 +237,14 @@ namespace GiftGivingGenerator.API.Migrations
                         .IsRequired();
 
                     b.HasOne("GiftGivingGenerator.API.Entities.Person", "Person")
-                        .WithMany("Exclusions")
+                        .WithMany()
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("GiftGivingGenerator.API.Entities.Person", null)
+                        .WithMany("Exclusions")
+                        .HasForeignKey("PersonId1");
 
                     b.Navigation("Event");
 

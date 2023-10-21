@@ -12,11 +12,11 @@ public class Event : IEntity
 	public int? Budget { get; set; }
 	public string? Message { get; set; }
 	public Guid OrganizerId  { get; set; }
-	public Person Organizer { get; set; }
-	public List<Person> Persons { get; set; } = new List<Person>();
-	public List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
-	public List<GiftWish> GiftWishes { get; set; }
-	public List<Exclusion> Exclusions { get; set; } = new List<Exclusion>();
+	public virtual Person Organizer { get; set; }
+	public virtual List<Person> Persons { get; set; } = new List<Person>();
+	public virtual List<DrawingResult> DrawingResults { get; set; } = new List<DrawingResult>();
+	public virtual List<GiftWish> GiftWishes { get; set; }
+	public virtual List<Exclusion> Exclusions { get; set; } = new List<Exclusion>();
 
 	public static Event Create(Person organizer, string name, DateTime date, int? budget, string? message)
 	{

@@ -6,7 +6,7 @@ public class Exclusion : IEntity
 	public Guid EventId { get; set; }
 	public Event Event { get; set; }
 	public Guid PersonId { get; set; }
-	public Person Person { get; set; }
+	public virtual Person Person { get; set; }
 	public Guid ExcludedId { get; set; }
-	public Person Excluded { get; set; }
+	public virtual Person Excluded { get; set; }
 }

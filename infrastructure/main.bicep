@@ -22,7 +22,15 @@ resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
     administratorLogin: sqlAdminLogin
     administratorLoginPassword: sqlAdminPassword
     minimalTlsVersion: '1.2'
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
+  }
+  
+  resource firewallRules 'firewallRules@2023-02-01-preview' = {
+    name: 'AllowAllWindowsAzureIps'
+    properties: {
+      startIpAddress: '0.0.0.0'
+      endIpAddress: '0.0.0.0'
+    }
   }
 }
 
@@ -120,6 +128,11 @@ resource api 'Microsoft.Web/sites@2022-09-01' = {
           value: frontendUrl
         }
       ]
+      cors: {
+        allowedOrigins: [
+          'https://arinstreal.github.io'
+        ]
+      }
     }
   }
 }
