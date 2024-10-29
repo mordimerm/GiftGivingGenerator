@@ -1,0 +1,198 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.30.23.60470",
+      "templateHash": "17233409164740800295"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "giftgivinggenerator"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "repositoryUrl": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "frontendUrl": {
+      "type": "string"
+    },
+    "sqlAdminLogin": {
+      "type": "string"
+    },
+    "sqlAdminPassword": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "tags": {
+      "environment": "[parameters('environment')]"
+    },
+    "locationSuffix": "[substring(parameters('location'), 0, 6)]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/servers/firewallRules",
+      "apiVersion": "2023-02-01-preview",
+      "name": "[format('{0}/{1}', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')), 'AllowAllWindowsAzureIps')]",
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "0.0.0.0"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/sourcecontrols",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', format('app-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')), 'web')]",
+      "properties": {
+        "repoUrl": "[parameters('repositoryUrl')]",
+        "branch": "[parameters('branch')]",
+        "isManualIntegration": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('app-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', format('app-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')), 'web')]",
+      "properties": {
+        "connectionStrings": [
+          {
+            "name": "Db",
+            "connectionString": "[format('server=tcp:{0}.database.windows.net,1433;Database={1};User ID={2};Password={3};Trusted_Connection=False;Encrypt=True;', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')), parameters('name'), parameters('sqlAdminLogin'), parameters('sqlAdminPassword'))]"
+          }
+        ],
+        "appSettings": [
+          {
+            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+            "value": "[reference(resourceId('Microsoft.Insights/components', format('appi-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix'))), '2020-02-02').ConnectionString]"
+          },
+          {
+            "name": "WebApplicationUrl",
+            "value": "[parameters('frontendUrl')]"
+          }
+        ],
+        "cors": {
+          "allowedOrigins": [
+            "https://arinstreal.github.io"
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('app-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]",
+        "[resourceId('Microsoft.Insights/components', format('appi-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]",
+        "[resourceId('Microsoft.Sql/servers/databases', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')), parameters('name'))]",
+        "[resourceId('Microsoft.Sql/servers', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2023-02-01-preview",
+      "name": "[format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "administratorLogin": "[parameters('sqlAdminLogin')]",
+        "administratorLoginPassword": "[parameters('sqlAdminPassword')]",
+        "minimalTlsVersion": "1.2",
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2023-02-01-preview",
+      "name": "[format('{0}/{1}', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "GP_S_Gen5_2",
+        "tier": "GeneralPurpose"
+      },
+      "properties": {
+        "collation": "Latin1_General_100_CI_AI_SC_UTF8",
+        "zoneRedundant": false,
+        "autoPauseDelay": 60,
+        "useFreeLimit": true,
+        "freeLimitExhaustionBehavior": "AutoPause"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', format('sql-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[format('log-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[format('appi-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', format('log-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]",
+        "Flow_Type": "Bluefield"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', format('log-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-09-01",
+      "name": "[format('asp-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "reserved": true
+      },
+      "sku": {
+        "name": "F1"
+      },
+      "kind": "linux",
+      "tags": "[variables('tags')]"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-09-01",
+      "name": "[format('app-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('asp-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]",
+        "siteConfig": {
+          "linuxFxVersion": "DOTNETCORE|7.0"
+        },
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', format('asp-{0}-{1}-{2}', parameters('name'), parameters('environment'), variables('locationSuffix')))]"
+      ]
+    }
+  ]
+}
